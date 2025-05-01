@@ -2,7 +2,7 @@
 
 <template>
     <div class="layout-footer">
-        SAKAI by
-        <a href="https://primevue.org" target="_blank" rel="noopener noreferrer" class="text-primary font-bold hover:underline">PrimeVue</a>
+        In-Post by
+        <a href="https://code-abdulrehman.vercel.app/" target="_blank" rel="noopener noreferrer" class="text-primary font-bold hover:underline">AR</a>
     </div>
 </template>

@@ -3,11 +3,11 @@
         <div class="font-semibold text-2xl mb-4">Documentation</div>
         <div class="font-semibold text-xl mb-4">Get Started</div>
         <p class="text-lg mb-4">
-            Sakai is an application template for Vue based on the <a href="https://github.com/vuejs/create-vue" class="font-medium text-primary hover:underline">create-vue</a>, the recommended way to start a <strong>Vite-powered</strong> Vue
-            projects. To get started, clone the <a href="https://github.com/primefaces/sakai-vue" class="font-medium text-primary hover:underline">repository</a> from GitHub and install the dependencies with npm or yarn.
+            In-Post is an application template for Vue based on the <a href="https://github.com/vuejs/create-vue" class="font-medium text-primary hover:underline">create-vue</a>, the recommended way to start a <strong>Vite-powered</strong> Vue
+            projects. To get started, clone the <a href="https://github.com/primefaces/In-Post-vue" class="font-medium text-primary hover:underline">repository</a> from GitHub and install the dependencies with npm or yarn.
         </p>
         <pre class="app-code">
-<code>git clone https://github.com/primefaces/sakai-vue
+<code>git clone https://github.com/primefaces/In-Post-vue
 npm install
 npm run dev</code></pre>
 
@@ -46,10 +46,10 @@ npm run dev</code></pre>
             according to your requirements.
         </p>
 
-        <div class="font-semibold text-xl mb-4">Add Sakai-Vue to a Nuxt Project</div>
+        <div class="font-semibold text-xl mb-4">Add In-Post-Vue to a Nuxt Project</div>
         <p class="text-lg mb-4">To get started, create a Nuxt project.</p>
         <pre class="app-code">
-<code>npx nuxi@latest init sakai-nuxt</code></pre>
+<code>npx nuxi@latest init In-Post-nuxt</code></pre>
 
         <p class="text-lg mb-4">Add Prime related libraries to the project.</p>
         <pre class="app-code">

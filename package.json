@@ -1,5 +1,5 @@
 {
-    "name": "sakai-vue",
+    "name": "In-Post-vue",
     "version": "4.3.0",
     "scripts": {
         "dev": "vite",
@@ -10,10 +10,13 @@
     "dependencies": {
         "@primeuix/themes": "^1.0.0",
         "chart.js": "3.3.2",
+        "jspdf": "^2.5.1",
+        "konva": "^9.3.20",
         "primeicons": "^7.0.0",
         "primevue": "^4.3.1",
         "tailwindcss-primeui": "^0.5.0",
         "vue": "^3.4.34",
+        "vue-konva": "^3.2.1",
         "vue-router": "^4.4.0"
     },
     "devDependencies": {
