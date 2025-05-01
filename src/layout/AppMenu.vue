@@ -3,7 +3,14 @@ import { ref } from 'vue';
 
 import AppMenuItem from './AppMenuItem.vue';
 
+
 const model = ref([
+    {
+        // label: 'Home',
+        items: [{ label: 'Home', icon: 'pi pi-fw pi-home', to: '/' }]
+    },
+]);
+const models = ref([
     {
         label: 'Home',
         items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
@@ -131,7 +138,7 @@ const model = ref([
             {
                 label: 'View Source',
                 icon: 'pi pi-fw pi-github',
-                url: 'https://github.com/primefaces/sakai-vue',
+                url: 'https://github.com/primefaces/In-Post-vue',
                 target: '_blank'
             }
         ]

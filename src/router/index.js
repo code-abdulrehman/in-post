@@ -10,8 +10,18 @@ const router = createRouter({
             children: [
                 {
                     path: '/',
+                    name: 'home',
+                    component: () => import('@/views/Home.vue')
+                },
+                {
+                    path: '/dashboard',
                     name: 'dashboard',
                     component: () => import('@/views/Dashboard.vue')
+                },
+                {
+                    path: '/editor',
+                    name: 'editor',
+                    component: () => import('@/views/EditorView.vue')
                 },
                 {
                     path: '/uikit/formlayout',
@@ -131,6 +141,11 @@ const router = createRouter({
             path: '/auth/error',
             name: 'error',
             component: () => import('@/views/pages/auth/Error.vue')
+        },
+        {
+            path: '/test-editor',
+            name: 'test-editor',
+            component: () => import('@/views/EditorView.vue')
         }
     ]
 });
