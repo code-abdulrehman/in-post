@@ -1,82 +1,79 @@
-# InPost - Canva-like Design Editor
+# InPost Designer
 
-A powerful design tool inspired by Canva for creating beautiful designs for social media, presentations, and more. Built with Vue.js and Konva.js for powerful canvas manipulation.
+InPost Designer is a modern, browser-based graphic design application built with React, allowing users to create stunning social media posts, marketing materials, and digital designs without leaving their browser.
 
 ## Features
 
-- **Intuitive Editor**: Easy-to-use drag-and-drop interface for creating designs
-- **Templates**: Start with pre-designed templates for various purposes
-- **Rich Component Library**: Shapes, text, images, and more
-- **Export Options**: Download your designs in PNG, JPG, PDF, and SVG formats
-- **Project Saving**: Save your projects and continue editing later
+- **Intuitive Editor Interface**: A user-friendly canvas with drag-and-drop functionality
+- **Shape Tools**: Add rectangles, circles, triangles, lines, stars, and polygons
+- **Text Editing**: Add and customize text with different fonts, sizes, and styles
+- **Image Support**: Upload and incorporate images into your designs
+- **Layer Management**: Control the stacking order of elements with an easy-to-use layers panel
+- **Background Options**: Solid colors and patterns for your canvas background
+- **Grid Toggle**: Enable grid for precise alignment
+- **History Management**: Undo/redo functionality
+- **Responsive Properties Panel**: Edit element properties like position, size, color, and opacity
+- **Keyboard Shortcuts**: Boost productivity with common keyboard shortcuts
+- **Canvas Size Presets**: Common social media sizes and custom dimensions
+- **Local Storage**: Designs are saved to your browser's local storage
+- **Export Options**: Download your designs in various formats
+
+## Tech Stack
+
+- React 19
+- Zustand for state management
+- React Konva for canvas manipulation
+- Tailwind CSS for styling
+- React Icons for UI elements
+- React Toastify for notifications
 
 ## Getting Started
 
-### Prerequisites
-
-- Node.js (v16 or later)
-- npm or pnpm
-
-### Installation
-
 1. Clone the repository
-```bash
-git clone https://github.com/yourusername/in-post.git
-cd in-post
-```
+2. Install dependencies:
+   ```
+   npm install
+   ```
+   or
+   ```
+   yarn install
+   ```
+   or
+   ```
+   pnpm install
+   ```
 
-2. Install dependencies
-```bash
-npm install
-# or
-pnpm install
-```
+3. Start the development server:
+   ```
+   npm run dev
+   ```
+   or
+   ```
+   yarn dev
+   ```
+   or
+   ```
+   pnpm dev
+   ```
 
-3. Start the development server
-```bash
-npm run dev
-# or
-pnpm dev
-```
-
-4. Open your browser and navigate to `http://localhost:5173`
+4. Open [http://localhost:5173](http://localhost:5173) in your browser
 
 ## Usage
 
-### Creating a New Design
+1. From the landing page, click "Create Design"
+2. Use the left sidebar to add elements, change canvas size, or modify background
+3. Select elements on the canvas to edit them using the right sidebar
+4. Use the layers tab in the right sidebar to manage element stacking
+5. Click Export to save your design
 
-1. Click on "Start Creating" on the homepage or navigate to the Editor page
-2. Choose a template or start with a blank canvas
-3. Use the left sidebar to add elements (shapes, text, images)
-4. Customize elements using the right sidebar properties panel
-5. Save your project or export it in your preferred format
+## Keyboard Shortcuts
 
-### Working with Elements
-
-- **Add Elements**: Use the left sidebar to add shapes, text, or upload images
-- **Select Elements**: Click on any element to select it
-- **Move Elements**: Drag selected elements to reposition them
-- **Resize/Rotate**: Use the transformation handles to resize or rotate elements
-- **Delete Elements**: Select an element and press Delete or Backspace
-
-### Exporting Your Design
-
-1. Click the "Export" button in the top toolbar
-2. Choose your preferred format (PNG, JPG, PDF, SVG)
-3. Click "Export" to download your design
-
-## Technologies Used
-
-- **Vue.js**: Frontend framework
-- **Konva.js**: HTML5 Canvas library for drawing shapes and handling interactions
-- **PrimeVue**: UI component library
-- **jsPDF**: PDF generation library
+- **Ctrl+Z**: Undo
+- **Ctrl+Y** or **Ctrl+Shift+Z**: Redo
+- **Ctrl+D**: Duplicate selected element
+- **Delete**: Remove selected element
+- **Escape**: Clear selection
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE.md file for details.
-
-## Acknowledgments
-
-- Inspired by Canva's intuitive design interface
-- Built using the Vue.js and Konva.js ecosystem
+MIT
