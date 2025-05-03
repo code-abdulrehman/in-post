@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Graphic Design App</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@6.0.1/primeicons.min.css">
+  <style>
+    :root {
+      --primary-color: #5D5CDE;
+      --secondary-color: #4CAF50;
+      --warning-color: #FFC107;
+      --danger-color: #F44336;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+    }
+
+    .dark body {
+      background-color: #181818;
+      color: #f3f4f6;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .header {
+      background-color: white;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 60px;
+    }
+
+    .dark .header {
+      background-color: #242424;
+      border-color: #333;
+    }
+
+    .editor-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 250px;
+      border-right: 1px solid var(--gray-200);
+      overflow-y: auto;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dark .sidebar {
+      background-color: #242424;
+      border-color: #333;
+    }
+
+    .main-content {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .canvas-container {
+      flex: 1;
+      overflow: auto;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f0f0f0;
+    }
+
+    .dark .canvas-container {
+      background-color: #333;
+    }
+
+    .tab-header {
+      display: flex;
+      background-color: var(--gray-100);
+      border-bottom: 1px solid var(--gray-300);
+    }
+
+    .dark .tab-header {
+      background-color: #333;
+      border-color: #444;
+    }
+
+    .tab {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-right: 1px solid var(--gray-200);
+    }
+
+    .tab.active {
+      background-color: white;
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    .dark .tab.active {
+      background-color: #242424;
+    }
+
+    .tab-content {
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .accordion {
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .dark .accordion {
+      border-color: #333;
+    }
+
+    .accordion-header {
+      padding: 0.75rem 1rem;
+      background-color: var(--gray-100);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dark .accordion-header {
+      background-color: #333;
+    }
+
+    .accordion-content {
+      padding: 0.75rem 1rem;
+      display: none;
+    }
+
+    .accordion.open .accordion-content {
+      display: block;
+    }
+
+    .accordion-icon {
+      transition: transform 0.2s;
+    }
+
+    .accordion.open .accordion-icon {
+      transform: rotate(180deg);
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: #4a49b0;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: var(--gray-100);
+      color: var(--gray-800);
+      border: 1px solid var(--gray-300);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--gray-200);
+    }
+
+    .btn-sm {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tool-item {
+      padding: 0.5rem;
+      border: 1px solid var(--gray-200);
+      border-radius: 0.25rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tool-item:hover {
+      background-color: var(--gray-100);
+      transform: translateY(-2px);
+    }
+
+    .dark .tool-item {
+      border-color: #333;
+    }
+
+    .dark .tool-item:hover {
+      background-color: #333;
+    }
+
+    .element-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .property-row {
+      display: flex;
+      margin-bottom: 0.5rem;
+      align-items: center;
+    }
+
+    .property-row label {
+      flex: 0 0 80px;
+      font-size: 0.875rem;
+    }
+
+    .property-row input {
+      flex: 1;
+      padding: 0.375rem 0.5rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+    }
+
+    .dark .property-row input {
+      background-color: #333;
+      border-color: #444;
+      color: white;
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .color-swatch {
+      height: 1.5rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+    }
+
+    .upload-area {
+      border: 2px dashed var(--gray-300);
+      border-radius: 0.25rem;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .upload-area:hover {
+      background-color: var(--gray-100);
+    }
+
+    .dark .upload-area {
+      border-color: #444;
+    }
+
+    .dark .upload-area:hover {
+      background-color: #333;
+    }
+
+    .canvas {
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      user-select: none;
+    }
+
+    .dark .canvas {
+      background-color: #242424;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--gray-200);
+      background-color: white;
+    }
+
+    .dark .toolbar {
+      background-color: #242424;
+      border-color: #333;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      margin-right: 1rem;
+    }
+
+    .toolbar-group:last-child {
+      margin-right: 0;
+    }
+
+    .toolbar-divider {
+      width: 1px;
+      height: 1.5rem;
+      background-color: var(--gray-300);
+      margin: 0 0.5rem;
+    }
+
+    .dark .toolbar-divider {
+      background-color: #444;
+    }
+
+    .history-item {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--gray-200);
+      cursor: pointer;
+    }
+
+    .history-item:hover {
+      background-color: var(--gray-100);
+    }
+
+    .history-item.active {
+      background-color: var(--gray-100);
+      border-left: 3px solid var(--primary-color);
+    }
+
+    .dark .history-item {
+      border-color: #333;
+    }
+
+    .dark .history-item:hover, 
+    .dark .history-item.active {
+      background-color: #333;
+    }
+
+    /* Layers panel styling */
+    .layers-container {
+      background-color: white;
+    }
+
+    .dark .layers-container {
+      background-color: #242424;
+      border-color: #444;
+    }
+
+    .layer-item {
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .dark .layer-item {
+      border-color: #444;
+    }
+
+    .layer-item:last-child {
+      border-bottom: none;
+    }
+
+    .layer-item.selected {
+      background-color: var(--gray-100);
+    }
+
+    .dark .layer-item.selected {
+      background-color: #333;
+    }
+
+    .layer-visibility {
+      margin-right: 0.5rem;
+      cursor: pointer;
+    }
+
+    .layer-name {
+      flex-grow: 1;
+      font-size: 0.875rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .layer-badge {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      margin-right: 8px;
+    }
+
+    /* Canvas tools styling */
+    .element {
+      position: absolute;
+      cursor: move;
+    }
+
+    .element.selected {
+      outline: 2px solid var(--primary-color);
+    }
+
+    .handle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: white;
+      border: 1px solid var(--primary-color);
+      border-radius: 50%;
+    }
+
+    .handle.tl {
+      top: -5px;
+      left: -5px;
+      cursor: nw-resize;
+    }
+
+    .handle.tr {
+      top: -5px;
+      right: -5px;
+      cursor: ne-resize;
+    }
+
+    .handle.bl {
+      bottom: -5px;
+      left: -5px;
+      cursor: sw-resize;
+    }
+
+    .handle.br {
+      bottom: -5px;
+      right: -5px;
+      cursor: se-resize;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      max-width: 90%;
+      max-height: 90%;
+      overflow: auto;
+      width: 500px;
+    }
+
+    .dark .modal-content {
+      background-color: #242424;
+    }
+
+    .modal-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .dark .modal-header {
+      border-color: #333;
+    }
+
+    .modal-body {
+      padding: 1rem;
+    }
+
+    .modal-footer {
+      padding: 1rem;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    .dark .modal-footer {
+      border-color: #333;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .preset-item {
+      border: 1px solid var(--gray-300);
+      border-radius: 0.25rem;
+      padding: 0.75rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-item:hover {
+      border-color: var(--primary-color);
+      background-color: var(--gray-100);
+      transform: translateY(-2px);
+    }
+
+    .dark .preset-item {
+      border-color: #444;
+    }
+
+    .dark .preset-item:hover {
+      background-color: #333;
+    }
+
+    .preset-preview {
+      margin: 0 auto 0.5rem;
+      background-color: white;
+      border: 1px solid var(--gray-300);
+    }
+
+    .dark .preset-preview {
+      background-color: #333;
+      border-color: #444;
+    }
+
+    .preset-name {
+      font-weight: 500;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .preset-dimensions {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+    }
+
+    .dark .preset-dimensions {
+      color: var(--gray-400);
+    }
+
+    /* Loading indicator */
+    .loading {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255,255,255,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .dark .loading {
+      background-color: rgba(0,0,0,0.7);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(0,0,0,0.1);
+      border-left-color: var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .editor-container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: 250px;
+        border-right: none;
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .element-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .preset-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Konva override styles to ensure proper sizing */
+    .konvajs-content {
+      box-sizing: content-box !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+      border: 1px solid #e0e0e0 !important;
+      background-color: white !important;
+    }
+
+    .dark .konvajs-content {
+      border-color: #444 !important;
+      background-color: #242424 !important;
+    }
+
+    /* Add explicit hidden class definition */
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="app-container">
+    <div class="header">
+      <div class="logo">
+        <h1 class="text-xl font-semibold">InPost Designer</h1>
+      </div>
+      <div class="actions">
+        <button id="saveBtn" class="btn btn-secondary btn-sm mr-2">
+          <i class="pi pi-save mr-1"></i> Save
+        </button>
+        <button id="exportBtn" class="btn btn-primary btn-sm">
+          <i class="pi pi-download mr-1"></i> Export
+        </button>
+      </div>
+    </div>
+    
+    <div class="editor-container">
+      <!-- Left Sidebar -->
+      <div class="sidebar">
+        <div class="tab-header">
+          <div class="tab active" data-tab="tools">Tools</div>
+          <div class="tab" data-tab="templates">Templates</div>
+        </div>
+        
+        <div class="tab-content">
+          <!-- Tools Tab -->
+          <div id="toolsTab" class="tab-panel active">
+            <div class="accordion open" data-section="canvas">
+              <div class="accordion-header">
+                <span>Canvas Size</span>
+                <i class="accordion-icon pi pi-chevron-down"></i>
+              </div>
+              <div class="accordion-content">
+                <div class="canvas-size-presets">
+                  <div class="tool-grid">
+                    <div class="tool-item" data-size="1080,1080">
+                      <div class="preset-preview" style="width: 30px; height: 30px;"></div>
+                      <span class="text-xs">Instagram Post</span>
+                    </div>
+                    <div class="tool-item" data-size="1200,627">
+                      <div class="preset-preview" style="width: 30px; height: 16px;"></div>
+                      <span class="text-xs">LinkedIn Post</span>
+                    </div>
+                    <div class="tool-item" data-size="1200,675">
+                      <div class="preset-preview" style="width: 30px; height: 17px;"></div>
+                      <span class="text-xs">Twitter Post</span>
+                    </div>
+                    <div class="tool-item" data-size="1280,720">
+                      <div class="preset-preview" style="width: 30px; height: 17px;"></div>
+                      <span class="text-xs">YouTube Thumbnail</span>
+                    </div>
+                  </div>
+                  <div class="custom-size flex">
+                    <div class="mr-2 flex-1">
+                      <label class="text-xs block mb-1">Width</label>
+                      <input type="number" id="canvasWidth" class="w-full text-base" value="800" min="1" max="3000">
+                    </div>
+                    <div class="flex-1">
+                      <label class="text-xs block mb-1">Height</label>
+                      <input type="number" id="canvasHeight" class="w-full text-base" value="600" min="1" max="3000">
+                    </div>
+                  </div>
+                  <button id="applySize" class="btn btn-primary w-full mt-2 text-sm">Apply Size</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion" data-section="shapes">
+              <div class="accordion-header">
+                <span>Shapes</span>
+                <i class="accordion-icon pi pi-chevron-down"></i>
+              </div>
+              <div class="accordion-content">
+                <div class="element-grid">
+                  <button class="btn btn-secondary add-shape" data-shape="rectangle">
+                    <i class="pi pi-stop"></i>
+                  </button>
+                  <button class="btn btn-secondary add-shape" data-shape="circle">
+                    <i class="pi pi-circle"></i>
+                  </button>
+                  <button class="btn btn-secondary add-shape" data-shape="triangle">
+                    <i class="pi pi-caret-up"></i>
+                  </button>
+                  <button class="btn btn-secondary add-shape" data-shape="line">
+                    <i class="pi pi-minus"></i>
+                  </button>
+                  <button class="btn btn-secondary add-shape" data-shape="star">
+                    <i class="pi pi-star"></i>
+                  </button>
+                  <button class="btn btn-secondary add-shape" data-shape="polygon">
+                    <i class="pi pi-server"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion" data-section="text">
+              <div class="accordion-header">
+                <span>Text</span>
+                <i class="accordion-icon pi pi-chevron-down"></i>
+              </div>
+              <div class="accordion-content">
+                <button id="addTextBtn" class="btn btn-primary w-full mb-3">
+                  <i class="pi pi-pencil mr-1"></i> Add Text
+                </button>
+                <div class="text-presets">
+                  <div class="tool-item mb-2 text-style" data-style="heading">
+                    <span class="text-base font-bold">Heading</span>
+                  </div>
+                  <div class="tool-item mb-2 text-style" data-style="subheading">
+                    <span class="text-sm font-semibold">Subheading</span>
+                  </div>
+                  <div class="tool-item mb-2 text-style" data-style="body">
+                    <span class="text-xs">Body Text</span>
+                  </div>
+                  <div class="tool-item mb-2 text-style" data-style="caption">
+                    <span class="text-xs italic">Caption</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion" data-section="images">
+              <div class="accordion-header">
+                <span>Images</span>
+                <i class="accordion-icon pi pi-chevron-down"></i>
+              </div>
+              <div class="accordion-content">
+                <div class="upload-area mb-3" id="uploadArea">
+                  <i class="pi pi-cloud-upload text-xl mb-2 block"></i>
+                  <p class="text-sm">Click or drop files here</p>
+                </div>
+                <input type="file" id="fileInput" accept="image/*" class="hidden">
+                <div id="uploadedImages" class="grid grid-cols-3 gap-2">
+                  <!-- Uploaded images will be displayed here -->
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion" data-section="background">
+              <div class="accordion-header">
+                <span>Background</span>
+                <i class="accordion-icon pi pi-chevron-down"></i>
+              </div>
+              <div class="accordion-content">
+                <h4 class="text-xs font-medium mb-2">Colors</h4>
+                <div class="color-grid">
+                  <div class="color-swatch bg-white border border-gray-300" data-color="#FFFFFF"></div>
+                  <div class="color-swatch bg-gray-100" data-color="#F3F4F6"></div>
+                  <div class="color-swatch bg-blue-500" data-color="#3B82F6"></div>
+                  <div class="color-swatch bg-green-500" data-color="#10B981"></div>
+                  <div class="color-swatch bg-yellow-500" data-color="#F59E0B"></div>
+                  <div class="color-swatch bg-red-500" data-color="#EF4444"></div>
+                  <div class="color-swatch bg-purple-500" data-color="#8B5CF6"></div>
+                  <div class="color-swatch bg-pink-500" data-color="#EC4899"></div>
+                  <div class="color-swatch bg-indigo-500" data-color="#6366F1"></div>
+                  <div class="color-swatch bg-black" data-color="#000000"></div>
+                </div>
+                
+                <h4 class="text-xs font-medium mb-2 mt-4">Patterns</h4>
+                <div class="pattern-grid grid grid-cols-2 gap-2">
+                  <div class="pattern-swatch h-8 border border-gray-300 rounded" 
+                       style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 10px 10px;"
+                       data-pattern="radial-gradient(#000 1px, transparent 1px)"></div>
+                  <div class="pattern-swatch h-8 border border-gray-300 rounded" 
+                       style="background-image: linear-gradient(#E0E0E0 1px, transparent 1px); background-size: 10px 10px;"
+                       data-pattern="linear-gradient(#E0E0E0 1px, transparent 1px)"></div>
+                  <div class="pattern-swatch h-8 border border-gray-300 rounded" 
+                       style="background-image: linear-gradient(#E0E0E0 1px, transparent 1px), linear-gradient(90deg, #E0E0E0 1px, transparent 1px); background-size: 10px 10px;"
+                       data-pattern="linear-gradient(#E0E0E0 1px, transparent 1px), linear-gradient(90deg, #E0E0E0 1px, transparent 1px)"></div>
+                  <div class="pattern-swatch h-8 border border-gray-300 rounded" 
+                       style="background-image: repeating-linear-gradient(45deg, #f5f5f5, #f5f5f5 10px, #ffffff 10px, #ffffff 20px);"
+                       data-pattern="repeating-linear-gradient(45deg, #f5f5f5, #f5f5f5 10px, #ffffff 10px, #ffffff 20px)"></div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Add Layers Panel -->
+            <div class="accordion" data-section="layers">
+              <div class="accordion-header">
+                <span>Layers</span>
+                <i class="accordion-icon pi pi-chevron-down"></i>
+              </div>
+              <div class="accordion-content">
+                <div class="layers-tools flex justify-between mb-2">
+                  <button id="addLayerBtn" class="btn btn-secondary btn-sm">
+                    <i class="pi pi-plus"></i>
+                  </button>
+                  <div>
+                    <button id="moveLayerUpBtn" class="btn btn-secondary btn-sm" disabled>
+                      <i class="pi pi-chevron-up"></i>
+                    </button>
+                    <button id="moveLayerDownBtn" class="btn btn-secondary btn-sm" disabled>
+                      <i class="pi pi-chevron-down"></i>
+                    </button>
+                  </div>
+                  <button id="deleteLayerBtn" class="btn btn-secondary btn-sm" disabled>
+                    <i class="pi pi-trash"></i>
+                  </button>
+                </div>
+                <div id="layersContainer" class="layers-container border border-gray-200 rounded max-h-44 overflow-y-auto">
+                  <!-- Layers will be added here dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Templates Tab -->
+          <div id="templatesTab" class="tab-panel hidden">
+            <div class="templates-list p-3">
+              <div class="templates-grid">
+                <div class="template-item">
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%23eee'/%3E%3Crect x='25' y='50' width='150' height='5' fill='%23666'/%3E%3Crect x='25' y='65' width='150' height='5' fill='%23888'/%3E%3Crect x='25' y='80' width='100' height='5' fill='%23888'/%3E%3Crect x='25' y='110' width='150' height='40' fill='%23ccc'/%3E%3C/svg%3E" 
+                       alt="Social Media Template" class="w-full h-24 object-cover">
+                  <span class="text-xs block mt-1">Social Media Post</span>
+                </div>
+                <div class="template-item">
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='360' viewBox='0 0 200 360'%3E%3Crect width='200' height='360' fill='%23eee'/%3E%3Crect x='25' y='120' width='150' height='10' fill='%23666'/%3E%3Crect x='25' y='140' width='150' height='5' fill='%23888'/%3E%3Crect x='25' y='155' width='150' height='5' fill='%23888'/%3E%3Crect x='25' y='170' width='100' height='5' fill='%23888'/%3E%3Crect x='60' y='200' width='80' height='30' rx='5' fill='%235D5CDE'/%3E%3C/svg%3E" 
+                       alt="Instagram Story Template" class="w-full h-24 object-cover">
+                  <span class="text-xs block mt-1">Instagram Story</span>
+                </div>
+                <div class="template-item">
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='820' height='312' viewBox='0 0 820 312'%3E%3Crect width='820' height='312' fill='%23eee'/%3E%3Crect x='30' y='200' width='300' height='15' fill='%23666'/%3E%3Crect x='30' y='225' width='200' height='10' fill='%23888'/%3E%3Crect x='30' y='245' width='150' height='10' fill='%23888'/%3E%3Crect x='500' y='100' width='250' height='150' fill='%23ccc'/%3E%3C/svg%3E" 
+                       alt="Facebook Cover Template" class="w-full h-24 object-cover">
+                  <span class="text-xs block mt-1">Facebook Cover</span>
+                </div>
+                <div class="template-item">
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1280' height='720' viewBox='0 0 1280 720'%3E%3Crect width='1280' height='720' fill='%23eee'/%3E%3Crect x='320' y='260' width='640' height='40' fill='%23666'/%3E%3Crect x='435' y='320' width='410' height='20' fill='%23888'/%3E%3Crect x='510' y='380' width='260' height='80' rx='10' fill='%235D5CDE'/%3E%3C/svg%3E" 
+                       alt="YouTube Thumbnail" class="w-full h-24 object-cover">
+                  <span class="text-xs block mt-1">YouTube Thumbnail</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Main Canvas Area -->
+      <div class="main-content">
+        <div class="toolbar">
+          <div class="toolbar-group">
+            <button id="undoBtn" class="btn btn-secondary btn-sm mr-1" disabled>
+              <i class="pi pi-undo"></i>
+            </button>
+            <button id="redoBtn" class="btn btn-secondary btn-sm" disabled>
+              <i class="pi pi-refresh"></i>
+            </button>
+          </div>
+          <div class="toolbar-divider"></div>
+          <div class="toolbar-group">
+            <button id="deleteBtn" class="btn btn-secondary btn-sm" disabled>
+              <i class="pi pi-trash"></i>
+            </button>
+            <button id="duplicateBtn" class="btn btn-secondary btn-sm ml-1" disabled>
+              <i class="pi pi-copy"></i>
+            </button>
+          </div>
+          <div class="toolbar-divider"></div>
+          <div class="toolbar-group" id="elementControls" style="display: none;">
+            <div class="text-xs mr-2">Fill:</div>
+            <input type="color" id="elementColor" class="h-6 w-10">
+          </div>
+        </div>
+        
+        <div class="canvas-container">
+          <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+          </div>
+          <div id="designCanvas" class="canvas relative" style="width: 800px; height: 600px;"></div>
+        </div>
+      </div>
+      
+      <!-- History Panel (Added to make it simpler than a third sidebar) -->
+      <div id="historyPanel" class="fixed right-0 top-0 bottom-0 bg-white dark:bg-gray-800 w-48 shadow-lg transform translate-x-full transition-transform duration-300 z-20">
+        <div class="p-2 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+          <h3 class="text-sm font-semibold">History</h3>
+          <button id="closeHistory" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+        <div id="historyList" class="overflow-y-auto h-full pb-16">
+          <!-- History items will be added here -->
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-800 p-2 border-t border-gray-200 dark:border-gray-700">
+          <button id="historyToggle" class="btn btn-secondary w-full text-xs">
+            <i class="pi pi-history mr-1"></i> Show History
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Modal for Canvas Size Selection -->
+    <div id="canvasSizeModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="text-lg font-semibold">Select Canvas Size</h3>
+          <button class="close-modal">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">Please select a canvas size to start with. You can change this later.</p>
+          
+          <h4 class="font-medium mb-2">Preset Sizes</h4>
+          <div class="preset-grid">
+            <div class="preset-item" data-size="1080,1080">
+              <div class="preset-preview" style="width: 50px; height: 50px;"></div>
+              <div class="preset-name">Instagram Post</div>
+              <div class="preset-dimensions">1080×1080</div>
+            </div>
+            <div class="preset-item" data-size="1200,627">
+              <div class="preset-preview" style="width: 50px; height: 26px;"></div>
+              <div class="preset-name">LinkedIn Post</div>
+              <div class="preset-dimensions">1200×627</div>
+            </div>
+            <div class="preset-item" data-size="1200,675">
+              <div class="preset-preview" style="width: 50px; height: 28px;"></div>
+              <div class="preset-name">Twitter Post</div>
+              <div class="preset-dimensions">1200×675</div>
+            </div>
+            <div class="preset-item" data-size="1200,630">
+              <div class="preset-preview" style="width: 50px; height: 26px;"></div>
+              <div class="preset-name">Facebook Post</div>
+              <div class="preset-dimensions">1200×630</div>
+            </div>
+            <div class="preset-item" data-size="1280,720">
+              <div class="preset-preview" style="width: 50px; height: 28px;"></div>
+              <div class="preset-name">YouTube Thumbnail</div>
+              <div class="preset-dimensions">1280×720</div>
+            </div>
+            <div class="preset-item" data-size="1080,1920">
+              <div class="preset-preview" style="width: 28px; height: 50px;"></div>
+              <div class="preset-name">Instagram Story</div>
+              <div class="preset-dimensions">1080×1920</div>
+            </div>
+          </div>
+          
+          <h4 class="font-medium mb-2 mt-6">Custom Size</h4>
+          <div class="custom-size p-3 bg-gray-50 dark:bg-gray-700 rounded">
+            <div class="flex gap-4">
+              <div class="flex-1">
+                <label class="block text-sm mb-1">Width (px)</label>
+                <input type="number" id="modalWidth" class="w-full text-base" value="800" min="1" max="3000">
+              </div>
+              <div class="flex-1">
+                <label class="block text-sm mb-1">Height (px)</label>
+                <input type="number" id="modalHeight" class="w-full text-base" value="600" min="1" max="3000">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="applyCustomSize" class="btn btn-primary">Start with Custom Size</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Export Modal -->
+    <div id="exportModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="text-lg font-semibold">Export Design</h3>
+          <button class="close-modal">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h4 class="font-medium mb-4">Choose Format</h4>
+          <div class="format-options flex flex-wrap justify-center gap-4">
+            <div class="format-option selected" data-format="png">
+              <i class="pi pi-image text-2xl mb-2"></i>
+              <span>PNG Image</span>
+            </div>
+            <div class="format-option" data-format="jpg">
+              <i class="pi pi-image text-2xl mb-2"></i>
+              <span>JPG Image</span>
+            </div>
+            <div class="format-option" data-format="pdf">
+              <i class="pi pi-file-pdf text-2xl mb-2"></i>
+              <span>PDF Document</span>
+            </div>
+            <div class="format-option" data-format="svg">
+              <i class="pi pi-file text-2xl mb-2"></i>
+              <span>SVG Vector</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary close-modal">Cancel</button>
+          <button id="doExport" class="btn btn-primary">Export</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Text Input Modal -->
+    <div id="textInputModal" class="modal-overlay hidden">
+      <div class="modal-content" style="width: 400px;">
+        <div class="modal-header">
+          <h3 class="text-lg font-semibold">Add Text</h3>
+          <button class="close-modal">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-4">
+            <label class="block text-sm mb-1">Text Content</label>
+            <input type="text" id="textInput" class="w-full text-base p-2 border border-gray-300 rounded" value="Your text here">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm mb-1">Font Size</label>
+              <input type="number" id="textSize" class="w-full text-base" value="24" min="8" max="200">
+            </div>
+            <div>
+              <label class="block text-sm mb-1">Font Family</label>
+              <select id="textFont" class="w-full text-base p-2 border border-gray-300 rounded">
+                <option value="Arial">Arial</option>
+                <option value="Helvetica">Helvetica</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Verdana">Verdana</option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-4">
+            <label class="block text-sm mb-1">Color</label>
+            <input type="color" id="textColor" class="w-full" value="#000000">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary close-modal">Cancel</button>
+          <button id="addTextToCanvas" class="btn btn-primary">Add Text</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Konva.js for canvas drawing -->
+  <script src="https://unpkg.com/konva@9.2.0/konva.min.js"></script>
+  
+  <script>
+    // Dark mode detection
+    function applyColorMode() {
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+    
+    applyColorMode();
+    
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyColorMode);
+    
+    // Canvas design app logic
+    document.addEventListener('DOMContentLoaded', function() {
+      // UI Elements
+      const designCanvas = document.getElementById('designCanvas');
+      const canvasSizeModal = document.getElementById('canvasSizeModal');
+      const exportModal = document.getElementById('exportModal');
+      const textInputModal = document.getElementById('textInputModal');
+      const undoBtn = document.getElementById('undoBtn');
+      const redoBtn = document.getElementById('redoBtn');
+      const deleteBtn = document.getElementById('deleteBtn');
+      const duplicateBtn = document.getElementById('duplicateBtn');
+      const historyPanel = document.getElementById('historyPanel');
+      const historyList = document.getElementById('historyList');
+      const historyToggle = document.getElementById('historyToggle');
+      const closeHistory = document.getElementById('closeHistory');
+      const elementControls = document.getElementById('elementControls');
+      const elementColor = document.getElementById('elementColor');
+      const loadingIndicator = document.getElementById('loading');
+      
+      // App State
+      let stage = null;
+      let layer = null;
+      let transformer = null;
+      let selectedNode = null;
+      let history = [];
+      let historyIndex = -1;
+      let canvasWidth = 800;
+      let canvasHeight = 600;
+      const maxHistorySize = 50;
+      
+      // Initialize the Canvas with Konva
+      function initializeCanvas(width, height) {
+        if (stage) {
+          stage.destroy();
+        }
+        
+        canvasWidth = width || 800;
+        canvasHeight = height || 600;
+        
+        // Update canvas container size
+        designCanvas.style.width = canvasWidth + 'px';
+        designCanvas.style.height = canvasHeight + 'px';
+        
+        // Create new stage
+        stage = new Konva.Stage({
+          container: 'designCanvas',
+          width: canvasWidth,
+          height: canvasHeight
+        });
+        
+        // Create layer
+        layer = new Konva.Layer();
+        stage.add(layer);
+        
+        // Create transformer
+        transformer = new Konva.Transformer({
+          anchorStroke: '#5D5CDE',
+          anchorFill: '#fff',
+          anchorSize: 8,
+          borderStroke: '#5D5CDE',
+          borderDash: [4, 4]
+        });
+        layer.add(transformer);
+        
+        // Setup selection handling
+        stage.on('click tap', function(e) {
+          // If the click is on an empty area, deselect
+          if (e.target === stage) {
+            deselectNodes();
+            return;
+          }
+          
+          // Check if the click is on the transformer
+          const clickedOnTransformer = e.target.getParent() && e.target.getParent().className === 'Transformer';
+          if (clickedOnTransformer) {
+            return;
+          }
+          
+          // Select the clicked element
+          selectNode(e.target);
+        });
+        
+        // Initially add to history
+        addToHistory('Create Canvas');
+        
+        // Set initial canvas size form values
+        document.getElementById('canvasWidth').value = canvasWidth;
+        document.getElementById('canvasHeight').value = canvasHeight;
+        document.getElementById('modalWidth').value = canvasWidth;
+        document.getElementById('modalHeight').value = canvasHeight;
+        
+        // Initialize background color
+        setCanvasBackground('#FFFFFF');
+        
+        // Initialize layers panel
+        initializeLayers();
+      }
+      
+      // Show initial canvas size modal
+      function showInitialSizeModal() {
+        canvasSizeModal.classList.remove('hidden');
+      }
+      
+      // Handle adding shapes to canvas
+      function addShape(type, config = {}) {
+        if (!stage) return;
+        
+        const defaults = {
+          x: stage.width() / 2,
+          y: stage.height() / 2,
+          draggable: true,
+          id: type + '-' + Date.now()
+        };
+        
+        const combinedConfig = {...defaults, ...config};
+        let shape;
+        
+        switch (type) {
+          case 'rectangle':
+            shape = new Konva.Rect({
+              width: 100,
+              height: 80,
+              fill: '#3B82F6',
+              ...combinedConfig
+            });
+            break;
+            
+          case 'circle':
+            shape = new Konva.Circle({
+              radius: 50,
+              fill: '#10B981',
+              ...combinedConfig
+            });
+            break;
+            
+          case 'triangle':
+            shape = new Konva.RegularPolygon({
+              sides: 3,
+              radius: 50,
+              fill: '#F59E0B',
+              ...combinedConfig
+            });
+            break;
+            
+          case 'line':
+            shape = new Konva.Line({
+              points: [0, 0, 100, 0],
+              stroke: '#6366F1',
+              strokeWidth: 4,
+              lineCap: 'round',
+              lineJoin: 'round',
+              ...combinedConfig
+            });
+            break;
+            
+          case 'star':
+            shape = new Konva.Star({
+              numPoints: 5,
+              innerRadius: 30,
+              outerRadius: 50,
+              fill: '#F59E0B',
+              ...combinedConfig
+            });
+            break;
+            
+          case 'polygon':
+            shape = new Konva.RegularPolygon({
+              sides: 6,
+              radius: 50,
+              fill: '#8B5CF6',
+              ...combinedConfig
+            });
+            break;
+        }
+        
+        if (shape) {
+          // Add standard event listeners for transformation
+          shape.on('transformend dragend', function() {
+            addToHistory(`Modify ${type}`);
+          });
+          
+          // Add to layer
+          layer.add(shape);
+          deselectNodes();
+          selectNode(shape);
+          addToHistory(`Add ${type}`);
+          
+          // Update layers panel
+          updateLayersFromCanvas();
+          
+          return shape;
+        }
+        
+        return null;
+      }
+      
+      // Add text to canvas
+      function addText(config = {}) {
+        if (!stage) return;
+        
+        const defaults = {
+          x: stage.width() / 2,
+          y: stage.height() / 2,
+          text: 'Your text here',
+          fontSize: 24,
+          fontFamily: 'Arial',
+          fill: '#000000',
+          draggable: true,
+          id: 'text-' + Date.now()
+        };
+        
+        const textConfig = {...defaults, ...config};
+        
+        const textNode = new Konva.Text(textConfig);
+        
+        // Center text
+        textNode.offsetX(textNode.width() / 2);
+        textNode.offsetY(textNode.height() / 2);
+        
+        // Add listeners
+        textNode.on('transformend dragend', function() {
+          addToHistory('Modify text');
+        });
+        
+        // Add to layer
+        layer.add(textNode);
+        deselectNodes();
+        selectNode(textNode);
+        addToHistory('Add text');
+        
+        // Update layers panel
+        updateLayersFromCanvas();
+        
+        return textNode;
+      }
+      
+      // Add image to canvas
+      function addImage(imageUrl, config = {}) {
+        if (!stage) return;
+        
+        // Show loading indicator
+        loadingIndicator.classList.remove('hidden');
+        
+        const imageObj = new Image();
+        imageObj.crossOrigin = 'Anonymous';
+        
+        imageObj.onload = function() {
+          const defaults = {
+            x: stage.width() / 2,
+            y: stage.height() / 2,
+            image: imageObj,
+            draggable: true,
+            id: 'image-' + Date.now()
+          };
+          
+          // Calculate dimensions to fit within canvas
+          let imgWidth = imageObj.width;
+          let imgHeight = imageObj.height;
+          const maxWidth = stage.width() * 0.8;
+          const maxHeight = stage.height() * 0.8;
+          
+          if (imgWidth > maxWidth || imgHeight > maxHeight) {
+            const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
+            imgWidth *= ratio;
+            imgHeight *= ratio;
+          }
+          
+          defaults.width = imgWidth;
+          defaults.height = imgHeight;
+          
+          // Center image
+          defaults.offsetX = imgWidth / 2;
+          defaults.offsetY = imgHeight / 2;
+          
+          const imageConfig = {...defaults, ...config};
+          
+          const imageNode = new Konva.Image(imageConfig);
+          
+          // Add listeners
+          imageNode.on('transformend dragend', function() {
+            addToHistory('Modify image');
+          });
+          
+          // Add to layer
+          layer.add(imageNode);
+          deselectNodes();
+          selectNode(imageNode);
+          addToHistory('Add image');
+          
+          // Update layers panel
+          updateLayersFromCanvas();
+          
+          // Hide loading indicator
+          loadingIndicator.classList.add('hidden');
+        };
+        
+        imageObj.onerror = function() {
+          console.error('Failed to load image:', imageUrl);
+          // Hide loading indicator
+          loadingIndicator.classList.add('hidden');
+          
+          // Show error toast or notification
+          const notification = document.createElement('div');
+          notification.className = 'fixed top-4 right-4 bg-red-500 text-white p-4 rounded shadow-lg z-50';
+          notification.innerHTML = `
+            <div class="flex items-center">
+              <i class="pi pi-times-circle mr-2"></i>
+              <span>Failed to load image</span>
+            </div>
+          `;
+          document.body.appendChild(notification);
+          
+          // Remove notification after 3 seconds
+          setTimeout(() => {
+            document.body.removeChild(notification);
+          }, 3000);
+          
+          // Add a placeholder instead
+          const rect = addShape('rectangle', {
+            width: 200,
+            height: 150,
+            fill: '#eee'
+          });
+          
+          // Add failed image text
+          addText({
+            text: 'Image failed to load',
+            fontSize: 14,
+            fill: '#999',
+            x: rect.x(),
+            y: rect.y()
+          });
+        };
+        
+        // Set image source
+        imageObj.src = imageUrl;
+      }
+      
+      // Selection helpers
+      function selectNode(node) {
+        selectedNode = node;
+        transformer.nodes([node]);
+        
+        // Update UI
+        deleteBtn.disabled = false;
+        duplicateBtn.disabled = false;
+        
+        // Show fill color control for applicable shapes
+        if (node.getClassName() === 'Text' || 
+            node.getClassName() === 'Rect' || 
+            node.getClassName() === 'Circle' || 
+            node.getClassName() === 'RegularPolygon' || 
+            node.getClassName() === 'Star') {
+          elementControls.style.display = 'flex';
+          elementColor.value = node.fill() || '#000000';
+        } else {
+          elementControls.style.display = 'none';
+        }
+        
+        // Highlight corresponding layer in layers panel
+        const layerItems = layersContainer.querySelectorAll('.layer-item');
+        layerItems.forEach(item => {
+          const shapeId = item.dataset.shapeId;
+          if (shapeId === node.id()) {
+            selectLayer(item);
+          }
+        });
+      }
+      
+      function deselectNodes() {
+        selectedNode = null;
+        transformer.nodes([]);
+        
+        // Update UI
+        deleteBtn.disabled = true;
+        duplicateBtn.disabled = true;
+        elementControls.style.display = 'none';
+      }
+      
+      // Delete selected node
+      function deleteSelectedNode() {
+        if (selectedNode) {
+          selectedNode.destroy();
+          deselectNodes();
+          addToHistory('Delete element');
+          
+          // Update layers panel
+          updateLayersFromCanvas();
+        }
+      }
+      
+      // Duplicate selected node
+      function duplicateSelectedNode() {
+        if (!selectedNode) return;
+        
+        const clone = selectedNode.clone({
+          x: selectedNode.x() + 20,
+          y: selectedNode.y() + 20,
+          id: selectedNode.className + '-' + Date.now()
+        });
+        
+        // Add listeners to clone
+        clone.on('transformend dragend', function() {
+          addToHistory(`Modify ${clone.getClassName()}`);
+        });
+        
+        layer.add(clone);
+        deselectNodes();
+        selectNode(clone);
+        addToHistory('Duplicate element');
+        
+        // Update layers panel
+        updateLayersFromCanvas();
+      }
+      
+      // Change element color
+      function changeElementColor(color) {
+        if (selectedNode) {
+          if (selectedNode.fill) {
+            selectedNode.fill(color);
+            layer.batchDraw();
+            addToHistory('Change color');
+          }
+        }
+      }
+      
+      // Change canvas background
+      function setCanvasBackground(color) {
+        if (stage) {
+          // Apply to both the container and the stage background
+          stage.container().style.backgroundColor = color;
+          // Also set a rect background for export purposes
+          let bgRect = stage.findOne('#background-rect');
+          if (!bgRect) {
+            bgRect = new Konva.Rect({
+              id: 'background-rect',
+              x: 0,
+              y: 0,
+              width: stage.width(),
+              height: stage.height(),
+              fill: color
+            });
+            layer.add(bgRect);
+            bgRect.moveToBottom();
+          } else {
+            bgRect.fill(color);
+          }
+          layer.batchDraw();
+          addToHistory('Change background');
+        }
+      }
+      
+      // Set canvas pattern
+      function setCanvasPattern(pattern) {
+        if (stage) {
+          // Clear background color first
+          stage.container().style.backgroundColor = 'transparent';
+          
+          // Apply pattern with proper styling
+          stage.container().style.backgroundImage = pattern;
+          stage.container().style.backgroundSize = '20px 20px';
+          stage.container().style.backgroundRepeat = 'repeat';
+          
+          // Remove any existing background rect
+          let bgRect = stage.findOne('#background-rect');
+          if (bgRect) {
+            bgRect.destroy();
+          }
+          
+          // Create a background rect with transparent fill for proper event handling
+          // This helps maintain a clickable background
+          bgRect = new Konva.Rect({
+            id: 'background-rect',
+            x: 0,
+            y: 0,
+            width: stage.width(),
+            height: stage.height(),
+            fill: 'transparent'
+          });
+          layer.add(bgRect);
+          bgRect.moveToBottom();
+          
+          layer.batchDraw();
+          addToHistory('Change background pattern');
+          
+          // Force a redraw of the container
+          setTimeout(() => {
+            stage.container().style.backgroundImage = pattern;
+          }, 10);
+        }
+      }
+      
+      // History management
+      function addToHistory(action) {
+        // Serialize stage
+        const json = stage.toJSON();
+        
+        // If we're in the middle of the history, truncate
+        if (historyIndex < history.length - 1) {
+          history = history.slice(0, historyIndex + 1);
+        }
+        
+        // Add new state to history
+        history.push({
+          action: action,
+          state: json,
+          timestamp: Date.now()
+        });
+        
+        // Limit history size
+        if (history.length > maxHistorySize) {
+          history.shift();
+        }
+        
+        // Update history index
+        historyIndex = history.length - 1;
+        
+        // Update UI
+        updateHistoryUI();
+        undoBtn.disabled = historyIndex <= 0;
+        redoBtn.disabled = historyIndex >= history.length - 1;
+      }
+      
+      function undo() {
+        if (historyIndex > 0) {
+          historyIndex--;
+          loadHistoryState(historyIndex);
+          undoBtn.disabled = historyIndex <= 0;
+          redoBtn.disabled = false;
+        }
+      }
+      
+      function redo() {
+        if (historyIndex < history.length - 1) {
+          historyIndex++;
+          loadHistoryState(historyIndex);
+          redoBtn.disabled = historyIndex >= history.length - 1;
+          undoBtn.disabled = false;
+        }
+      }
+      
+      function loadHistoryState(index) {
+        if (index >= 0 && index < history.length) {
+          // Load stage from JSON
+          const state = history[index].state;
+          stage.destroy();
+          
+          // Recreate stage from saved state
+          stage = Konva.Node.create(state, 'designCanvas');
+          
+          // Get layer and add transformer
+          layer = stage.findOne('Layer');
+          transformer = new Konva.Transformer({
+            anchorStroke: '#5D5CDE',
+            anchorFill: '#fff',
+            anchorSize: 8,
+            borderStroke: '#5D5CDE',
+            borderDash: [4, 4]
+          });
+          layer.add(transformer);
+          
+          // Set up event listeners
+          stage.on('click tap', function(e) {
+            // If the click is on an empty area, deselect
+            if (e.target === stage) {
+              deselectNodes();
+              return;
+            }
+            
+            // Check if the click is on the transformer
+            const clickedOnTransformer = e.target.getParent() && e.target.getParent().className === 'Transformer';
+            if (clickedOnTransformer) {
+              return;
+            }
+            
+            // Select the clicked element
+            selectNode(e.target);
+          });
+          
+          // Reattach event listeners to all shapes
+          const shapes = layer.getChildren(node => node.className !== 'Transformer');
+          shapes.forEach(shape => {
+            shape.on('transformend dragend', function() {
+              addToHistory(`Modify ${shape.className}`);
+            });
+          });
+          
+          // Reset selection
+          deselectNodes();
+          
+          // Update history UI
+          updateHistoryUI();
+        }
+      }
+      
+      function updateHistoryUI() {
+        // Clear existing history items
+        historyList.innerHTML = '';
+        
+        // Add new history items
+        history.forEach((item, index) => {
+          const historyItem = document.createElement('div');
+          historyItem.className = 'history-item';
+          if (index === historyIndex) {
+            historyItem.classList.add('active');
+          }
+          
+          const time = new Date(item.timestamp);
+          const timeStr = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          
+          historyItem.innerHTML = `
+            <div class="flex items-center">
+              <i class="pi pi-${getActionIcon(item.action)} mr-2 text-xs"></i>
+              <span class="text-xs">${item.action}</span>
+            </div>
+            <div class="text-xs text-gray-500">${timeStr}</div>
+          `;
+          
+          historyItem.addEventListener('click', () => {
+            historyIndex = index;
+            loadHistoryState(index);
+            undoBtn.disabled = index <= 0;
+            redoBtn.disabled = index >= history.length - 1;
+          });
+          
+          historyList.appendChild(historyItem);
+        });
+      }
+      
+      function getActionIcon(action) {
+        if (action.includes('Add')) return 'plus';
+        if (action.includes('Delete')) return 'trash';
+        if (action.includes('Modify')) return 'pencil';
+        if (action.includes('Change color')) return 'palette';
+        if (action.includes('Change background')) return 'image';
+        if (action.includes('Duplicate')) return 'copy';
+        if (action.includes('Create')) return 'file';
+        return 'circle';
+      }
+      
+      // Export functions
+      function exportDesign(format) {
+        if (!stage) return;
+        
+        switch (format) {
+          case 'png':
+            const dataURL = stage.toDataURL({ pixelRatio: 2 });
+            downloadURI(dataURL, 'design.png');
+            break;
+            
+          case 'jpg':
+            const jpgURL = stage.toDataURL({ 
+              pixelRatio: 2,
+              mimeType: 'image/jpeg',
+              quality: 0.9
+            });
+            downloadURI(jpgURL, 'design.jpg');
+            break;
+            
+          case 'svg':
+            // Basic SVG export (simplified)
+            const width = stage.width();
+            const height = stage.height();
+            
+            let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`;
+            svg += `<rect width="${width}" height="${height}" fill="${stage.container().style.backgroundColor || 'white'}"/>`;
+            
+            // Process all nodes except transformer
+            const shapes = layer.getChildren(node => node.className !== 'Transformer');
+            shapes.forEach(shape => {
+              if (shape.className === 'Rect') {
+                svg += `<rect x="${shape.x()}" y="${shape.y()}" width="${shape.width()}" height="${shape.height()}" 
+                  fill="${shape.fill()}" transform="rotate(${shape.rotation()}, ${shape.x()}, ${shape.y()})"/>`;
+              } else if (shape.className === 'Circle') {
+                svg += `<circle cx="${shape.x()}" cy="${shape.y()}" r="${shape.radius()}" fill="${shape.fill()}"/>`;
+              } else if (shape.className === 'Text') {
+                svg += `<text x="${shape.x()}" y="${shape.y()}" 
+                  font-family="${shape.fontFamily()}" font-size="${shape.fontSize()}" fill="${shape.fill()}"
+                  text-anchor="middle" dominant-baseline="middle"
+                  transform="rotate(${shape.rotation()}, ${shape.x()}, ${shape.y()})">${shape.text()}</text>`;
+              }
+              // Other shape types would need custom SVG creation
+            });
+            
+            svg += '</svg>';
+            
+            const svgBlob = new Blob([svg], { type: 'image/svg+xml' });
+            const svgUrl = URL.createObjectURL(svgBlob);
+            downloadURI(svgUrl, 'design.svg');
+            setTimeout(() => URL.revokeObjectURL(svgUrl), 1000);
+            break;
+            
+          case 'pdf':
+            alert('PDF export not implemented in this demo');
+            break;
+        }
+      }
+      
+      function downloadURI(uri, name) {
+        const link = document.createElement('a');
+        link.download = name;
+        link.href = uri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      
+      // Tab switching
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabName = this.getAttribute('data-tab');
+          
+          // Update tab headers
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          
+          // Update tab panels
+          document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
+          document.getElementById(`${tabName}Tab`).classList.remove('hidden');
+        });
+      });
+      
+      // Accordion toggle
+      document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', function() {
+          const accordion = this.closest('.accordion');
+          accordion.classList.toggle('open');
+        });
+      });
+      
+      // Add event listeners for UI controls
+      
+      // Canvas size modal events
+      document.querySelectorAll('.preset-item').forEach(preset => {
+        preset.addEventListener('click', function() {
+          const size = this.getAttribute('data-size').split(',');
+          const width = parseInt(size[0]);
+          const height = parseInt(size[1]);
+          
+          // Update modal inputs
+          document.getElementById('modalWidth').value = width;
+          document.getElementById('modalHeight').value = height;
+          
+          // If from initial modal, apply directly
+          if (!canvasSizeModal.classList.contains('hidden')) {
+            initializeCanvas(width, height);
+            canvasSizeModal.classList.add('hidden');
+          }
+        });
+      });
+      
+      // Custom size button
+      document.getElementById('applyCustomSize').addEventListener('click', function() {
+        const width = parseInt(document.getElementById('modalWidth').value);
+        const height = parseInt(document.getElementById('modalHeight').value);
+        
+        if (width > 0 && height > 0) {
+          initializeCanvas(width, height);
+          canvasSizeModal.classList.add('hidden');
+        }
+      });
+      
+      // Sidebar canvas size update
+      document.getElementById('applySize').addEventListener('click', function() {
+        const width = parseInt(document.getElementById('canvasWidth').value);
+        const height = parseInt(document.getElementById('canvasHeight').value);
+        
+        if (width > 0 && height > 0) {
+          initializeCanvas(width, height);
+        }
+      });
+      
+      // Sidebar size presets
+      document.querySelectorAll('.tool-item[data-size]').forEach(item => {
+        item.addEventListener('click', function() {
+          const size = this.getAttribute('data-size').split(',');
+          const width = parseInt(size[0]);
+          const height = parseInt(size[1]);
+          
+          document.getElementById('canvasWidth').value = width;
+          document.getElementById('canvasHeight').value = height;
+        });
+      });
+      
+      // Add shape buttons
+      document.querySelectorAll('.add-shape').forEach(button => {
+        button.addEventListener('click', function() {
+          const shapeType = this.getAttribute('data-shape');
+          addShape(shapeType);
+        });
+      });
+      
+      // Add text button
+      document.getElementById('addTextBtn').addEventListener('click', function() {
+        textInputModal.classList.remove('hidden');
+      });
+      
+      // Text style presets
+      document.querySelectorAll('.text-style').forEach(item => {
+        item.addEventListener('click', function() {
+          const style = this.getAttribute('data-style');
+          let textConfig = {};
+          
+          switch (style) {
+            case 'heading':
+              textConfig = {
+                text: 'Heading Text',
+                fontSize: 32,
+                fontFamily: 'Arial',
+                fontStyle: 'bold'
+              };
+              break;
+            case 'subheading':
+              textConfig = {
+                text: 'Subheading Text',
+                fontSize: 24,
+                fontFamily: 'Arial',
+                fontStyle: 'bold'
+              };
+              break;
+            case 'body':
+              textConfig = {
+                text: 'Body Text',
+                fontSize: 16,
+                fontFamily: 'Arial'
+              };
+              break;
+            case 'caption':
+              textConfig = {
+                text: 'Caption Text',
+                fontSize: 12,
+                fontFamily: 'Arial',
+                fontStyle: 'italic'
+              };
+              break;
+          }
+          
+          addText(textConfig);
+        });
+      });
+      
+      // File upload
+      const uploadArea = document.getElementById('uploadArea');
+      const fileInput = document.getElementById('fileInput');
+      
+      uploadArea.addEventListener('click', () => {
+        fileInput.click();
+      });
+      
+      uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('bg-gray-100');
+      });
+      
+      uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('bg-gray-100');
+      });
+      
+      uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('bg-gray-100');
+        
+        if (e.dataTransfer.files.length) {
+          handleFiles(e.dataTransfer.files);
+        }
+      });
+      
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files.length) {
+          handleFiles(fileInput.files);
+        }
+      });
+      
+      function handleFiles(files) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          
+          if (file.type.match('image.*')) {
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+              // Create thumbnail
+              const thumbnail = document.createElement('div');
+              thumbnail.className = 'uploaded-thumbnail';
+              thumbnail.innerHTML = `<img src="${e.target.result}" class="w-full h-16 object-cover cursor-pointer rounded">`;
+              
+              thumbnail.addEventListener('click', () => {
+                addImage(e.target.result);
+              });
+              
+              // Add to gallery
+              document.getElementById('uploadedImages').appendChild(thumbnail);
+              
+              // Automatically add the first uploaded image
+              if (i === 0) {
+                addImage(e.target.result);
+              }
+            };
+            
+            reader.readAsDataURL(file);
+          }
+        }
+      }
+      
+      // Background colors
+      document.querySelectorAll('.color-swatch').forEach(swatch => {
+        swatch.addEventListener('click', function() {
+          const color = this.getAttribute('data-color');
+          setCanvasBackground(color);
+        });
+      });
+      
+      // Background patterns
+      document.querySelectorAll('.pattern-swatch').forEach(swatch => {
+        swatch.addEventListener('click', function() {
+          const pattern = this.getAttribute('data-pattern');
+          
+          // Apply pattern directly and then call the function
+          // This ensures the pattern is applied immediately
+          stage.container().style.backgroundImage = pattern;
+          stage.container().style.backgroundSize = '20px 20px';
+          stage.container().style.backgroundRepeat = 'repeat';
+          
+          // Call the function to handle other aspects like history and background rect
+          setCanvasPattern(pattern);
+        });
+      });
+      
+      // Toolbar buttons
+      undoBtn.addEventListener('click', undo);
+      redoBtn.addEventListener('click', redo);
+      deleteBtn.addEventListener('click', deleteSelectedNode);
+      duplicateBtn.addEventListener('click', duplicateSelectedNode);
+      
+      // Element color
+      elementColor.addEventListener('change', function() {
+        changeElementColor(this.value);
+      });
+      
+      // History panel toggle
+      historyToggle.addEventListener('click', function() {
+        historyPanel.classList.toggle('translate-x-full');
+        this.innerHTML = historyPanel.classList.contains('translate-x-full') 
+          ? '<i class="pi pi-history mr-1"></i> Show History'
+          : '<i class="pi pi-times mr-1"></i> Hide History';
+      });
+      
+      closeHistory.addEventListener('click', function() {
+        historyPanel.classList.add('translate-x-full');
+        historyToggle.innerHTML = '<i class="pi pi-history mr-1"></i> Show History';
+      });
+      
+      // Export button
+      document.getElementById('exportBtn').addEventListener('click', function() {
+        exportModal.classList.remove('hidden');
+      });
+      
+      // Export format selection
+      document.querySelectorAll('.format-option').forEach(option => {
+        option.addEventListener('click', function() {
+          document.querySelectorAll('.format-option').forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+      });
+      
+      // Do export button
+      document.getElementById('doExport').addEventListener('click', function() {
+        const format = document.querySelector('.format-option.selected').getAttribute('data-format');
+        exportDesign(format);
+        exportModal.classList.add('hidden');
+      });
+      
+      // Add text from modal
+      document.getElementById('addTextToCanvas').addEventListener('click', function() {
+        const text = document.getElementById('textInput').value;
+        const fontSize = parseInt(document.getElementById('textSize').value);
+        const fontFamily = document.getElementById('textFont').value;
+        const color = document.getElementById('textColor').value;
+        
+        addText({
+          text: text,
+          fontSize: fontSize,
+          fontFamily: fontFamily,
+          fill: color
+        });
+        
+        textInputModal.classList.add('hidden');
+      });
+      
+      // Modal close buttons
+      document.querySelectorAll('.close-modal').forEach(button => {
+        button.addEventListener('click', function() {
+          this.closest('.modal-overlay').classList.add('hidden');
+        });
+      });
+      
+      // Enhanced modal handling - Close on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(modal => {
+            modal.classList.add('hidden');
+          });
+        }
+      });
+      
+      // Close modals when clicking on the overlay (outside modal content)
+      document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', function(e) {
+          if (e.target === this) {
+            this.classList.add('hidden');
+          }
+        });
+      });
+      
+      // Save button
+      document.getElementById('saveBtn').addEventListener('click', function() {
+        if (!stage) return;
+        
+        // Create a JSON representation of the project
+        const projectData = {
+          name: 'My Design',
+          width: stage.width(),
+          height: stage.height(),
+          background: stage.container().style.backgroundColor || 'white',
+          backgroundPattern: stage.container().style.backgroundImage || 'none',
+          stageJSON: stage.toJSON()
+        };
+        
+        // Convert to a data URI
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projectData));
+        
+        // Create download link
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "design.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        document.body.removeChild(downloadAnchor);
+      });
+      
+      // Layer Management System
+      const layersContainer = document.getElementById('layersContainer');
+      const addLayerBtn = document.getElementById('addLayerBtn');
+      const moveLayerUpBtn = document.getElementById('moveLayerUpBtn');
+      const moveLayerDownBtn = document.getElementById('moveLayerDownBtn');
+      const deleteLayerBtn = document.getElementById('deleteLayerBtn');
+      
+      let layerCounter = 1;
+      let selectedLayerItem = null;
+      
+      // Initialize layer system
+      function initializeLayers() {
+        // Clear existing layers
+        layersContainer.innerHTML = '';
+        layerCounter = 1;
+        
+        // Add default layer
+        addLayer('Background', '#FFFFFF');
+        
+        // Update layers UI
+        updateLayersFromCanvas();
+      }
+      
+      // Add a new layer
+      function addLayer(name = null, color = null) {
+        const layerName = name || `Layer ${layerCounter}`;
+        const layerColor = color || getRandomColor();
+        layerCounter++;
+        
+        // Create layer in UI
+        const layerItem = document.createElement('div');
+        layerItem.className = 'layer-item';
+        layerItem.dataset.name = layerName;
+        
+        // Create layer visibility toggle
+        const visibilityIcon = document.createElement('i');
+        visibilityIcon.className = 'pi pi-eye layer-visibility';
+        visibilityIcon.addEventListener('click', function(e) {
+          e.stopPropagation();
+          toggleLayerVisibility(layerItem);
+        });
+        
+        // Create color badge
+        const layerBadge = document.createElement('div');
+        layerBadge.className = 'layer-badge';
+        layerBadge.style.backgroundColor = layerColor;
+        
+        // Create layer name
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'layer-name';
+        nameSpan.textContent = layerName;
+        
+        // Add elements to layer item
+        layerItem.appendChild(visibilityIcon);
+        layerItem.appendChild(layerBadge);
+        layerItem.appendChild(nameSpan);
+        
+        // Add click event for selection
+        layerItem.addEventListener('click', function() {
+          selectLayer(layerItem);
+        });
+        
+        // Add double click for rename
+        layerItem.addEventListener('dblclick', function() {
+          const newName = prompt('Enter layer name:', layerName);
+          if (newName && newName.trim() !== '') {
+            layerName = newName.trim();
+            nameSpan.textContent = layerName;
+            layerItem.dataset.name = layerName;
+          }
+        });
+        
+        // Add to container
+        layersContainer.prepend(layerItem);
+        
+        // Select the new layer
+        selectLayer(layerItem);
+        
+        return layerItem;
+      }
+      
+      // Select a layer
+      function selectLayer(layerItem) {
+        // Deselect previous selection
+        if (selectedLayerItem) {
+          selectedLayerItem.classList.remove('selected');
+        }
+        
+        // Select new layer
+        selectedLayerItem = layerItem;
+        layerItem.classList.add('selected');
+        
+        // Enable/disable buttons
+        // Only disable delete if it's the background layer or the only layer
+        const isBackground = layerItem.dataset.name === 'Background';
+        deleteLayerBtn.disabled = isBackground || layersContainer.children.length <= 1;
+        
+        // Movement buttons
+        moveLayerUpBtn.disabled = layerItem === layersContainer.firstChild;
+        moveLayerDownBtn.disabled = layerItem === layersContainer.lastChild;
+        
+        // If this layer has a shape ID, select the corresponding shape on canvas
+        const shapeId = layerItem.dataset.shapeId;
+        if (shapeId) {
+          const shape = stage.findOne('#' + shapeId);
+          if (shape && shape !== selectedNode) {
+            // Only update if not already selected to avoid infinite loop
+            deselectNodes();
+            transformer.nodes([shape]);
+            selectedNode = shape;
+            
+            // Show fill color control if applicable
+            if (shape.getClassName() === 'Text' || 
+                shape.getClassName() === 'Rect' || 
+                shape.getClassName() === 'Circle' || 
+                shape.getClassName() === 'RegularPolygon' || 
+                shape.getClassName() === 'Star') {
+              elementControls.style.display = 'flex';
+              elementColor.value = shape.fill() || '#000000';
+            } else {
+              elementControls.style.display = 'none';
+            }
+            
+            // Update UI
+            deleteBtn.disabled = false;
+            duplicateBtn.disabled = false;
+          }
+        }
+      }
+      
+      // Toggle layer visibility
+      function toggleLayerVisibility(layerItem) {
+        const visibilityIcon = layerItem.querySelector('.layer-visibility');
+        const isVisible = visibilityIcon.classList.contains('pi-eye');
+        const shapeId = layerItem.dataset.shapeId;
+        
+        if (isVisible) {
+          visibilityIcon.classList.remove('pi-eye');
+          visibilityIcon.classList.add('pi-eye-slash');
+          layerItem.style.opacity = '0.5';
+          
+          // Hide elements on canvas that belong to this layer
+          if (shapeId) {
+            const shape = stage.findOne('#' + shapeId);
+            if (shape) {
+              shape.visible(false);
+              layer.batchDraw();
+            }
+          }
+        } else {
+          visibilityIcon.classList.remove('pi-eye-slash');
+          visibilityIcon.classList.add('pi-eye');
+          layerItem.style.opacity = '1';
+          
+          // Show elements on canvas that belong to this layer
+          if (shapeId) {
+            const shape = stage.findOne('#' + shapeId);
+            if (shape) {
+              shape.visible(true);
+              layer.batchDraw();
+            }
+          }
+        }
+      }
+      
+      // Move layer up
+      function moveLayerUp() {
+        if (!selectedLayerItem || selectedLayerItem === layersContainer.firstChild) return;
+        
+        const prevSibling = selectedLayerItem.previousSibling;
+        layersContainer.insertBefore(selectedLayerItem, prevSibling);
+        
+        // Update buttons
+        moveLayerUpBtn.disabled = selectedLayerItem === layersContainer.firstChild;
+        moveLayerDownBtn.disabled = selectedLayerItem === layersContainer.lastChild;
+        
+        // Update canvas elements order
+        updateCanvasFromLayers();
+      }
+      
+      // Move layer down
+      function moveLayerDown() {
+        if (!selectedLayerItem || selectedLayerItem === layersContainer.lastChild) return;
+        
+        const nextSibling = selectedLayerItem.nextSibling.nextSibling;
+        layersContainer.insertBefore(selectedLayerItem, nextSibling);
+        
+        // Update buttons
+        moveLayerUpBtn.disabled = selectedLayerItem === layersContainer.firstChild;
+        moveLayerDownBtn.disabled = selectedLayerItem === layersContainer.lastChild;
+        
+        // Update canvas elements order
+        updateCanvasFromLayers();
+      }
+      
+      // Delete layer
+      function deleteLayer() {
+        if (!selectedLayerItem) return;
+        
+        // Don't allow deleting the background layer
+        if (selectedLayerItem.dataset.name === 'Background' || layersContainer.children.length <= 1) {
+          alert("Cannot delete the background layer");
+          return;
+        }
+        
+        // Get the shape ID associated with this layer
+        const shapeId = selectedLayerItem.dataset.shapeId;
+        
+        // Delete the shape from canvas if it exists
+        if (shapeId) {
+          const shape = stage.findOne('#' + shapeId);
+          if (shape) {
+            shape.destroy();
+            layer.batchDraw();
+            addToHistory('Delete element');
+          }
+        }
+        
+        // Select next layer
+        const nextSelection = selectedLayerItem.nextSibling || selectedLayerItem.previousSibling;
+        
+        // Remove from UI
+        layersContainer.removeChild(selectedLayerItem);
+        
+        // Update selection
+        if (nextSelection) {
+          selectLayer(nextSelection);
+        }
+      }
+      
+      // Update layers UI from canvas elements
+      function updateLayersFromCanvas() {
+        if (!stage || !layer) return;
+        
+        // Clear existing layers
+        layersContainer.innerHTML = '';
+        
+        // Create a background layer first
+        const bgLayer = addLayer('Background', '#FFFFFF');
+        
+        // Get all shapes except transformer
+        const shapes = layer.getChildren(node => node.className !== 'Transformer');
+        
+        shapes.forEach((shape, index) => {
+          if (shape.id() === 'background-rect') return; // Skip background rectangle
+          
+          // Get shape type
+          let shapeName = shape.className;
+          
+          // Add identifiers for some shapes
+          if (shape.className === 'Text') {
+            shapeName = `Text: "${shape.text().substring(0, 10)}${shape.text().length > 10 ? '...' : ''}"`;
+          } else if (shape.className === 'Image') {
+            shapeName = 'Image';
+          }
+          
+          // Create color for shape
+          let shapeColor = '#CCCCCC';
+          if (shape.fill && typeof shape.fill() === 'string') {
+            shapeColor = shape.fill();
+          } else if (shape.stroke && typeof shape.stroke() === 'string') {
+            shapeColor = shape.stroke();
+          }
+          
+          // Add layer for shape
+          const shapeLayer = addLayer(shapeName, shapeColor);
+          
+          // Store reference to shape ID for layer management
+          shapeLayer.dataset.shapeId = shape.id();
+        });
+        
+        // Select first layer
+        if (layersContainer.children.length > 0) {
+          selectLayer(layersContainer.firstChild);
+        }
+      }
+      
+      // Update canvas element order based on layer order
+      function updateCanvasFromLayers() {
+        if (!stage || !layer) return;
+        
+        // Get all layers in reverse order (bottom to top)
+        const layerElements = Array.from(layersContainer.children).reverse();
+        
+        // Loop through layers and reorder elements
+        layerElements.forEach((layerElement, index) => {
+          const shapeId = layerElement.dataset.shapeId;
+          
+          if (shapeId) {
+            const shape = stage.findOne('#' + shapeId);
+            if (shape) {
+              // Move to specific z-index position
+              // Higher index = higher in stacking order
+              shape.zIndex(index + 1); // +1 to account for background
+            }
+          }
+        });
+        
+        // Ensure background is at bottom
+        const bgRect = stage.findOne('#background-rect');
+        if (bgRect) {
+          bgRect.moveToBottom();
+        }
+        
+        // Ensure transformer is at top
+        transformer.moveToTop();
+        
+        layer.batchDraw();
+      }
+      
+      // Helper for random colors
+      function getRandomColor() {
+        const colors = [
+          '#3B82F6', '#10B981', '#F59E0B', '#EF4444', 
+          '#8B5CF6', '#EC4899', '#6366F1', '#14B8A6'
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+      }
+      
+      // Layer button event listeners
+      addLayerBtn.addEventListener('click', function() {
+        addLayer();
+      });
+      
+      moveLayerUpBtn.addEventListener('click', moveLayerUp);
+      moveLayerDownBtn.addEventListener('click', moveLayerDown);
+      deleteLayerBtn.addEventListener('click', deleteLayer);
+      
+      // Initialize app
+      // Make sure all modals are hidden on load
+      document.querySelectorAll('.modal-overlay').forEach(modal => {
+        modal.classList.add('hidden');
+      });
+      
+      // Only show the canvas size modal for initial setup
+      setTimeout(() => {
+        showInitialSizeModal();
+      }, 300);
+      
+      // Ensure canvas is initialized even if modal is closed without selection
+      if (!stage) {
+        initializeCanvas(800, 600);
+      }
+    });
+    
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      // Only if not in an input field
+      if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+        // Undo: Ctrl+Z
+        if (e.ctrlKey && e.key === 'z') {
+          e.preventDefault();
+          undo();
+        }
+        
+        // Redo: Ctrl+Y or Ctrl+Shift+Z
+        if ((e.ctrlKey && e.key === 'y') || (e.ctrlKey && e.shiftKey && e.key === 'z')) {
+          e.preventDefault();
+          redo();
+        }
+        
+        // Delete: Delete key
+        if (e.key === 'Delete' && selectedNode) {
+          e.preventDefault();
+          deleteSelectedNode();
+        }
+        
+        // Duplicate: Ctrl+D
+        if (e.ctrlKey && e.key === 'd' && selectedNode) {
+          e.preventDefault();
+          duplicateSelectedNode();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
