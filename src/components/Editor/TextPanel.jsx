@@ -220,9 +220,9 @@ export default function TextPanel() {
       <div className="mb-3">
         <div className="flex border border-gray-300 rounded-md overflow-hidden">
           <button
-            className={`flex-1 py-2 px-3 text-center text-sm ${
+            className={`flex-1 p-2 text-center text-sm ${
               !isTextPath 
-                ? 'bg-indigo-500 text-white font-medium' 
+                ? 'bg-indigo-500 text-white' 
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
             }`}
             onClick={() => setIsTextPath(false)}
@@ -230,9 +230,9 @@ export default function TextPanel() {
             Regular
           </button>
           <button
-            className={`flex-1 py-2 px-3 text-center text-sm ${
+            className={`flex-1 p-2 text-center text-sm ${
               isTextPath 
-                ? 'bg-indigo-500 text-white font-medium' 
+                ? 'bg-indigo-500 text-white' 
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
             }`}
             onClick={() => setIsTextPath(true)}

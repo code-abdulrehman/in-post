@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
 import { useStore } from '../../store';
-import { MdClose, MdDownload, MdImage, MdPhotoLibrary, MdCode, } from 'react-icons/md';
+import { MdClose, MdDownload, MdImage, MdPhotoLibrary, MdCode } from 'react-icons/md';
 import { FaCode } from 'react-icons/fa';
+import { FiEdit, FiCheck } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 
 export default function ExportModal({ onClose }) {
@@ -9,6 +10,9 @@ export default function ExportModal({ onClose }) {
   const [quality, setQuality] = useState(1);
   const [scale, setScale] = useState(2);
   const [loading, setLoading] = useState(false);
+  const [includeWatermark, setIncludeWatermark] = useState(true);
+  const [watermarkText, setWatermarkText] = useState('Powered by inPost');
+  const [editingWatermarkText, setEditingWatermarkText] = useState(false);
   const { elements, canvasSize, canvasBackground, currentProjectId } = useStore();
   const stageRef = useRef(null);
 
@@ -18,6 +22,17 @@ export default function ExportModal({ onClose }) {
     { id: 'webp', name: 'WebP', icon: <MdPhotoLibrary />, description: 'Modern format with good compression' },
     { id: 'inpost.json', name: 'inPost Project', icon: <FaCode />, description: 'Save project to edit later' },
   ];
+
+  // Get position coordinates for watermark
+  const getWatermarkCoordinates = () => {
+    const padding = 10; // padding from edges
+    return { 
+      x: canvasSize.width - padding, 
+      y: canvasSize.height - padding, 
+      align: 'right', 
+      verticalAlign: 'bottom' 
+    };
+  };
 
   const handleExport = async () => {
     try {
@@ -64,26 +79,36 @@ export default function ExportModal({ onClose }) {
         layer.draw();
       }
 
-      // Add watermark text as a temporary node for export
-      const watermark = new window.Konva.Text({
-        x: canvasSize.width - 10,
-        y: canvasSize.height - 10,
-        text: 'Powered by inPost',
-        fontSize: 12,
-        fontFamily: 'Arial',
-        fill: 'rgba(0,0,0,0.5)',
-        align: 'right',
-        verticalAlign: 'bottom',
-        opacity: 0.75
-      });
-      
-      // Adjust anchor point to bottom right
-      watermark.offsetX(watermark.width());
-      watermark.offsetY(watermark.height());
-      
-      // Add watermark to layer
-      layer.add(watermark);
-      layer.draw();
+      // Add watermark text as a temporary node for export (only if includeWatermark is true)
+      let watermark = null;
+      if (includeWatermark && watermarkText.trim()) {
+        const position = getWatermarkCoordinates();
+        
+        watermark = new window.Konva.Text({
+          x: position.x,
+          y: position.y,
+          text: watermarkText.trim(),
+          fontSize: 12,
+          fontFamily: 'Arial',
+          fill: 'rgba(0,0,0,0.75)',
+          align: position.align,
+          verticalAlign: position.verticalAlign,
+          opacity: 0.75
+        });
+        
+        // Adjust anchor point based on position
+        if (position.align === 'right') {
+          watermark.offsetX(watermark.width());
+        }
+        
+        if (position.verticalAlign === 'bottom') {
+          watermark.offsetY(watermark.height());
+        }
+        
+        // Add watermark to layer
+        layer.add(watermark);
+        layer.draw();
+      }
 
       let dataUrl;
       let filename = `design.${format}`;
@@ -103,22 +128,22 @@ export default function ExportModal({ onClose }) {
       link.click();
       document.body.removeChild(link);
       
-      // Clean up the temporary watermark
-      watermark.destroy();
-      
-      // Clean up the temporary background if we created one
+      // Clean up - remove the temporary background if it was added
       if (needsTempBackground && backgroundRect) {
-        backgroundRect.destroy();
+        backgroundRect.remove();
+      }
+      
+      // Remove watermark if it was added
+      if (watermark) {
+        watermark.remove();
       }
       
       layer.draw();
-      
-      toast.success(`Exported as ${format.toUpperCase()}`);
+      setLoading(false);
       onClose();
     } catch (err) {
       console.error('Export error:', err);
       toast.error('Failed to export: ' + err.message);
-    } finally {
       setLoading(false);
     }
   };
@@ -165,6 +190,11 @@ export default function ExportModal({ onClose }) {
     }
   };
 
+  // Handle save watermark text after editing
+  const handleSaveWatermarkText = () => {
+    setEditingWatermarkText(false);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
@@ -201,73 +231,130 @@ export default function ExportModal({ onClose }) {
           </div>
           
           {/* Options for raster formats */}
-          {(['png', 'jpg', 'webp'].includes(format)) && (
+          {format !== 'inpost.json' && (
             <>
+              <h3 className="font-medium mb-3">Options</h3>
+              
+              {/* Quality slider - only for JPG and WebP */}
+              {(format === 'jpg' || format === 'webp') && (
+                <div className="mb-4">
+                  <label className="block text-sm text-gray-700 mb-1">
+                    Quality: {Math.round(quality * 100)}%
+                  </label>
+                  <input
+                    type="range"
+                    min="0.1"
+                    max="1"
+                    step="0.1"
+                    value={quality}
+                    onChange={(e) => setQuality(parseFloat(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+              )}
+
+              {/* Scale slider */}
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Quality {format === 'png' ? '(Scale)' : ''}
+                <label className="block text-sm text-gray-700 mb-1">
+                  Scale: {scale}x
                 </label>
                 <input
                   type="range"
-                  min={format === 'png' ? 1 : 0.1}
-                  max={format === 'png' ? 4 : 1}
-                  step={format === 'png' ? 0.5 : 0.1}
-                  value={format === 'png' ? scale : quality}
-                  onChange={(e) => {
-                    const val = parseFloat(e.target.value);
-                    if (format === 'png') {
-                      setScale(val);
-                    } else {
-                      setQuality(val);
-                    }
-                  }}
+                  min="1"
+                  max="4"
+                  step="0.5"
+                  value={scale}
+                  onChange={(e) => setScale(parseFloat(e.target.value))}
                   className="w-full"
                 />
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>{format === 'png' ? 'Original' : 'Lower quality'}</span>
-                  <span>
-                    {format === 'png' 
-                      ? `${scale}x (${canvasSize.width * scale} × ${canvasSize.height * scale}px)` 
-                      : 'Best quality'}
-                  </span>
-                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Higher scale = larger file but better quality
+                </p>
               </div>
               
-              {/* Watermark notice */}
-              <div className="mt-4 text-xs text-gray-500 bg-gray-50 p-2 rounded">
-                <p>Exported images will include "Powered by inPost" watermark in the bottom-right corner.</p>
+              {/* Watermark section */}
+              <div className="mb-4 border border-gray-200 rounded-md overflow-y-auto bg-white">
+                <div className="bg-gray-50 p-2 flex justify-between items-center">
+                  <h3 className="font-medium text-sm">Watermark</h3>
+                  <div className="relative flex items-center">
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={includeWatermark}
+                      onChange={() => setIncludeWatermark(!includeWatermark)}
+                      id="watermark-toggle"
+                    />
+                    <label htmlFor="watermark-toggle" className="flex items-center cursor-pointer">
+                      <div className="relative w-8 h-4">
+                        <div className={`block w-8 h-4 rounded-full ${includeWatermark ? 'bg-indigo-400' : 'bg-gray-300'}`}></div>
+                        <div className={`absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition-transform ${includeWatermark ? 'transform translate-x-4' : ''}`}></div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                
+                {includeWatermark && (
+                  <div className="p-3">
+                    {/* Watermark text with edit mode */}
+                    <div className="mb-3">
+                      {editingWatermarkText ? (
+                        <div className="flex items-center">
+                          <input
+                            type="text"
+                            value={watermarkText}
+                            onChange={(e) => setWatermarkText(e.target.value)}
+                            className="flex-grow rounded-md border border-gray-300 px-2 py-1 text-sm"
+                            autoFocus
+                          />
+                          <button 
+                            className="ml-2 text-gray-500 hover:text-green-600" 
+                            onClick={handleSaveWatermarkText}
+                          >
+                            <FiCheck size={16} />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-700 truncate max-w-[80%]">
+                            {watermarkText || 'Powered by inPost'}
+                          </span>
+                          <button 
+                            className="text-gray-500 hover:text-indigo-600"
+                            onClick={() => setEditingWatermarkText(true)}
+                          >
+                            <FiEdit size={16} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </>
           )}
+        </div>
+        
+        <div className="p-4 border-t border-gray-200 flex justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-gray-700 hover:text-gray-900 mr-2"
+          >
+            Cancel
+          </button>
           
-          <div className="border-t pt-4 mt-4 flex justify-end">
-            <button 
-              onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 mr-2 hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button 
-              onClick={handleExport}
-              disabled={loading}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center"
-            >
-              {loading ? (
-                <span className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Exporting...
-                </span>
-              ) : (
-                <span className="flex items-center">
-                  <MdDownload className="mr-1" />
-                  Export
-                </span>
-              )}
-            </button>
-          </div>
+          <button
+            onClick={handleExport}
+            disabled={loading}
+            className={`px-4 py-2 rounded-md flex items-center ${
+              loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+            }`}
+          >
+            {loading ? 'Exporting...' : (
+              <>
+                <MdDownload className="mr-1" /> Export {format.toUpperCase()}
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>

@@ -257,13 +257,13 @@ export default function BackgroundPanel() {
             {patterns.map((pattern, index) => (
               <div
                 key={index}
-                className={`border rounded-md overflow-hidden cursor-pointer transition-all p-1 ${
+                className={`border rounded-md overflow-hidden cursor-pointer transition-all p-1 h-28 ${
                   isSelectedPattern(pattern) ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-gray-200 hover:border-gray-300'
                 }`}
                 onClick={() => handlePatternSelect(pattern)}
               >
                 {renderPatternPreview(pattern)}
-                <div className="text-xs font-medium text-center mt-1">
+                <div className="text-[10px] font-medium text-center mt-1">
                   {pattern.name}
                 </div>
               </div>

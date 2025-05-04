@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store';
 import { MdAdd, MdEdit, MdDelete, MdOpenInNew } from 'react-icons/md';
+import { FaInstagram, FaFacebookF, FaLinkedin, FaYoutube } from 'react-icons/fa';
+import { BsTextareaResize } from "react-icons/bs";
+import { FaXTwitter } from "react-icons/fa6";
 
 export default function ProjectModal() {
   const [tab, setTab] = useState('new');
@@ -30,13 +33,13 @@ export default function ProjectModal() {
   
   // Template presets
   const templates = [
-    { id: 'instagram-post', name: 'Instagram Post', width: 1080, height: 1080 },
-    { id: 'facebook-post', name: 'Facebook Post', width: 1200, height: 630 },
-    { id: 'twitter-post', name: 'Twitter Post', width: 1200, height: 675 },
-    { id: 'linkedin-post', name: 'LinkedIn Post', width: 1200, height: 627 },
-    { id: 'youtube-thumbnail', name: 'YouTube Thumbnail', width: 1280, height: 720 },
-    { id: 'instagram-story', name: 'Instagram Story', width: 1080, height: 1920 },
-    { id: 'custom', name: 'Custom Size', width: 800, height: 600 },
+    { id: 'instagram-post', icon: <FaInstagram style={{background: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'Instagram Post', width: 1080, height: 1080 },
+    { id: 'facebook-post', icon: <FaFacebookF style={{background: 'linear-gradient(45deg, #3b5998, #4267B2)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'Facebook Post', width: 1200, height: 630 },
+    { id: 'twitter-post', icon: <FaXTwitter style={{background: 'linear-gradient(45deg, #000000, #14171A)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'Twitter Post', width: 1200, height: 675 },
+    { id: 'linkedin-post', icon: <FaLinkedin style={{background: 'linear-gradient(45deg, #0077B5, #00a0dc)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'LinkedIn Post', width: 1200, height: 627 },
+    { id: 'youtube-thumbnail', icon: <FaYoutube style={{background: 'linear-gradient(45deg, #FF0000, #CC0000)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'YouTube Thumbnail', width: 1280, height: 720 },
+    { id: 'instagram-story', icon: <FaInstagram style={{background: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'Instagram Story', width: 1080, height: 1920 },
+    { id: 'custom', icon: <BsTextareaResize className="border border-slate-400" style={{borderRadius: '5px', padding: '2px'}}/>, name: 'Custom Size', width: 800, height: 600 },
   ];
   
   // Handle template selection
@@ -100,7 +103,7 @@ export default function ProjectModal() {
   
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full h-[76vh] flex flex-col">
         <div className="p-4 border-b flex justify-between items-center">
           <h2 className="text-xl font-semibold">InPost Designer</h2>
           
@@ -143,11 +146,12 @@ export default function ProjectModal() {
                   {templates.map((template) => (
                     <div 
                       key={template.id}
-                      className={`border rounded-md p-3 cursor-pointer hover:border-indigo-500 hover:shadow transition-all ${templateType === template.id ? 'border-indigo-500 bg-indigo-50' : ''}`}
+                      className={`border p-2 rounded-md p-3 cursor-pointer hover:border-indigo-500 hover:shadow transition-all ${templateType === template.id ? 'border-indigo-500 bg-indigo-50' : 'bg-stone-100'}`}
                       onClick={() => handleTemplateSelect(template)}
                     >
+                      <div className='h-[68%] flex justify-center items-center'>
                       <div 
-                        className="bg-white border border-gray-200 mx-auto mb-2"
+                        className="border border-gray-200 mx-auto mb-2 bg-white"
                         style={{
                           width: `${Math.min(90, (template.width / template.height) * 50)}px`,
                           height: `${Math.min(70, (template.height / template.width) * 50)}px`,
@@ -155,15 +159,21 @@ export default function ProjectModal() {
                           maxHeight: '70px'
                         }}
                       ></div>
+                      </div>
+                      <div className='h-[30%] flex gap-1'>
+                        {template.icon}
+                        <div className='flex flex-col items-center'>
                       <div className="text-sm font-medium">{template.name}</div>
                       <div className="text-xs text-gray-500">{template.width} × {template.height}</div>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
               
-              {templateType === 'custom' && (
-                <div className="mb-6 flex space-x-4">
+              {templateType && (
+                <div className="flex space-x-4">
                   <div className="flex-1">
                     <label htmlFor="width" className="block text-sm font-medium text-gray-700 mb-1">
                       Width (px)

@@ -249,7 +249,7 @@ export default function DesignToolLanding() {
       </nav>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-indigo-50 to-white pt-32 pb-16 md:pb-24 relative overflow-hidden">
+      <section className="bg-gradient-to-b from-indigo-50 to-white pt-32 pb-16 md:pb-24 relative overflow-hidden)]">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-12 md:mb-0">

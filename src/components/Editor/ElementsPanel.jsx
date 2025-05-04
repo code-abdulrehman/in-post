@@ -108,7 +108,7 @@ export default function ElementsPanel() {
               title={shape.name}
             >
               <div className="text-gray-700 mb-1">{shape.icon}</div>
-              <span className="text-xs truncate w-full text-center">{shape.name}</span>
+              <span className="text-[10px] truncate w-full text-center">{shape.name}</span>
             </button>
           ))}
         </div>

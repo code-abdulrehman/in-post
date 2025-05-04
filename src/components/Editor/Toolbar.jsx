@@ -107,7 +107,7 @@ export default function Toolbar() {
   };
 
   return (
-    <div className="bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between">
+    <div className="bg-white border-t-none border border-gray-300 px-4 py-2 flex items-center justify-between rounded-b-2xl mx-2">
       <div className="flex items-center space-x-2">
         <button
           onClick={() => {

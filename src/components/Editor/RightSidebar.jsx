@@ -212,7 +212,7 @@ export default function RightSidebar() {
       const currentBorder = element.border || {
         enabled: true,
         color: '#000000',
-        width: 1,
+        width: 0, // Changed from 1 to 0
         style: 'solid',
         radius: 0
       };
@@ -355,7 +355,7 @@ export default function RightSidebar() {
         // If the element already has a border enabled, use its color
         // Otherwise use the fill color for the border
         const borderColor = element.border?.enabled ? element.border.color : currentFill;
-        const borderWidth = element.border?.width || 2;
+        const borderWidth = element.border?.width || 0; // Changed from 2 to 0 to allow starting from 0
         
         // Preserve cornerRadius for shapes that support it
         const updatedProps = { 
@@ -501,9 +501,9 @@ export default function RightSidebar() {
   };
   
   return (
-    <div className="h-full w-64 bg-white border-l border-gray-200 flex flex-col">
+    <div className="w-64 border border-gray-300 bg-white h-[98%] m-2 mt-[6px] rounded-2xl bg-white flex flex-col">
       {/* Tab navigation */}
-      <div className="flex border-b border-gray-200">
+      <div className="flex border-b border-gray-300">
         <button
           className={`flex-1 py-3 text-center text-sm font-medium transition-colors ${
             activeTab === 'properties'
@@ -576,7 +576,7 @@ export default function RightSidebar() {
                                 <button
                                   className={`flex-1 py-2 px-3 text-center text-sm ${
                                     shapeFillType === 'filled' 
-                                      ? 'bg-indigo-500 text-white font-medium' 
+                                      ? 'bg-indigo-500 text-white' 
                                       : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
                                   }`}
                                   onClick={() => handleShapeFillTypeChange('filled')}
@@ -586,7 +586,7 @@ export default function RightSidebar() {
                                 <button
                                   className={`flex-1 py-2 px-3 text-center text-sm ${
                                     shapeFillType === 'outlined' 
-                                      ? 'bg-indigo-500 text-white font-medium' 
+                                      ? 'bg-indigo-500 text-white' 
                                       : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
                                   }`}
                                   onClick={() => handleShapeFillTypeChange('outlined')}
@@ -654,16 +654,16 @@ export default function RightSidebar() {
                                       handleBorderPropertyChange('color', e.target.value);
                                     }
                                   }}
-                                  className="flex-1 rounded-md border border-gray-300 px-3 py-1 text-sm"
+                                  className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm"
                                 />
                               </div>
                             </div>
                             
-                            {/* Outline width control */}
+                            {/* Outline width control - always show for shapes */}
                             {(['rectangle', 'circle', 'triangle', 'star', 'polygon'].includes(selectedElement.type)) && (
                               <div className="mb-3">
                                 <label className="block text-xs text-gray-500 mb-1">
-                                  Outline Width: {selectedElement.border?.width || 0}px
+                                  {shapeFillType === 'outlined' ? 'Outline Width' : 'Border Width'}: {selectedElement.border?.width || 0}px
                                 </label>
                                 <input
                                   type="range"
@@ -685,6 +685,14 @@ export default function RightSidebar() {
                                   }}
                                   className="w-full"
                                 />
+                                <div className="flex justify-between mt-1">
+                                  <span className="text-xs">0px</span>
+                                  <span className="text-xs">{selectedElement.border?.width || 0}px</span>
+                                  <span className="text-xs">10px</span>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">
+                                  {shapeFillType === 'outlined' ? '0px = no outline visible' : 'Set to 0px for no border'}
+                                </p>
                               </div>
                             )}
                             
@@ -802,12 +810,15 @@ export default function RightSidebar() {
                               <label className="block text-xs text-gray-500 mb-1">Stroke Width</label>
                               <input
                                 type="number"
-                                value={selectedElement.strokeWidth || 1}
-                                min={1}
+                                value={selectedElement.strokeWidth || 0}
+                                min={0}
                                 max={20}
                                 onChange={(e) => handlePropertyChange('strokeWidth', parseInt(e.target.value))}
                                 className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm"
                               />
+                              <p className="text-xs text-gray-500 mt-1">
+                                Set to 0px for no stroke visible
+                              </p>
                             </div>
                           </div>
                         )}
@@ -1346,269 +1357,6 @@ export default function RightSidebar() {
                       </>
                     )}
                     
-                    {/* Image specific properties */}
-                    {selectedElement.type === 'image' && (
-                      <div className="mb-3 border border-gray-200 rounded-md overflow-hidden">
-                        <button 
-                          className="w-full flex items-center justify-between p-2 bg-gray-50 hover:bg-gray-100"
-                          onClick={(e) => {
-                            // Only toggle if clicked directly on the button or its direct children
-                            if (e.target === e.currentTarget || 
-                                e.target.parentElement === e.currentTarget ||
-                                e.target.parentElement?.parentElement === e.currentTarget) {
-                              togglePropertyGroup('image');
-                            }
-                          }}
-                        >
-                          <div className="flex items-center">
-                            <FiSun className="mr-2 text-gray-600" />
-                            <span className="text-sm font-medium">Image Filters</span>
-                            
-                            {/* Add enable toggle directly in the header */}
-                            <div className="ml-2 flex items-center" onClick={(e) => e.stopPropagation()}>
-                              <input
-                                type="checkbox"
-                                id="filter-toggle"
-                                checked={!!selectedElement?.filters}
-                                onChange={(e) => {
-                                  e.stopPropagation();
-                                  e.preventDefault();
-                                  const currentGroup = activePropertyGroup;
-                                  
-                                  if (e.target.checked) {
-                                    handleFilterPropertyChange('brightness', 100, e);
-                                    handleFilterPropertyChange('contrast', 100, e);
-                                    handleFilterPropertyChange('saturation', 100, e);
-                                    handleFilterPropertyChange('blur', 0, e);
-                                    handleFilterPropertyChange('grayscale', 0, e);
-                                  } else {
-                                    updateElement(selectedElementId, { filters: null });
-                                  }
-                                  
-                                  // Make sure our property group stays open
-                                  setTimeout(() => keepPropertyGroupOpen(currentGroup), 0);
-                                }}
-                                onClick={(e) => e.stopPropagation()}
-                                className="mr-1"
-                              />
-                              <label 
-                                htmlFor="filter-toggle" 
-                                className="text-xs text-gray-700" 
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  e.preventDefault();
-                                  const newValue = !selectedElement?.filters;
-                                  const currentGroup = activePropertyGroup;
-                                  
-                                  if (newValue) {
-                                    handleFilterPropertyChange('brightness', 100, e);
-                                    handleFilterPropertyChange('contrast', 100, e);
-                                    handleFilterPropertyChange('saturation', 100, e);
-                                    handleFilterPropertyChange('blur', 0, e);
-                                    handleFilterPropertyChange('grayscale', 0, e);
-                                  } else {
-                                    updateElement(selectedElementId, { filters: null });
-                                  }
-                                  
-                                  // Make sure our property group stays open
-                                  setTimeout(() => keepPropertyGroupOpen(currentGroup), 0);
-                                }}
-                              >
-                                Enable
-                              </label>
-                            </div>
-                          </div>
-                          {activePropertyGroup === 'image' ? <FiChevronUp /> : <FiChevronDown />}
-                        </button>
-                        
-                        {activePropertyGroup === 'image' && selectedElement?.filters && (
-                          <div className="p-3 border-t border-gray-200">
-                            {/* Filter preview */}
-                            <div className="mb-3 relative w-full h-24 bg-gray-100 rounded flex items-center justify-center overflow-hidden">
-                              {selectedElement?.src && (
-                                <div 
-                                  className="w-full h-full bg-contain bg-center bg-no-repeat"
-                                  style={{
-                                    backgroundImage: `url(${selectedElement?.src})`,
-                                    filter: generateFilterString(selectedElement?.filters)
-                                  }}
-                                />
-                              )}
-                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                <span className="text-xs text-gray-500 bg-white bg-opacity-75 px-2 py-1 rounded">
-                                  Filter Preview
-                                </span>
-                              </div>
-                            </div>
-                            
-                            <div className="mb-2">
-                              <label className="block text-xs text-gray-500 mb-1">
-                                Brightness: {selectedElement?.filters?.brightness || 100}%
-                              </label>
-                              <div className="flex items-center">
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="200"
-                                  value={selectedElement?.filters?.brightness || 100}
-                                  onChange={(e) => handleFilterPropertyChange('brightness', parseInt(e.target.value))}
-                                  className="flex-1 mr-2"
-                                  disabled={selectedElement?.locked}
-                                />
-                                <select
-                                  value={selectedElement?.filters?.brightness || 100}
-                                  onChange={(e) => handleFilterPropertyChange('brightness', parseInt(e.target.value))}
-                                  className="w-20 rounded-md border border-gray-300 px-1 py-1 text-sm"
-                                  disabled={selectedElement?.locked}
-                                >
-                                  <option value="50">50%</option>
-                                  <option value="75">75%</option>
-                                  <option value="100">100%</option>
-                                  <option value="125">125%</option>
-                                  <option value="150">150%</option>
-                                  <option value="175">175%</option>
-                                  <option value="200">200%</option>
-                                </select>
-                              </div>
-                            </div>
-                            
-                            <div className="mb-2">
-                              <label className="block text-xs text-gray-500 mb-1">
-                                Contrast: {selectedElement?.filters?.contrast || 100}%
-                              </label>
-                              <div className="flex items-center">
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="200"
-                                  value={selectedElement?.filters?.contrast || 100}
-                                  onChange={(e) => handleFilterPropertyChange('contrast', parseInt(e.target.value))}
-                                  className="flex-1 mr-2"
-                                  disabled={selectedElement?.locked}
-                                />
-                                <select
-                                  value={selectedElement?.filters?.contrast || 100}
-                                  onChange={(e) => handleFilterPropertyChange('contrast', parseInt(e.target.value))}
-                                  className="w-20 rounded-md border border-gray-300 px-1 py-1 text-sm"
-                                  disabled={selectedElement?.locked}
-                                >
-                                  <option value="50">50%</option>
-                                  <option value="75">75%</option>
-                                  <option value="100">100%</option>
-                                  <option value="125">125%</option>
-                                  <option value="150">150%</option>
-                                  <option value="175">175%</option>
-                                  <option value="200">200%</option>
-                                </select>
-                              </div>
-                            </div>
-                            
-                            <div className="mb-2">
-                              <label className="block text-xs text-gray-500 mb-1">
-                                Saturation: {selectedElement?.filters?.saturation || 100}%
-                              </label>
-                              <div className="flex items-center">
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="200"
-                                  value={selectedElement?.filters?.saturation || 100}
-                                  onChange={(e) => handleFilterPropertyChange('saturation', parseInt(e.target.value))}
-                                  className="flex-1 mr-2"
-                                  disabled={selectedElement?.locked}
-                                />
-                                <select
-                                  value={selectedElement?.filters?.saturation || 100}
-                                  onChange={(e) => handleFilterPropertyChange('saturation', parseInt(e.target.value))}
-                                  className="w-20 rounded-md border border-gray-300 px-1 py-1 text-sm"
-                                  disabled={selectedElement?.locked}
-                                >
-                                  <option value="0">0%</option>
-                                  <option value="50">50%</option>
-                                  <option value="100">100%</option>
-                                  <option value="150">150%</option>
-                                  <option value="200">200%</option>
-                                </select>
-                              </div>
-                            </div>
-                            
-                            <div className="mb-2">
-                              <label className="block text-xs text-gray-500 mb-1">
-                                Blur: {selectedElement?.filters?.blur || 0}px
-                              </label>
-                              <div className="flex items-center">
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="10"
-                                  value={selectedElement?.filters?.blur || 0}
-                                  onChange={(e) => handleFilterPropertyChange('blur', parseInt(e.target.value))}
-                                  className="flex-1 mr-2"
-                                  disabled={selectedElement?.locked}
-                                />
-                                <select
-                                  value={selectedElement?.filters?.blur || 0}
-                                  onChange={(e) => handleFilterPropertyChange('blur', parseInt(e.target.value))}
-                                  className="w-20 rounded-md border border-gray-300 px-1 py-1 text-sm"
-                                  disabled={selectedElement?.locked}
-                                >
-                                  <option value="0">0px</option>
-                                  <option value="1">1px</option>
-                                  <option value="2">2px</option>
-                                  <option value="3">3px</option>
-                                  <option value="5">5px</option>
-                                  <option value="8">8px</option>
-                                  <option value="10">10px</option>
-                                </select>
-                              </div>
-                            </div>
-                            
-                            <div className="mb-2">
-                              <label className="block text-xs text-gray-500 mb-1">
-                                Grayscale: {selectedElement?.filters?.grayscale || 0}%
-                              </label>
-                              <div className="flex items-center">
-                                <input
-                                  type="range"
-                                  min="0"
-                                  max="100"
-                                  value={selectedElement?.filters?.grayscale || 0}
-                                  onChange={(e) => handleFilterPropertyChange('grayscale', parseInt(e.target.value))}
-                                  className="flex-1 mr-2"
-                                  disabled={selectedElement?.locked}
-                                />
-                                <select
-                                  value={selectedElement?.filters?.grayscale || 0}
-                                  onChange={(e) => handleFilterPropertyChange('grayscale', parseInt(e.target.value))}
-                                  className="w-20 rounded-md border border-gray-300 px-1 py-1 text-sm"
-                                  disabled={selectedElement?.locked}
-                                >
-                                  <option value="0">0%</option>
-                                  <option value="25">25%</option>
-                                  <option value="50">50%</option>
-                                  <option value="75">75%</option>
-                                  <option value="100">100%</option>
-                                </select>
-                              </div>
-                            </div>
-                            
-                            <div className="mt-4">
-                              <button
-                                onClick={handleFilterReset}
-                                className="w-full py-2 px-3 rounded-md text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center"
-                                disabled={selectedElement?.locked}
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                </svg>
-                                Reset All Filters
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    
                     {/* Position and size for all elements */}
                     <div className="mb-3 border border-gray-200 rounded-md overflow-hidden">
                       <button 
@@ -1850,7 +1598,7 @@ export default function RightSidebar() {
                                         type="text"
                                         value={selectedElement?.border?.color || '#000000'}
                                         onChange={(e) => handleBorderPropertyChange('color', e.target.value, e)}
-                                        className="flex-1 rounded-md border border-gray-300 px-3 py-1 text-sm"
+                                        className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm"
                                       />
                                     </div>
                                   </div>
@@ -1868,6 +1616,14 @@ export default function RightSidebar() {
                                       className="w-full"
                                       disabled={selectedElement?.locked}
                                     />
+                                    <div className="flex justify-between mt-1">
+                                      <span className="text-xs">0px</span>
+                                      <span className="text-xs">{selectedElement?.border?.width || 0}px</span>
+                                      <span className="text-xs">20px</span>
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                      Set to 0px for no border visible
+                                    </p>
                                   </div>
                                 
                                   <div className="mb-2">
@@ -1949,8 +1705,8 @@ export default function RightSidebar() {
                                     <input
                                       type="text"
                                       value={selectedElement?.shadow?.color || 'rgba(0,0,0,0.5)'}
-                                      onChange={(e) => handleShadowPropertyChange('color', e.target.value, e)}
-                                      className="flex-1 rounded-md border border-gray-300 px-3 py-1 text-sm"
+                                      onChange={(e) => handleShadowPropertyChange('color', e.target.value, e)}  
+                                      className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm"
                                       placeholder="rgba(0,0,0,0.5)"
                                       disabled={selectedElement?.locked}
                                     />
@@ -2058,7 +1814,7 @@ export default function RightSidebar() {
             ) : (
               <div className="flex flex-col items-center justify-center h-32 text-gray-400">
                 <FiMousePointer size={24} className="mb-2" />
-                <p className="text-sm">Select an element to edit its properties</p>
+                <p className="text-sm text-center">Select an element to edit its properties</p>
               </div>
             )}
           </div>
