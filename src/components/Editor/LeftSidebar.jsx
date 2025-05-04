@@ -76,21 +76,21 @@ export default function LeftSidebar({ showTabs, setShowTabs }) {
         </div>
       </div>
 
-      <div className={`flex items-start h-full overflow-y-auto ${showTabs ? "flex-col" : "flex-row"}`}>
+      <div className={`flex items-start h-full overflow-auto ${showTabs ? "flex-col" : "flex-row"}`}>
         {showTabs ? (
           <div className="bg-indigo-100 border-b border-gray-300 grid grid-cols-5 gap-1 w-full sticky top-0">
             {/* Tab buttons (same as before) */}
             {renderButtons('hr')}
           </div>
         ) : (
-          <div className='bg-indigo-100 h-full border-r border-gray-300'>
+          <div className='bg-indigo-100 h-full border-r border-gray-300 sticky top-0'>
             <div className="p-1 grid grid-rows-5 gap-1 w-[12%]">
               {renderButtons('vr')}
             </div>
           </div>
         )}
 
-        <div className={`p-4 overflow-hidden ${showTabs ? "w-full" : "w-[88%]"}`}>
+        <div className={`p-4 overflow-y-auto ${showTabs ? "w-full" : "w-[88%]"}`}>
           {renderTabContent()}
         </div>
       </div>
@@ -134,5 +134,4 @@ export default function LeftSidebar({ showTabs, setShowTabs }) {
       </button>
     );
   }
-  
 }

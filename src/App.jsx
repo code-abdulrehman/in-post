@@ -85,7 +85,7 @@ export default function App() {
     <div className="h-screen relative">
       {/* Internet status indicator */}
       {showStatus && (
-        <div className={`fixed bottom-0 left-0 right-0 h-6 flex items-center justify-center text-white text-sm font-medium transition-all ${
+        <div className={`z-[1000] fixed bottom-0 left-0 right-0 h-4 flex items-center justify-center text-white text-xs font-medium transition-all ${
           isOnline === true ? (wasUnstable ? 'bg-orange-500' : 'bg-green-500') : 
           isOnline === 'slow' ? 'bg-yellow-500' : 
           isOnline === 'unstable' ? 'bg-orange-500' : 

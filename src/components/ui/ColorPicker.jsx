@@ -126,7 +126,7 @@ export default function ColorPicker({ value, onChange, className = '' }) {
       />
       
       {showPicker && (
-        <div className="absolute left-0 top-10 bg-white rounded-md p-3 z-10 w-44 border overflow-y-auto h-16">
+        <div className="absolute left-0 top-10 bg-white rounded-md p-3 z-10 w-52 border overflow-y-auto h-16">
           <div className="grid grid-cols-6 gap-2 mb-2">
             {colors.map((color) => (
               <div
