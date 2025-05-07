@@ -3,7 +3,7 @@ import { useStore } from '../../store';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Toolbar from './Toolbar';
 import LeftSidebar from './LeftSidebar/index';
-import RightSidebar from './RightSidebar';
+import RightSidebar from './RightSidebar/index';
 import Canvas from './Canvas';
 import ChatBot from './ChatBot';
 import { ToastContainer, toast } from 'react-toastify';

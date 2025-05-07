@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useStore } from '../../store';
 import {
   FiTrash,
@@ -9,12 +9,14 @@ import {
   FiEdit,
   FiCheck,
   FiSave,
-  FiDownload
+  FiDownload,
+  FiUpload
 } from 'react-icons/fi';
 import { MdRedo, MdUndo } from 'react-icons/md';
 import { MdOutlineGrid4X4 } from "react-icons/md";
 import { toast } from 'react-toastify';
 import ExportModal from '../ui/ExportModal';
+import ConfirmDialog from '../ui/ConfirmDialog';
 import { useNavigate } from 'react-router-dom';
 
 export default function Toolbar() {
@@ -22,6 +24,8 @@ export default function Toolbar() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [projectNameInput, setProjectNameInput] = useState('');
   const [showExportModal, setShowExportModal] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: () => {} });
+  const fileInputRef = useRef(null);
 
   const {
     undo,
@@ -41,7 +45,8 @@ export default function Toolbar() {
     currentProjectId,
     projects,
     renameProject,
-    saveCurrentProject
+    saveCurrentProject,
+    importProjectFromFile
   } = useStore();
 
   // Get the current project name
@@ -104,6 +109,66 @@ export default function Toolbar() {
 
   const handleExport = () => {
     setShowExportModal(true);
+  };
+
+  const handleImport = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileImport = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Reset the file input for future uploads
+    fileInputRef.current.value = "";
+    
+    // Check if it's a JSON file
+    if (file.type !== 'application/json' && !file.name.endsWith('.json') && !file.name.endsWith('.inpost.json')) {
+      setConfirmDialog({
+        isOpen: true,
+        title: 'Invalid File',
+        message: 'Please select a valid .inpost.json file.',
+        confirmText: 'OK',
+        onConfirm: () => {}
+      });
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const projectData = JSON.parse(event.target.result);
+        
+        // Basic validation
+        if (!projectData.elements || !projectData.canvasSize) {
+          setConfirmDialog({
+            isOpen: true,
+            title: 'Invalid Project File',
+            message: 'The file does not contain a valid inPost project structure.',
+            confirmText: 'OK',
+            onConfirm: () => {}
+          });
+          return;
+        }
+        
+        // Import the project
+        const projectId = importProjectFromFile(projectData);
+        
+        // Navigate to editor with new project ID
+        toast.success('Project imported successfully!');
+        navigate(`/app?project=${projectId}`);
+      } catch (err) {
+        setConfirmDialog({
+          isOpen: true,
+          title: 'Error Importing Project',
+          message: `Failed to import: ${err.message}`,
+          confirmText: 'OK',
+          onConfirm: () => {}
+        });
+      }
+    };
+    
+    reader.readAsText(file);
   };
 
   return (
@@ -254,7 +319,7 @@ export default function Toolbar() {
 
         <div className="h-6 border-l border-gray-300 mx-2"></div>
         {/* Save and Export buttons */}
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           <button
             onClick={handleSave}
             className="text-gray-700 hover:text-indigo-600 p-2 rounded transition-colors duration-200 flex items-center mr-2"
@@ -263,6 +328,20 @@ export default function Toolbar() {
             <FiSave className="mr-1" /> Save
           </button>
 
+          <button
+            onClick={handleImport}
+            className="px-3 py-2 flex items-center text-sm rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700"
+          >
+            <FiUpload className="mr-1" /> Import
+          </button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            accept=".json,.inpost.json"
+            onChange={handleFileImport}
+          />
+          
           <button
             onClick={handleExport}
             className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md flex items-center"
@@ -276,6 +355,18 @@ export default function Toolbar() {
 
       {/* Export Modal */}
       {showExportModal && <ExportModal onClose={() => setShowExportModal(false)} />}
+
+      {/* Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog({...confirmDialog, isOpen: false})}
+        onConfirm={confirmDialog.onConfirm}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        confirmText={confirmDialog.confirmText || 'Confirm'}
+        cancelText={confirmDialog.cancelText || 'Cancel'}
+        isDanger={confirmDialog.isDanger}
+      />
     </div>
   );
 } 

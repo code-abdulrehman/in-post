@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store';
-import { MdAdd, MdEdit, MdDelete, MdOpenInNew } from 'react-icons/md';
+import { MdAdd, MdEdit, MdDelete, MdOpenInNew, MdFileUpload } from 'react-icons/md';
 import { FaInstagram, FaFacebookF, FaLinkedin, FaYoutube } from 'react-icons/fa';
 import { BsTextareaResize } from "react-icons/bs";
 import { FaXTwitter } from "react-icons/fa6";
+import ConfirmDialog from './ConfirmDialog';
+import { toast } from 'react-toastify';
 
 export default function ProjectModal() {
   const [tab, setTab] = useState('new');
@@ -14,6 +16,8 @@ export default function ProjectModal() {
   const [templateType, setTemplateType] = useState('custom');
   const [renameId, setRenameId] = useState(null);
   const [renameName, setRenameName] = useState('');
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: () => {} });
+  const fileInputRef = useRef(null);
   
   const navigate = useNavigate();
   const { 
@@ -21,7 +25,8 @@ export default function ProjectModal() {
     createProject, 
     loadProject, 
     deleteProject,
-    renameProject 
+    renameProject,
+    importProjectFromFile
   } = useStore();
   
   // Use effect to pre-populate name field
@@ -82,12 +87,74 @@ export default function ProjectModal() {
     }
   };
   
+  // Add handleFileImport function
+  const handleFileImport = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    // Reset the file input for future uploads
+    fileInputRef.current.value = "";
+    
+    // Check if it's a JSON file
+    if (file.type !== 'application/json' && !file.name.endsWith('.json') && !file.name.endsWith('.inpost.json')) {
+      setConfirmDialog({
+        isOpen: true,
+        title: 'Invalid File',
+        message: 'Please select a valid .inpost.json file.',
+        confirmText: 'OK',
+        onConfirm: () => {}
+      });
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const projectData = JSON.parse(event.target.result);
+        
+        // Basic validation
+        if (!projectData.elements || !projectData.canvasSize) {
+          setConfirmDialog({
+            isOpen: true,
+            title: 'Invalid Project File',
+            message: 'The file does not contain a valid inPost project structure.',
+            confirmText: 'OK',
+            onConfirm: () => {}
+          });
+          return;
+        }
+        
+        // Import the project
+        const projectId = importProjectFromFile(projectData);
+        
+        // Navigate to editor with new project ID
+        toast.success('Project imported successfully!');
+        navigate(`/app?project=${projectId}`);
+      } catch (err) {
+        setConfirmDialog({
+          isOpen: true,
+          title: 'Error Importing Project',
+          message: `Failed to import: ${err.message}`,
+          confirmText: 'OK',
+          onConfirm: () => {}
+        });
+      }
+    };
+    
+    reader.readAsText(file);
+  };
+  
   // Handle deleting a project
   const handleDeleteProject = (id, e) => {
     e.stopPropagation();
-    if (window.confirm('Are you sure you want to delete this project?')) {
-      deleteProject(id);
-    }
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Delete Project',
+      message: 'Are you sure you want to delete this project? This action cannot be undone.',
+      confirmText: 'Delete',
+      isDanger: true,
+      onConfirm: () => deleteProject(id)
+    });
   };
   
   // Format date for display
@@ -107,7 +174,7 @@ export default function ProjectModal() {
         <div className="p-4 border-b flex justify-between items-center">
           <h2 className="text-xl font-semibold">InPost Designer</h2>
           
-          <div className="tabs flex">
+          <div className="tabs flex flex-wrap">
             <button 
               className={`px-4 py-2 mr-2 rounded-md ${tab === 'new' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'}`}
               onClick={() => setTab('new')}
@@ -115,11 +182,24 @@ export default function ProjectModal() {
               New Project
             </button>
             <button 
-              className={`px-4 py-2 rounded-md ${tab === 'existing' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'}`}
+              className={`px-4 py-2 mr-2 rounded-md ${tab === 'existing' ? 'bg-indigo-100 text-indigo-700' : 'hover:bg-gray-100'}`}
               onClick={() => setTab('existing')}
             >
               My Projects
             </button>
+            <button 
+              className="px-4 py-2 rounded-md hover:bg-gray-100 flex items-center"
+              onClick={() => fileInputRef.current.click()}
+            >
+              <MdFileUpload className="mr-1" /> Import
+            </button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept=".json,.inpost.json"
+              onChange={handleFileImport}
+            />
           </div>
         </div>
         
@@ -332,6 +412,18 @@ export default function ProjectModal() {
             </button>
           )}
         </div>
+
+        {/* Confirmation Dialog */}
+        <ConfirmDialog
+          isOpen={confirmDialog.isOpen}
+          onClose={() => setConfirmDialog({...confirmDialog, isOpen: false})}
+          onConfirm={confirmDialog.onConfirm}
+          title={confirmDialog.title}
+          message={confirmDialog.message}
+          confirmText={confirmDialog.confirmText || 'Confirm'}
+          cancelText={confirmDialog.cancelText || 'Cancel'}
+          isDanger={confirmDialog.isDanger}
+        />
       </div>
     </div>
   );

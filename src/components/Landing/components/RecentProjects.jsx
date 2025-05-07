@@ -34,7 +34,9 @@ export default function RecentProjects({ recentProjects, handleOpenProject, hand
                   backgroundColor: project.canvasBackground || '#ffffff'
                 }}
               >
-                <div className={`w-full h-full bg-white/90 text-shadow-md backdrop-blur-sm absolute inset-0 flex items-center justify-center text-gray-400 text-7xl font-bold opacity-10 text-${project.canvasBackground}`}>
+                <div className={`w-full h-full bg-white/90 text-shadow-md backdrop-blur-sm absolute inset-0 flex flex-col items-center justify-center text-gray-400 text-7xl font-bold opacity-10 text-${project.canvasBackground}`}>
+                <h2>
+
                   {project?.name
                     ? project.name
                       .split(' ')
@@ -44,6 +46,8 @@ export default function RecentProjects({ recentProjects, handleOpenProject, hand
                       .join('')
                       .toUpperCase()
                     : ''}
+                </h2>
+                    <span className={`text-gary-400 text-xs`}>InPost Designs</span>
                 </div>
 
                 {/* Thumbnail preview would go here */}

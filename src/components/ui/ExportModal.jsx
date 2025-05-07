@@ -4,6 +4,7 @@ import { MdClose, MdDownload, MdImage, MdPhotoLibrary, MdCode } from 'react-icon
 import { FaCode } from 'react-icons/fa';
 import { FiEdit, FiCheck } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import ConfirmDialog from './ConfirmDialog';
 
 export default function ExportModal({ onClose }) {
   const [format, setFormat] = useState('png');
@@ -15,6 +16,7 @@ export default function ExportModal({ onClose }) {
   const [editingWatermarkText, setEditingWatermarkText] = useState(false);
   const { elements, canvasSize, canvasBackground, currentProjectId } = useStore();
   const stageRef = useRef(null);
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', onConfirm: () => {} });
 
   const formats = [
     { id: 'png', name: 'PNG', icon: <MdImage />, description: 'Best for images with transparency' },
@@ -197,7 +199,7 @@ export default function ExportModal({ onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-xl">
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-xl font-semibold">Export Design</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
@@ -356,6 +358,18 @@ export default function ExportModal({ onClose }) {
             )}
           </button>
         </div>
+
+        {/* Add ConfirmDialog */}
+        <ConfirmDialog
+          isOpen={confirmDialog.isOpen}
+          onClose={() => setConfirmDialog({...confirmDialog, isOpen: false})}
+          onConfirm={confirmDialog.onConfirm}
+          title={confirmDialog.title}
+          message={confirmDialog.message}
+          confirmText={confirmDialog.confirmText || 'Confirm'}
+          cancelText={confirmDialog.cancelText || 'Cancel'}
+          isDanger={confirmDialog.isDanger}
+        />
       </div>
     </div>
   );

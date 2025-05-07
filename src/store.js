@@ -235,6 +235,47 @@ export const useStore = create(
         return id;
       },
       
+      // Add new importProjectFromFile function
+      importProjectFromFile: (jsonData) => {
+        try {
+          // Parse the JSON data if it's a string
+          const projectData = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
+          
+          // Validate the imported data
+          if (!projectData.elements || !projectData.canvasSize) {
+            throw new Error('Invalid project file format');
+          }
+          
+          // Create a new project ID
+          const id = `project-${Date.now()}`;
+          
+          // Create a new project object
+          const newProject = {
+            id,
+            name: projectData.name || 'Imported Design',
+            createdAt: new Date().toISOString(),
+            lastModified: new Date().toISOString(),
+            canvasSize: projectData.canvasSize,
+            canvasBackground: projectData.canvasBackground || '#ffffff',
+            elements: projectData.elements,
+          };
+          
+          // Add the project to store and set it as current
+          set((state) => ({
+            projects: [...state.projects, newProject],
+            currentProjectId: id,
+            elements: projectData.elements,
+            canvasSize: projectData.canvasSize,
+            canvasBackground: projectData.canvasBackground || '#ffffff',
+          }));
+          
+          return id;
+        } catch (err) {
+          console.error('Error importing project:', err);
+          throw err;
+        }
+      },
+      
       loadProject: (id) => {
         const { projects } = get();
         const project = projects.find(p => p.id === id);

@@ -77,3 +77,5 @@ InPost Designer is a modern, browser-based graphic design application built with
 ## License
 
 MIT
+
+
