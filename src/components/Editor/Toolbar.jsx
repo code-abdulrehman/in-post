@@ -111,7 +111,7 @@ export default function Toolbar() {
       <div className="flex items-center space-x-2">
         <button
           onClick={() => {
-            setRoute('home');
+            navigate('/');
           }}
           className="text-gray-700 hover:text-indigo-600 p-1 rounded transition-colors duration-200 flex items-center"
         >

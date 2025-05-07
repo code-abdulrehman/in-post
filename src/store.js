@@ -1,12 +1,215 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+// Define preset color palettes
+const presetPalettes = {
+  // Pastel Colors
+  pastel: {
+    id: 'pastel',
+    name: 'Pastel Colors',
+    colors: [
+      { value: '#FADBD8', name: 'Pastel Pink' },
+      { value: '#F5CBA7', name: 'Pastel Orange' },
+      { value: '#F9E79F', name: 'Pastel Yellow' },
+      { value: '#ABEBC6', name: 'Pastel Green' },
+      { value: '#AED6F1', name: 'Pastel Blue' },
+      { value: '#D5DBDB', name: 'Pastel Gray' },
+      { value: '#D2B4DE', name: 'Pastel Purple' },
+      { value: '#F2D7D5', name: 'Pastel Rose' },
+      { value: '#FDEDEC', name: 'Pastel Coral' },
+      { value: '#EAF2F8', name: 'Pastel Sky' }
+    ]
+  },
+  // Neon Palette
+  neon: {
+    id: 'neon',
+    name: 'Neon Colors',
+    colors: [
+      { value: '#5465FF', name: 'Neon Blue' },
+      { value: '#788BFF', name: 'Cornflower Blue' },
+      { value: '#9BB1FF', name: 'Jordy Blue' },
+      { value: '#BFD7FF', name: 'Periwinkle' },
+      { value: '#E2FDFF', name: 'Light Cyan' },
+      { value: '#FF0000', name: 'Neon Red' },
+      { value: '#00FF00', name: 'Neon Green' },
+      { value: '#FF00FF', name: 'Neon Pink' },
+      { value: '#FFFF00', name: 'Neon Yellow' },
+      { value: '#00FFFF', name: 'Neon Cyan' }
+    ]
+  },
+  // Earth Tones
+  earth: {
+    id: 'earth',
+    name: 'Earth Tones',
+    colors: [
+      { value: '#A0522D', name: 'Sienna' },
+      { value: '#8B4513', name: 'Saddle Brown' },
+      { value: '#CD853F', name: 'Peru' },
+      { value: '#D2B48C', name: 'Tan' },
+      { value: '#DEB887', name: 'Burlywood' },
+      { value: '#F5DEB3', name: 'Wheat' },
+      { value: '#556B2F', name: 'Dark Olive Green' },
+      { value: '#6B8E23', name: 'Olive Drab' },
+      { value: '#BDB76B', name: 'Dark Khaki' },
+      { value: '#F0E68C', name: 'Khaki' }
+    ]
+  },
+  // Monochrome
+  monochrome: {
+    id: 'monochrome',
+    name: 'Monochrome',
+    colors: [
+      { value: '#000000', name: 'Black' },
+      { value: '#1A1A1A', name: 'Ebony' },
+      { value: '#333333', name: 'Dark Charcoal' },
+      { value: '#4D4D4D', name: 'Charcoal' },
+      { value: '#666666', name: 'Dark Gray' },
+      { value: '#808080', name: 'Gray' },
+      { value: '#999999', name: 'Medium Gray' },
+      { value: '#B3B3B3', name: 'Light Gray' },
+      { value: '#CCCCCC', name: 'Silver' },
+      { value: '#FFFFFF', name: 'White' }
+    ]
+  },
+  // Ocean
+  ocean: {
+    id: 'ocean',
+    name: 'Ocean Colors',
+    colors: [
+      { value: '#1E3A8A', name: 'Deep Blue' },
+      { value: '#1E40AF', name: 'Royal Blue' },
+      { value: '#2563EB', name: 'Bright Blue' },
+      { value: '#3B82F6', name: 'Sky Blue' },
+      { value: '#60A5FA', name: 'Light Blue' },
+      { value: '#93C5FD', name: 'Powder Blue' },
+      { value: '#BFDBFE', name: 'Baby Blue' },
+      { value: '#00A3A3', name: 'Teal' },
+      { value: '#20B2AA', name: 'Light Sea Green' },
+      { value: '#48D1CC', name: 'Medium Turquoise' }
+    ]
+  },
+  // Project palette to store user's colors
+  project: {
+    id: 'project',
+    name: 'Project Colors',
+    colors: [],
+    isCustom: true
+  }
+};
+
 export const useStore = create(
   persist(
     (set, get) => ({
       // Projects management
       projects: [],
       currentProjectId: null,
+      
+      // Color Palettes
+      colorPalettes: presetPalettes,
+      currentPaletteId: 'pastel',
+      
+      // Set current palette
+      setCurrentPalette: (paletteId) => {
+        if (get().colorPalettes[paletteId]) {
+          set({ currentPaletteId: paletteId });
+        }
+      },
+      
+      // Add a custom palette
+      addPalette: (id, name, colors) => {
+        set((state) => ({
+          colorPalettes: {
+            ...state.colorPalettes,
+            [id]: {
+              id,
+              name,
+              colors,
+              isCustom: true
+            }
+          }
+        }));
+      },
+      
+      // Update an existing palette
+      updatePalette: (id, name, colors) => {
+        const palette = get().colorPalettes[id];
+        if (palette && palette.isCustom) {
+          set((state) => ({
+            colorPalettes: {
+              ...state.colorPalettes,
+              [id]: {
+                ...palette,
+                name,
+                colors
+              }
+            }
+          }));
+        }
+      },
+      
+      // Delete a custom palette
+      deletePalette: (id) => {
+        const palette = get().colorPalettes[id];
+        if (palette && palette.isCustom) {
+          const newPalettes = { ...get().colorPalettes };
+          delete newPalettes[id];
+          
+          set((state) => ({
+            colorPalettes: newPalettes,
+            currentPaletteId: state.currentPaletteId === id ? 'pastel' : state.currentPaletteId
+          }));
+        }
+      },
+      
+      // Add a color to a palette
+      addColorToPalette: (color, name, paletteId = 'project') => {
+        const palette = get().colorPalettes[paletteId];
+        if (palette && palette.isCustom) {
+          set((state) => ({
+            colorPalettes: {
+              ...state.colorPalettes,
+              [paletteId]: {
+                ...palette,
+                colors: [
+                  ...palette.colors,
+                  {
+                    value: color,
+                    name: name || `Color ${palette.colors.length + 1}`,
+                    id: Date.now().toString()
+                  }
+                ]
+              }
+            }
+          }));
+        }
+      },
+      
+      // Remove a color from a palette
+      removeColorFromPalette: (colorIndex, paletteId = 'project') => {
+        const palette = get().colorPalettes[paletteId];
+        if (palette && palette.isCustom) {
+          const newColors = [...palette.colors];
+          newColors.splice(colorIndex, 1);
+          
+          set((state) => ({
+            colorPalettes: {
+              ...state.colorPalettes,
+              [paletteId]: {
+                ...palette,
+                colors: newColors
+              }
+            }
+          }));
+        }
+      },
+      
+      // Reset palettes to defaults
+      resetPalettes: () => {
+        set({
+          colorPalettes: presetPalettes,
+          currentPaletteId: 'pastel'
+        });
+      },
       
       createProject: (name, width, height, background) => {
         const id = `project-${Date.now()}`;
@@ -103,12 +306,7 @@ export const useStore = create(
       currentRoute: '/', // '/' for landing page, '/editor' for editor
       setRoute: (route) => {
         set({ currentRoute: route });
-        // Handle navigation based on route name
-        if (route === 'home') {
-          window.location.href = '/';
-        } else if (route === 'editor') {
-          window.location.href = '/app';
-        }
+        // Don't use direct JS navigation, let React Router handle it
       },
 
       // Canvas state
@@ -155,17 +353,31 @@ export const useStore = create(
       })),
       
       duplicateElement: (id) => {
-        const { elements } = get();
+        const { elements, canvasSize } = get();
         const elementToDuplicate = elements.find(el => el.id === id);
         if (elementToDuplicate) {
           const newElementId = Date.now().toString();
+          
+          // Calculate the center position of the canvas
+          const canvasCenterX = canvasSize.width / 2;
+          const canvasCenterY = canvasSize.height / 2;
+          
+          // Calculate the element's width and height (if available)
+          const width = elementToDuplicate.width || 100; // default width if not defined
+          const height = elementToDuplicate.height || 100; // default height if not defined
+          
+          // Position the element at the center of the canvas, considering its size
+          const x = canvasCenterX - (width / 2);
+          const y = canvasCenterY - (height / 2);
+          
           const newElement = {
-            ...elementToDuplicate,
+            ...elementToDuplicate, // Keep all properties exactly the same
             id: newElementId,
-            x: elementToDuplicate.x + 20,
-            y: elementToDuplicate.y + 20,
+            x: x,
+            y: y,
             name: `${elementToDuplicate.name || elementToDuplicate.type} copy`,
           };
+          
           set((state) => ({
             elements: [...state.elements, newElement],
             selectedElementId: newElementId,
@@ -276,13 +488,38 @@ export const useStore = create(
       }),
     }),
     {
-      name: 'inpost-designer-storage',
-      partialize: (state) => ({
-        projects: state.projects,
-        elements: state.elements,
-        canvasSize: state.canvasSize,
-        canvasBackground: state.canvasBackground,
-      }),
+      name: 'inpost-storage',
+      getStorage: () => ({
+        getItem: (name) => {
+          // Try to get from localStorage first
+          const localValue = localStorage.getItem(name);
+          if (localValue !== null) {
+            return Promise.resolve(localValue);
+          }
+          
+          // Fall back to sessionStorage if localStorage fails
+          const sessionValue = sessionStorage.getItem(name);
+          return Promise.resolve(sessionValue);
+        },
+        setItem: (name, value) => {
+          try {
+            localStorage.setItem(name, value);
+          } catch (error) {
+            console.warn('Failed to save to localStorage, falling back to sessionStorage', error);
+            try {
+              sessionStorage.setItem(name, value);
+            } catch (sessionError) {
+              console.error('Failed to save to sessionStorage as well', sessionError);
+            }
+          }
+          return Promise.resolve();
+        },
+        removeItem: (name) => {
+          localStorage.removeItem(name);
+          sessionStorage.removeItem(name);
+          return Promise.resolve();
+        }
+      })
     }
   )
 ); 

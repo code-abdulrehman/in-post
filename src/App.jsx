@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useEffect, useState, lazy, Suspense } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useStore } from './store';
 import LandingPage from './components/Landing/LandingPage';
-import EditorPage from './components/Editor/EditorPage';
-import ProjectModal from './components/ui/ProjectModal';
+// Use lazy loading for components that aren't needed immediately
+const EditorPage = lazy(() => import('./components/Editor/EditorPage'));
+const ProjectModal = lazy(() => import('./components/ui/ProjectModal'));
 
 export default function App() {
   const navigate = useNavigate();
@@ -19,18 +20,16 @@ export default function App() {
     if (location.pathname.startsWith('/app')) {
       const projectIdParam = new URLSearchParams(location.search).get('project');
       
-      // If we have a project ID in URL and it's different from current one
+      // Only load a project if we have a specific project ID in the URL
       if (projectIdParam && projectIdParam !== currentProjectId) {
         // Try to load the project
         const success = loadProject(projectIdParam);
         
-        // If loading failed, navigate to landing page
+        // If loading failed, navigate to /app without a project ID to show the modal
         if (!success) {
-          navigate('/', { replace: true });
+          navigate('/app', { replace: true });
         }
       }
-      // We removed the else-if that was redirecting to '/' when no project is loaded
-      // This allows the user to stay on /app and see the project modal
     }
   }, [location, currentProjectId, loadProject, navigate]);
   
@@ -85,12 +84,15 @@ export default function App() {
     <div className="h-screen relative">
       {/* Internet status indicator */}
       {showStatus && (
-        <div className={`z-[1000] fixed bottom-0 left-0 right-0 h-4 flex items-center justify-center text-white text-xs font-medium transition-all ${
-          isOnline === true ? (wasUnstable ? 'bg-orange-500' : 'bg-green-500') : 
-          isOnline === 'slow' ? 'bg-yellow-500' : 
-          isOnline === 'unstable' ? 'bg-orange-500' : 
-          'bg-red-500'
-        }`}>
+        <div 
+          className={`z-[1000] fixed bottom-0 left-0 right-0 h-4 flex items-center justify-center text-white text-xs font-medium transition-all cursor-pointer ${
+            isOnline === true ? (wasUnstable ? 'bg-orange-500' : 'bg-green-500') : 
+            isOnline === 'slow' ? 'bg-yellow-500' : 
+            isOnline === 'unstable' ? 'bg-orange-500' : 
+            'bg-red-500'
+          }`}
+          onClick={() => setShowStatus(false)}
+        >
           {isOnline === true ? (wasUnstable ? 'Connection Stabilized (Previously Unstable)' : 'Connected - Stable Internet') : 
            isOnline === 'slow' ? 'Slow Internet Connection' : 
            isOnline === 'unstable' ? 'Unstable Internet Connection' : 
@@ -98,17 +100,19 @@ export default function App() {
         </div>
       )}
       
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/app" element={<EditorPage />} />
-        <Route path="*" element={<LandingPage />} />
-      </Routes>
-      
-      {/* Project modal for creating new projects or opening existing ones */}
-      {location.pathname === '/app' && !currentProjectId && 
-       !new URLSearchParams(location.search).get('project') && (
-        <ProjectModal />
-      )}
+      <Suspense fallback={<div className="h-screen flex items-center justify-center">Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/app" element={<EditorPage />} />
+          <Route path="*" element={<LandingPage />} />
+        </Routes>
+        
+        {/* Project modal should display whenever on /app without a project parameter */}
+        {location.pathname === '/app' && 
+         !new URLSearchParams(location.search).get('project') && (
+          <ProjectModal />
+        )}
+      </Suspense>
     </div>
   );
 }

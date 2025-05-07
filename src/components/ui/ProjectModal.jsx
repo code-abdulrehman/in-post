@@ -226,13 +226,23 @@ export default function ProjectModal() {
                       onClick={() => handleOpenProject(project.id)}
                     >
                       <div 
-                        className="bg-white border border-gray-200 mr-4 flex-shrink-0"
+                        className="bg-white border border-gray-200 mr-4 flex-shrink-0 w-[100px] h-[100px] relative"
                         style={{
-                          width: `${Math.min(100, (project.canvasSize.width / project.canvasSize.height) * 60)}px`,
-                          height: `${Math.min(80, (project.canvasSize.height / project.canvasSize.width) * 60)}px`,
                           backgroundColor: project.canvasBackground || '#ffffff'
                         }}
-                      ></div>
+                      >
+                         <div className={`w-full h-full bg-white/90 text-shadow-md backdrop-blur-sm absolute inset-0 flex items-center justify-center text-gray-400 text-3xl font-bold opacity-10 text-${project.canvasBackground}`}>
+                  {project?.name
+                    ? project.name
+                      .split(' ')
+                      .filter(word => word.length > 0)
+                      .map(word => word[0])
+                      .slice(0, 2)
+                      .join('')
+                      .toUpperCase()
+                    : ''}
+                </div>
+                      </div>
                       
                       <div className="flex-1">
                         {renameId === project.id ? (

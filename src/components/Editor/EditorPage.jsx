@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { useStore } from '../../store';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Toolbar from './Toolbar';
-import LeftSidebar from './LeftSidebar';
+import LeftSidebar from './LeftSidebar/index';
 import RightSidebar from './RightSidebar';
 import Canvas from './Canvas';
+import ChatBot from './ChatBot';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -144,8 +145,13 @@ export default function EditorPage() {
       <Toolbar />
       <div className="flex-1 flex overflow-hidden">
         <LeftSidebar showTabs={showTabs} setShowTabs={setShowTabs} />
-        <div className="flex-1 canvas-container overflow-auto mt-16" onClick={handleOutsideClick}>
-          <Canvas />
+        <div className="flex flex-col items-center flex-1 w-[calc(100%-600px)] h-full relative top-16 overflow-hidden">
+          <div className='canvas-container overflow-auto flex-1 max-h-[78%] w-full' onClick={handleOutsideClick}>
+            <Canvas />
+          </div>
+          <div className='h-[20%]'>
+            <ChatBot />
+          </div>
         </div>
         <RightSidebar />
       </div>

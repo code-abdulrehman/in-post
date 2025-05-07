@@ -28,7 +28,7 @@ import {
   FiCornerUpLeft
 } from 'react-icons/fi';
 import { RiFontSizeAi } from "react-icons/ri";
-import ColorPicker from '../ui/ColorPicker';
+import ColorPickerWithPalette from '../ui/ColorPickerWithPalette';
 import { toast } from 'react-toastify';
 
 // Common Google Font options
@@ -628,8 +628,8 @@ export default function RightSidebar() {
                               <label className="block text-xs text-gray-500 mb-1">
                                 {shapeFillType === 'filled' ? 'Fill Color' : 'Outline Color'}
                               </label>
-                              <div className="flex items-center">
-                                <ColorPicker
+                              <div className="flex items-end">
+                                <ColorPickerWithPalette
                                   value={shapeFillType === 'filled' 
                                     ? (selectedElement.fill || '#3B82F6')
                                     : (selectedElement.border?.color || '#3B82F6')}
@@ -792,8 +792,8 @@ export default function RightSidebar() {
                           <div className="p-3 border-t border-gray-200">
                             <div className="mb-3">
                               <label className="block text-xs text-gray-500 mb-1">Stroke Color</label>
-                              <div className="flex items-center">
-                                <ColorPicker
+                              <div className="flex items-end">
+                                <ColorPickerWithPalette
                                   value={selectedElement.stroke || '#3B82F6'}
                                   onChange={(value) => handlePropertyChange('stroke', value)}
                                   className="mr-2"
@@ -895,8 +895,8 @@ export default function RightSidebar() {
                               
                               <div className="mb-2">
                                 <label className="block text-xs text-gray-500 mb-1">Text Color</label>
-                                <div className="flex items-center">
-                                  <ColorPicker
+                                <div className="flex items-end">
+                                  <ColorPickerWithPalette
                                     value={selectedElement.fill || '#000000'}
                                     onChange={(value) => handlePropertyChange('fill', value)}
                                     className="mr-2"
@@ -1118,8 +1118,8 @@ export default function RightSidebar() {
                               
                               <div className="mb-3">
                                 <label className="block text-xs text-gray-500 mb-1">Text Color</label>
-                                <div className="flex items-center">
-                                  <ColorPicker
+                                <div className="flex items-end">
+                                  <ColorPickerWithPalette
                                     value={selectedElement.fill || '#000000'}
                                     onChange={(value) => handlePropertyChange('fill', value)}
                                     className="mr-2"
@@ -1588,8 +1588,8 @@ export default function RightSidebar() {
                                 <div className="pl-1 border-l-2 border-gray-100">
                                   <div className="mb-2">
                                     <label className="block text-xs text-gray-500 mb-1">Border Color</label>
-                                    <div className="flex items-center">
-                                      <ColorPicker
+                                    <div className="flex items-end">
+                                      <ColorPickerWithPalette
                                         value={selectedElement?.border?.color || '#000000'}
                                         onChange={(value) => handleBorderPropertyChange('color', value)}
                                         className="mr-2"
@@ -1696,8 +1696,8 @@ export default function RightSidebar() {
                               <div className="pl-1 border-l-2 border-gray-100">
                                 <div className="mb-2">
                                   <label className="block text-xs text-gray-500 mb-1">Shadow Color</label>
-                                  <div className="flex items-center">
-                                    <ColorPicker
+                                  <div className="flex items-end">
+                                    <ColorPickerWithPalette
                                       value={selectedElement?.shadow?.color || 'rgba(0,0,0,0.5)'}
                                       onChange={(value) => handleShadowPropertyChange('color', value)}
                                       className="mr-2"

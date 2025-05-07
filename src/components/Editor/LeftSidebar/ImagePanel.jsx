@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useStore } from '../../store';
+import { useStore } from '../../../store';
 import { MdCloudUpload, MdDelete, MdImage, MdError } from 'react-icons/md';
 import { toast } from 'react-toastify';
 

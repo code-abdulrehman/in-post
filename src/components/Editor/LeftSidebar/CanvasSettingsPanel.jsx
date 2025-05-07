@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useStore } from '../../store';
+import { useStore } from '../../../store';
 import { MdCheck } from 'react-icons/md';
 import { FaInstagram, FaFacebookF, FaLinkedin, FaYoutube } from 'react-icons/fa';
 import { BsTextareaResize } from "react-icons/bs";

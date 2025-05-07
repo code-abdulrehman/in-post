@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { Stage, Layer, Rect, Circle, Line, Text, Image, Star, RegularPolygon, Transformer, TextPath } from 'react-konva';
 import { useStore } from '../../store';
-import URLImage from './URLImage';
+import URLImage from './LeftSidebar/URLImage';
 import Konva from 'konva';
 import * as MdIcons from 'react-icons/md';
 
