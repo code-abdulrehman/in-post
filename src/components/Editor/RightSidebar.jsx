@@ -802,7 +802,7 @@ export default function RightSidebar() {
                                   type="text"
                                   value={selectedElement.stroke || '#3B82F6'}
                                   onChange={(e) => handlePropertyChange('stroke', e.target.value)}
-                                  className="flex-1 rounded-md border border-gray-300 px-3 py-1 text-sm"
+                                  className="w-full flex-1 rounded-md border border-gray-300 px-3 py-1 text-sm"
                                 />
                               </div>
                             </div>
@@ -871,7 +871,7 @@ export default function RightSidebar() {
                                     className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm"
                                   />
                                 </div>
-                                <div className="grid grid-cols-4 gap-1 mt-1">
+                                <div className="flex justify-between gap-1 mt-1">
                                   {[
                                     { label: 'Narrow', value: 200 },
                                     { label: 'Medium', value: 300 },
@@ -880,7 +880,7 @@ export default function RightSidebar() {
                                   ].map(preset => (
                                     <button
                                       key={preset.value}
-                                      className={`text-xs py-1 px-2 border rounded-md ${
+                                      className={`text-xs py-1 px-1.5 border rounded-md ${
                                         Math.abs(selectedElement.width - preset.value) < 10
                                           ? 'bg-indigo-50 border-indigo-300 text-indigo-600'
                                           : 'border-gray-300 hover:bg-gray-50'
@@ -905,7 +905,7 @@ export default function RightSidebar() {
                                     type="text"
                                     value={selectedElement.fill || '#000000'}
                                     onChange={(e) => handlePropertyChange('fill', e.target.value)}
-                                    className="flex-1 rounded-md border border-gray-300 px-3 py-1 text-sm"
+                                    className="w-full flex-1 rounded-md border border-gray-300 px-3 py-1 text-sm"
                                   />
                                 </div>
                               </div>
@@ -1128,7 +1128,7 @@ export default function RightSidebar() {
                                     type="text"
                                     value={selectedElement.fill || '#000000'}
                                     onChange={(e) => handlePropertyChange('fill', e.target.value)}
-                                    className="flex-1 rounded-md border border-gray-300 px-3 py-1 text-sm"
+                                    className="w-full flex-1 rounded-md border border-gray-300 px-3 py-1 text-sm"
                                   />
                                 </div>
                               </div>
