@@ -11,16 +11,22 @@ import {
   MdStop,
   MdRoundedCorner,
   MdCategory,
-  MdStyle
+  MdStyle,
+  MdBrush,
+  MdEdit,
+  MdGesture,
+  MdCreate
 } from 'react-icons/md';
+
 import { RiShapesFill } from 'react-icons/ri';
+import { FaPen, FaPaintBrush, FaDrawPolygon } from 'react-icons/fa';
 import * as MdIcons from 'react-icons/md';
 
 // Only use MdIcons since they're the only ones working properly in canvas
 const iconLibrary = MdIcons;
 
 export default function ElementsPanel() {
-  const { addElement, addToHistory } = useStore();
+  const { addElement, addToHistory, setDrawingMode } = useStore();
   const [activeTab, setActiveTab] = useState('shapes');
   const [iconSearch, setIconSearch] = useState('');
 
@@ -58,6 +64,106 @@ export default function ElementsPanel() {
       sides: 4, 
       radius: 50, 
       rotation: 45
+    },
+    // Gesture Drawing Button
+    { 
+      type: 'gesture', 
+      name: 'Gesture Drawing', 
+      icon: <MdGesture size={24} />, 
+      description: 'Free hand drawing tool',
+      isDrawingTool: true,
+      drawingTool: {
+        type: 'pen',
+        name: 'Free Pen',
+        stroke: '#000000',
+        strokeWidth: 2,
+        tension: 0.5,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }
+    }
+  ];
+
+  // Drawing tools - keep this for functionality but hide from UI
+  const drawingTools = [
+    { 
+      type: 'pen', 
+      name: 'Fine Pen', 
+      icon: <FaPen size={24} />, 
+      description: 'Precise drawing with a fine tip pen',
+      stroke: '#000000',
+      strokeWidth: 1.5,
+      tension: 0.4,
+      lineCap: 'round',
+      lineJoin: 'round'
+    },
+    { 
+      type: 'brush', 
+      name: 'Paint Brush', 
+      icon: <FaPaintBrush size={24} />, 
+      description: 'Fluid strokes with a paint brush',
+      stroke: '#3B82F6',
+      strokeWidth: 6,
+      tension: 0.6,
+      lineCap: 'round',
+      lineJoin: 'round'
+    },
+    { 
+      type: 'marker', 
+      name: 'Marker', 
+      icon: <MdEdit size={24} />, 
+      description: 'Bold strokes with a marker',
+      stroke: '#EF4444',
+      strokeWidth: 4,
+      tension: 0.3,
+      lineCap: 'square',
+      lineJoin: 'round'
+    },
+    { 
+      type: 'pencil', 
+      name: 'Pencil', 
+      icon: <MdCreate size={24} />, 
+      description: 'Soft sketch-like strokes',
+      stroke: '#6B7280',
+      strokeWidth: 1,
+      tension: 0.2,
+      lineCap: 'round',
+      lineJoin: 'round'
+    },
+    { 
+      type: 'watercolor', 
+      name: 'Watercolor', 
+      icon: <FaDrawPolygon size={24} />, 
+      description: 'Flowing watercolor-like strokes',
+      stroke: '#8B5CF6',
+      strokeWidth: 8,
+      tension: 0.8,
+      lineCap: 'round',
+      lineJoin: 'round'
+    },
+    { 
+      type: 'dotted', 
+      name: 'Dotted Line', 
+      icon: <MdTimeline size={24} />, 
+      description: 'Create dotted line patterns',
+      stroke: '#10B981',
+      strokeWidth: 2,
+      tension: 0.5,
+      lineCap: 'round',
+      lineJoin: 'round',
+      dash: [1, 5]
+    },
+    { 
+      type: 'dashed', 
+      name: 'Dashed Line', 
+      icon: <MdTimeline size={24} />, 
+      description: 'Create dashed line patterns',
+      stroke: '#F59E0B',
+      strokeWidth: 2,
+      tension: 0.5,
+      lineCap: 'butt',
+      lineJoin: 'miter',
+      dash: [6, 4]
     }
   ];
 
@@ -67,6 +173,12 @@ export default function ElementsPanel() {
   );
 
   const handleAddShape = (shape) => {
+    // Check if this is a drawing tool
+    if (shape.isDrawingTool) {
+      handleActivateDrawingTool(shape.drawingTool);
+      return;
+    }
+    
     const baseProps = {
       x: 400,
       y: 300,
@@ -76,6 +188,9 @@ export default function ElementsPanel() {
     const specificProps = { ...shape };
     delete specificProps.name;
     delete specificProps.icon;
+    delete specificProps.description;
+    delete specificProps.isDrawingTool;
+    delete specificProps.drawingTool;
 
     // Special handling for arrow
     if (shape.type === 'arrow') {
@@ -113,13 +228,119 @@ export default function ElementsPanel() {
     addToHistory(`Add ${iconName} icon`);
   };
 
+  // Handle activating drawing mode
+  const handleActivateDrawingTool = (tool) => {
+    // Enable drawing mode in the store
+    if (tool.type === 'pen') {
+      setDrawingMode({
+        enabled: true,
+        tool: 'pen',
+        stroke: tool.stroke || '#000000',
+        strokeWidth: tool.strokeWidth || 1.5,
+        tension: tool.tension || 0.4,
+        lineCap: tool.lineCap || 'round',
+        lineJoin: tool.lineJoin || 'round'
+      });
+      addToHistory(`Activated ${tool.name} tool`);
+      
+      // Signal to automatically open the drawing properties tab
+      sessionStorage.setItem('open_drawing_panel', 'true');
+    } else if (tool.type === 'brush') {
+      setDrawingMode({
+        enabled: true,
+        tool: 'brush',
+        stroke: tool.stroke || '#3B82F6',
+        strokeWidth: tool.strokeWidth || 6,
+        tension: tool.tension || 0.6,
+        lineCap: tool.lineCap || 'round',
+        lineJoin: tool.lineJoin || 'round'
+      });
+      addToHistory(`Activated ${tool.name} tool`);
+      
+      // Signal to automatically open the drawing properties tab
+      sessionStorage.setItem('open_drawing_panel', 'true');
+    } else if (tool.type === 'marker') {
+      setDrawingMode({
+        enabled: true,
+        tool: 'marker',
+        stroke: tool.stroke || '#EF4444',
+        strokeWidth: tool.strokeWidth || 4,
+        tension: tool.tension || 0.3,
+        lineCap: tool.lineCap || 'square',
+        lineJoin: tool.lineJoin || 'round'
+      });
+      addToHistory(`Activated ${tool.name} tool`);
+      
+      // Signal to automatically open the drawing properties tab
+      sessionStorage.setItem('open_drawing_panel', 'true');
+    } else if (tool.type === 'pencil') {
+      setDrawingMode({
+        enabled: true,
+        tool: 'pencil',
+        stroke: tool.stroke || '#6B7280',
+        strokeWidth: tool.strokeWidth || 1,
+        tension: tool.tension || 0.2,
+        lineCap: tool.lineCap || 'round',
+        lineJoin: tool.lineJoin || 'round'
+      });
+      addToHistory(`Activated ${tool.name} tool`);
+      
+      // Signal to automatically open the drawing properties tab
+      sessionStorage.setItem('open_drawing_panel', 'true');
+    } else if (tool.type === 'watercolor') {
+      setDrawingMode({
+        enabled: true,
+        tool: 'watercolor',
+        stroke: tool.stroke || '#8B5CF6',
+        strokeWidth: tool.strokeWidth || 8,
+        tension: tool.tension || 0.8,
+        lineCap: tool.lineCap || 'round',
+        lineJoin: tool.lineJoin || 'round'
+      });
+      addToHistory(`Activated ${tool.name} tool`);
+      
+      // Signal to automatically open the drawing properties tab
+      sessionStorage.setItem('open_drawing_panel', 'true');
+    } else if (tool.type === 'dotted') {
+      setDrawingMode({
+        enabled: true,
+        tool: 'dotted',
+        stroke: tool.stroke || '#10B981',
+        strokeWidth: tool.strokeWidth || 2,
+        tension: tool.tension || 0.5,
+        lineCap: tool.lineCap || 'round',
+        lineJoin: tool.lineJoin || 'round',
+        dash: tool.dash || [1, 5]
+      });
+      addToHistory(`Activated ${tool.name} tool`);
+      
+      // Signal to automatically open the drawing properties tab
+      sessionStorage.setItem('open_drawing_panel', 'true');
+    } else if (tool.type === 'dashed') {
+      setDrawingMode({
+        enabled: true,
+        tool: 'dashed',
+        stroke: tool.stroke || '#F59E0B',
+        strokeWidth: tool.strokeWidth || 2,
+        tension: tool.tension || 0.5,
+        lineCap: tool.lineCap || 'butt',
+        lineJoin: tool.lineJoin || 'miter',
+        dash: tool.dash || [6, 4]
+      });
+      addToHistory(`Activated ${tool.name} tool`);
+      
+      // Signal to automatically open the drawing properties tab
+      sessionStorage.setItem('open_drawing_panel', 'true');
+    }
+  };
+
   // Group shapes into categories for better organization
   const basicShapes = shapes.filter(shape => 
     ['Rectangle', 'Circle', 'Triangle', 'Hexagon', 'Star', 'Diamond', 'Rounded Rectangle'].includes(shape.name)
   );
   
   const lineShapes = shapes.filter(shape => 
-    ['Line', 'Arrow'].includes(shape.name)
+    ['Line', 'Arrow', 'Gesture Drawing'].includes(shape.name)
   );
 
   return (
@@ -169,16 +390,16 @@ export default function ElementsPanel() {
           
           {/* Line Shapes */}
           <div className="mb-4">
-            <h4 className="text-xs text-gray-500 mb-2">Lines & Connectors</h4>
+            <h4 className="text-xs text-gray-500 mb-2">Lines & Drawing</h4>
             <div className="grid grid-cols-3 gap-2">
               {lineShapes.map((shape) => (
                 <button
                   key={shape.name}
-                  className="p-2 rounded-md hover:bg-gray-50 border border-gray-200 flex flex-col items-center justify-center"
+                  className={`p-2 rounded-md hover:bg-gray-50 border ${shape.name === 'Gesture Drawing' ? 'border-indigo-200 bg-indigo-50' : 'border-gray-200'} flex flex-col items-center justify-center`}
                   onClick={() => handleAddShape(shape)}
                   title={shape.name}
                 >
-                  <div className="text-gray-700 mb-1">{shape.icon}</div>
+                  <div className={`${shape.name === 'Gesture Drawing' ? 'text-indigo-600' : 'text-gray-700'} mb-1`}>{shape.icon}</div>
                   <span className="text-xs truncate w-full text-center">{shape.name}</span>
                 </button>
               ))}

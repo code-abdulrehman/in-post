@@ -82,10 +82,49 @@ export default function RightSidebar() {
     moveElementToBottom,
     addToHistory,
     renameElement,
-    selectElement
+    selectElement,
+    drawingMode,
+    setDrawingMode,
+    disableDrawingMode
   } = useStore();
   
   const selectedElement = elements.find(el => el.id === selectedElementId);
+  
+  // Set default property group to "drawing" when in drawing mode
+  useEffect(() => {
+    if (drawingMode.enabled) {
+      setActivePropertyGroup('drawing');
+      // When drawing mode is enabled, switch to properties tab automatically
+      if (activeTab !== 'properties') {
+        setActiveTab('properties');
+      }
+    }
+  }, [drawingMode.enabled]);
+  
+  // Disable drawing mode when selecting an element that's not a drawing
+  useEffect(() => {
+    if (selectedElementId && drawingMode.enabled) {
+      // If user has selected an element, disable drawing mode
+      disableDrawingMode();
+    }
+  }, [selectedElementId]);
+  
+  // Auto-open properties tab and drawing panel when tool is activated from the left sidebar
+  useEffect(() => {
+    const shouldOpenDrawingPanel = sessionStorage.getItem('open_drawing_panel');
+    if (shouldOpenDrawingPanel === 'true' && drawingMode.enabled) {
+      // Switch to properties tab if not already selected
+      if (activeTab !== 'properties') {
+        setActiveTab('properties');
+      }
+      
+      // Open the drawing properties group
+      setActivePropertyGroup('drawing');
+      
+      // Clear the signal
+      sessionStorage.removeItem('open_drawing_panel');
+    }
+  }, [drawingMode.enabled, activeTab]);
   
   // Toggle property group - close others when opening one
   const togglePropertyGroup = (groupName, forceState = null) => {
@@ -529,63 +568,79 @@ export default function RightSidebar() {
     }
   };
 
+  // Handle drawing property changes
+  const handleDrawingPropertyChange = (property, value) => {
+    if (drawingMode.enabled) {
+      console.log(`Changing drawing property: ${property} to:`, value);
+      
+      // Create a completely new object to ensure React detects the changes
+      const updatedDrawingMode = {
+        ...drawingMode,
+        [property]: value
+      };
+      
+      // Force state update with the new drawingMode object
+      setDrawingMode(updatedDrawingMode);
+      console.log('Updated drawing mode:', updatedDrawingMode);
+      
+      // Keep track of current property group to ensure it stays open
+      const currentGroup = activePropertyGroup;
+      
+      // Make sure our property group stays open after the update
+      setTimeout(() => keepPropertyGroupOpen(currentGroup), 0);
+      
+      // Add to history when changing tools
+      if (property === 'tool') {
+        addToHistory(`Switch to ${value} drawing tool`);
+      }
+    }
+  };
+
   return (
-    <div className="w-64 border border-gray-300 bg-white h-[98%] m-2 mt-[6px] rounded-2xl bg-white flex flex-col">
-      {/* Tab navigation */}
-      <div className="flex border-b border-gray-300">
-        <button
-          className={`flex-1 py-3 text-center text-sm font-medium transition-colors ${
-            activeTab === 'properties'
-              ? 'text-indigo-600 border-b-2 border-indigo-600'
-              : 'text-gray-500 hover:text-gray-900'
-          }`}
-          onClick={() => setActiveTab('properties')}
-        >
-          <div className="flex items-center justify-center">
-            <FiSliders className="mr-1" /> Properties
-          </div>
-        </button>
-        <button
-          className={`flex-1 py-3 text-center text-sm font-medium transition-colors ${
-            activeTab === 'layers'
-              ? 'text-indigo-600 border-b-2 border-indigo-600'
-              : 'text-gray-500 hover:text-gray-900'
-          }`}
-          onClick={() => setActiveTab('layers')}
-        >
-          <div className="flex items-center justify-center">
-            <FiLayers className="mr-1" /> Layers
-          </div>
-        </button>
+    <div className="w-72 border border-gray-300 bg-white h-[98%] m-2 mt-[6px] rounded-2xl flex flex-col overflow-hidden">
+      <div className="p-2 px-3 border-b border-gray-300 flex justify-between items-center">
+        <h2 className="text-sm font-medium">Canvas Editor</h2>
+        <div className="flex rounded-md overflow-hidden border border-gray-200">
+          <button 
+            className={`p-2 ${activeTab === 'properties' ? 'bg-indigo-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+            onClick={() => setActiveTab('properties')}
+            title="Properties"
+          >
+            <FiSliders size={16} />
+          </button>
+          <button 
+            className={`p-2 ${activeTab === 'layers' ? 'bg-indigo-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+            onClick={() => setActiveTab('layers')}
+            title="Layers"
+          >
+            <FiLayers size={16} />
+          </button>
+        </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto">
-        {/* Properties Tab */}
-        {activeTab === 'properties' && (
-          <div className="p-3">
-            <PropertiesTab
-              selectedElement={selectedElement}
-              selectedElementId={selectedElementId}
-              handlePropertyChange={handlePropertyChange}
-              handleBorderPropertyChange={handleBorderPropertyChange}
-              handleShadowPropertyChange={handleShadowPropertyChange}
-              handleFilterPropertyChange={handleFilterPropertyChange}
-              handleShapeFillTypeChange={handleShapeFillTypeChange}
-              togglePropertyGroup={togglePropertyGroup}
-              activePropertyGroup={activePropertyGroup}
-              shapeFillType={shapeFillType}
-              isAiProcessing={isAiProcessing}
-              enhanceTextWithAI={enhanceTextWithAI}
-              duplicateElement={duplicateElement}
-              deleteElement={deleteElement}
-              addToHistory={addToHistory}
-              GOOGLE_FONTS={GOOGLE_FONTS}
-            />
-          </div>
-        )}
-        
-        {/* Layers Tab */}
-        {activeTab === 'layers' && (
+      <div className="flex-1 overflow-y-auto p-3">
+        {activeTab === 'properties' ? (
+          <PropertiesTab
+            selectedElement={selectedElement}
+            selectedElementId={selectedElementId}
+            handlePropertyChange={handlePropertyChange}
+            handleBorderPropertyChange={handleBorderPropertyChange}
+            handleShadowPropertyChange={handleShadowPropertyChange}
+            handleFilterPropertyChange={handleFilterPropertyChange}
+            handleShapeFillTypeChange={handleShapeFillTypeChange}
+            togglePropertyGroup={togglePropertyGroup}
+            activePropertyGroup={activePropertyGroup}
+            shapeFillType={shapeFillType}
+            isAiProcessing={isAiProcessing}
+            enhanceTextWithAI={enhanceTextWithAI}
+            duplicateElement={duplicateElement}
+            deleteElement={deleteElement}
+            addToHistory={addToHistory}
+            GOOGLE_FONTS={GOOGLE_FONTS}
+            drawingMode={drawingMode}
+            handleDrawingPropertyChange={handleDrawingPropertyChange}
+          />
+        ) : (
           <LayersTab
             elements={elements}
             selectedElementId={selectedElementId}

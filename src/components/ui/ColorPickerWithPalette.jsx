@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { FaCheck, FaPalette, FaPlus } from 'react-icons/fa';
-import { MdColorLens } from 'react-icons/md';
+import { FaCheck, FaPlus } from 'react-icons/fa';
 import { useStore } from '../../store';
-import { FiCheck } from 'react-icons/fi';
 
 /**
  * Enhanced ColorPicker with project palette integration
@@ -25,7 +23,6 @@ const ColorPickerWithPalette = ({
   const { 
     colorPalettes, 
     currentPaletteId, 
-    setCurrentPalette,
     addColorToPalette
   } = useStore();
   
@@ -42,16 +39,6 @@ const ColorPickerWithPalette = ({
   // Check if current palette is custom
   const isCustomPalette = useMemo(() => {
     return colorPalettes[currentPaletteId]?.isCustom || false;
-  }, [colorPalettes, currentPaletteId]);
-
-  // Get all available palettes
-  const allPalettes = useMemo(() => {
-    return Object.keys(colorPalettes).map(id => ({
-      id,
-      name: colorPalettes[id].name,
-      isCustom: colorPalettes[id].isCustom || false,
-      isActive: id === currentPaletteId
-    }));
   }, [colorPalettes, currentPaletteId]);
 
   // Update internal color when prop changes
@@ -111,30 +98,6 @@ const ColorPickerWithPalette = ({
     '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39',
     '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', 
     '#607D8B', '#000000', '#FFFFFF'
-  ];
-
-  // Default color palette options
-  const DEFAULT_PALETTE = [
-    '#000000', // Black
-    '#FFFFFF', // White
-    '#F44336', // Red
-    '#E91E63', // Pink
-    '#9C27B0', // Purple
-    '#673AB7', // Deep Purple
-    '#3F51B5', // Indigo
-    '#2196F3', // Blue
-    '#03A9F4', // Light Blue
-    '#00BCD4', // Cyan
-    '#009688', // Teal
-    '#4CAF50', // Green
-    '#8BC34A', // Light Green
-    '#CDDC39', // Lime
-    '#FFEB3B', // Yellow
-    '#FFC107', // Amber
-    '#FF9800', // Orange
-    '#FF5722', // Deep Orange
-    '#795548', // Brown
-    '#9E9E9E', // Gray
   ];
 
   const [recentColors, setRecentColors] = useState([]);
@@ -207,7 +170,7 @@ const ColorPickerWithPalette = ({
 
       {showPalette && (
         <div
-          className="absolute z-50 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-2 max-w-[240px] w-52 h-40 pb-1 overflow-y-auto"
+          className="absolute z-50 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-2 max-w-[240px] w-52 h-24 pb-1 overflow-y-auto"
           ref={paletteRef}
         >
           {/* Current Palette Section */}
@@ -308,65 +271,6 @@ const ColorPickerWithPalette = ({
                 className="flex-1 px-2 py-1 text-xs border rounded ml-2"
                 placeholder="#RRGGBB"
               />
-            </div>
-          </div>
-          
-          {/* Palette selection - compact dropdown */}
-          <div className="border-t border-gray-200 pt-1 mt-1">
-            <details className="text-xs">
-              <summary className="cursor-pointer py-1 font-medium text-gray-600">
-                Change Palette
-              </summary>
-              <div className="max-h-[80px] overflow-y-auto text-xs">
-                {allPalettes.map(palette => (
-                  <div 
-                    key={palette.id}
-                    className={`p-1 mb-1 cursor-pointer rounded flex justify-between items-center ${palette.isActive ? 'bg-indigo-50 text-indigo-700' : 'hover:bg-gray-50'}`}
-                    onClick={() => setCurrentPalette(palette.id)}
-                  >
-                    <span>{palette.name}</span>
-                    {palette.isActive && <FaCheck size={10} />}
-                  </div>
-                ))}
-              </div>
-            </details>
-          </div>
-
-          {/* Recent colors */}
-          {recentColors.length > 0 && (
-            <div className="mb-3">
-              <div className="text-xs text-gray-500 mb-1">Recent</div>
-              <div className="grid grid-cols-5 gap-1">
-                {recentColors.map((color, index) => (
-                  <button
-                    key={`recent-${index}`}
-                    className="w-10 h-10 rounded-md border border-gray-300 flex items-center justify-center"
-                    style={{ backgroundColor: color }}
-                    onClick={() => handleColorSelect(color)}
-                    aria-label={`Select color ${color}`}
-                  >
-                    {value === color && <FiCheck className="text-white drop-shadow-md" />}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          {/* Default palette */}
-          <div>
-            <div className="text-xs text-gray-500 mb-1">Palette</div>
-            <div className="grid grid-cols-5 gap-1">
-              {DEFAULT_PALETTE.map((color) => (
-                <button
-                  key={color}
-                  className="w-10 h-10 rounded-md border border-gray-300 flex items-center justify-center"
-                  style={{ backgroundColor: color }}
-                  onClick={() => handleColorSelect(color)}
-                  aria-label={`Select color ${color}`}
-                >
-                  {value === color && <FiCheck className={color === '#FFFFFF' ? 'text-black' : 'text-white'} />}
-                </button>
-              ))}
             </div>
           </div>
           

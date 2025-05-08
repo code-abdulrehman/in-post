@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Stage, Layer, Rect, Circle, Line, Text, Image, Star, RegularPolygon, Transformer, TextPath } from 'react-konva';
 import { useStore } from '../../store';
 import URLImage from './LeftSidebar/URLImage';
@@ -90,15 +90,25 @@ export default function Canvas() {
     addToHistory,
     showGrid,
     canvasScale,
-    setCursorPosition
+    setCursorPosition,
+    drawingMode,
+    disableDrawingMode,
+    addDrawnPath
   } = useStore();
   
   const stageRef = useRef(null);
   const layerRef = useRef(null);
   const transformerRef = useRef(null);
   
+  // State for free drawing
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [currentPoints, setCurrentPoints] = useState([]);
+  
   // Handle click on empty canvas to clear selection
   const handleCanvasClick = (e) => {
+    // If in drawing mode, don't clear selection
+    if (drawingMode.enabled) return;
+    
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
       clearSelection();
@@ -134,6 +144,12 @@ export default function Canvas() {
           y: pointer.y / scale
         };
         setCursorPosition(stagePos.x, stagePos.y);
+        
+        // If drawing, add points
+        if (isDrawing && drawingMode.enabled) {
+          // Add the new point
+          setCurrentPoints(prevPoints => [...prevPoints, stagePos.x, stagePos.y]);
+        }
       }
     }
   };
@@ -227,6 +243,46 @@ export default function Canvas() {
       delete window.konvaStage;
     };
   }, [stageRef.current]);
+  
+  // Drawing handlers
+  const handleMouseDown = (e) => {
+    // Only start drawing if drawing mode is enabled
+    if (!drawingMode.enabled) return;
+    
+    clearSelection();
+    setIsDrawing(true);
+    
+    const stage = e.target.getStage();
+    const pointerPos = stage.getPointerPosition();
+    
+    // Convert to canvas coordinates
+    const stagePos = {
+      x: pointerPos.x / canvasScale,
+      y: pointerPos.y / canvasScale
+    };
+    
+    // Start with just the initial point
+    setCurrentPoints([stagePos.x, stagePos.y]);
+  };
+  
+  const handleMouseUp = () => {
+    // If not drawing, do nothing
+    if (!isDrawing || !drawingMode.enabled) return;
+    
+    // Complete the drawing
+    setIsDrawing(false);
+    
+    // Save the drawing if there are enough points
+    if (currentPoints.length >= 4) { // Need at least 2 points (4 values)
+      addDrawnPath({ 
+        points: currentPoints,
+        tension: drawingMode.tension || 0.5
+      });
+    }
+    
+    // Reset current points
+    setCurrentPoints([]);
+  };
   
   // Render each element based on its type
   const renderElement = (element) => {
@@ -520,6 +576,28 @@ export default function Canvas() {
           />
         );
         
+      case 'freeDrawing':
+        return (
+          <Line
+            key={element.id}
+            {...commonProps}
+            points={element.points}
+            stroke={element.stroke}
+            strokeWidth={element.strokeWidth}
+            tension={element.tension || 0.5}
+            lineCap={element.lineCap || 'round'}
+            lineJoin={element.lineJoin || 'round'}
+            dash={element.dash}
+            dashEnabled={!!element.dash}
+            shadowEnabled={element.shadow?.enabled}
+            shadowColor={element.shadow?.color}
+            shadowBlur={element.shadow?.blur}
+            shadowOffsetX={element.shadow?.offsetX}
+            shadowOffsetY={element.shadow?.offsetY}
+            shadowOpacity={1}
+          />
+        );
+        
       default:
         return null;
     }
@@ -625,7 +703,10 @@ export default function Canvas() {
         className="relative"
         style={{
           boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-          ...getBackgroundStyle()
+          ...getBackgroundStyle(),
+          cursor: drawingMode.enabled ? (
+            drawingMode.tool === 'pen' ? 'crosshair' : 'crosshair'
+          ) : 'default'
         }}
       >
         {/* Background overlay as a DOM element for better display */}
@@ -639,9 +720,30 @@ export default function Canvas() {
           onClick={handleCanvasClick}
           onTap={handleCanvasClick}
           onMouseMove={handleMouseMove}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleMouseDown}
+          onTouchMove={handleMouseMove}
+          onTouchEnd={handleMouseUp}
         >
           <Layer ref={layerRef}>
             {elements.map(renderElement)}
+            
+            {/* Current drawing preview */}
+            {isDrawing && drawingMode.enabled && (
+              <Line
+                points={currentPoints}
+                stroke={drawingMode.stroke || '#000000'}
+                strokeWidth={drawingMode.strokeWidth || 2}
+                tension={drawingMode.tension || 0.5}
+                lineCap={drawingMode.lineCap || 'round'}
+                lineJoin={drawingMode.lineJoin || 'round'}
+                dash={drawingMode.dash}
+                dashEnabled={!!drawingMode.dash}
+              />
+            )}
+            
             <Transformer
               ref={transformerRef}
               boundBoxFunc={(oldBox, newBox) => {

@@ -34,7 +34,7 @@ export default function LayersTab({
   getElementName
 }) {
   return (
-    <div className="p-3">
+    <div className="p-1">
       <div className="flex justify-between items-center mb-3">
         <h3 className="font-medium text-sm">Layers</h3>
         <div className="flex space-x-1">

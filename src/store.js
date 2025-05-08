@@ -370,6 +370,74 @@ export const useStore = create(
       setCursorPosition: (x, y) => set({ cursorPosition: { x, y } }),
       setCanvasScale: (scale) => set({ canvasScale: scale }),
 
+      // Drawing mode state
+      drawingMode: {
+        enabled: false,
+        tool: null, // 'pen', 'brush', 'marker', 'pencil', 'watercolor', 'dotted', 'dashed'
+        stroke: '#000000',
+        strokeWidth: 2,
+        tension: 0.5,
+        lineCap: 'round',
+        lineJoin: 'round',
+        dash: null
+      },
+      
+      // Set drawing mode
+      setDrawingMode: (drawingMode) => {
+        set({ drawingMode });
+      },
+      
+      // Disable drawing mode
+      disableDrawingMode: () => {
+        set({ 
+          drawingMode: {
+            enabled: false,
+            tool: null,
+            stroke: '#000000',
+            strokeWidth: 2,
+            tension: 0.5,
+            lineCap: 'round',
+            lineJoin: 'round',
+            dash: null
+          }
+        });
+      },
+      
+      // Add a drawn path as a new element
+      addDrawnPath: (pathData) => {
+        const { drawingMode } = get();
+        const newElementId = `element-${Date.now()}`;
+        
+        const pathElement = {
+          id: newElementId,
+          type: 'freeDrawing',
+          x: 0,
+          y: 0,
+          points: pathData.points,
+          stroke: drawingMode.stroke || '#000000',
+          strokeWidth: drawingMode.strokeWidth || 2,
+          tension: pathData.tension || drawingMode.tension || 0.5,
+          lineCap: drawingMode.lineCap || 'round',
+          lineJoin: drawingMode.lineJoin || 'round',
+          dash: drawingMode.dash || null,
+          locked: false,
+          visible: true,
+          tool: drawingMode.tool || 'pen'
+        };
+        
+        set((state) => ({
+          elements: [...state.elements, pathElement]
+        }));
+        
+        // Add to history
+        get().addToHistory(`Add ${drawingMode.tool || 'free drawing'}`);
+        
+        // Don't disable drawing mode to allow continuous drawing
+        // The user can disable it manually by clicking on the canvas selection tool
+        
+        return newElementId;
+      },
+      
       // Elements state
       elements: [],
       selectedElementId: null,
@@ -529,38 +597,12 @@ export const useStore = create(
       }),
     }),
     {
-      name: 'inpost-storage',
-      getStorage: () => ({
-        getItem: (name) => {
-          // Try to get from localStorage first
-          const localValue = localStorage.getItem(name);
-          if (localValue !== null) {
-            return Promise.resolve(localValue);
-          }
-          
-          // Fall back to sessionStorage if localStorage fails
-          const sessionValue = sessionStorage.getItem(name);
-          return Promise.resolve(sessionValue);
-        },
-        setItem: (name, value) => {
-          try {
-            localStorage.setItem(name, value);
-          } catch (error) {
-            console.warn('Failed to save to localStorage, falling back to sessionStorage', error);
-            try {
-              sessionStorage.setItem(name, value);
-            } catch (sessionError) {
-              console.error('Failed to save to sessionStorage as well', sessionError);
-            }
-          }
-          return Promise.resolve();
-        },
-        removeItem: (name) => {
-          localStorage.removeItem(name);
-          sessionStorage.removeItem(name);
-          return Promise.resolve();
-        }
-      })
+      name: 'canvas-store',
+      // Don't persist certain large or temporary state
+      partialize: (state) => {
+        const { history, ...rest } = state;
+        return rest;
+      }
     }
   )
 ); 
