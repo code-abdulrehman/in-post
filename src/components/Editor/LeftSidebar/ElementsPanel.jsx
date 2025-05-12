@@ -395,11 +395,11 @@ export default function ElementsPanel() {
               {lineShapes.map((shape) => (
                 <button
                   key={shape.name}
-                  className={`p-2 rounded-md hover:bg-gray-50 border ${shape.name === 'Gesture Drawing' ? 'border-indigo-200 bg-indigo-50' : 'border-gray-200'} flex flex-col items-center justify-center`}
+                  className={`p-2 rounded-md hover:bg-gray-50 border border-gray-200 flex flex-col items-center justify-center`}
                   onClick={() => handleAddShape(shape)}
                   title={shape.name}
                 >
-                  <div className={`${shape.name === 'Gesture Drawing' ? 'text-indigo-600' : 'text-gray-700'} mb-1`}>{shape.icon}</div>
+                  <div className={`text-gray-700 mb-1`}>{shape.icon}</div>
                   <span className="text-xs truncate w-full text-center">{shape.name}</span>
                 </button>
               ))}

@@ -59,12 +59,12 @@ export default function LeftSidebar({ showTabs, setShowTabs }) {
   }
 
   return (
-    <div className="w-72 border border-gray-300 bg-white h-[98%] m-2 mt-[6px] rounded-2xl flex flex-col overflow-hidden">
-      <div className="p-2 px-3 border-b border-gray-300 flex justify-between items-center group">
-        <h2 className="text-lg font-medium">Design Tools</h2>
-        <div className="flex items-center space-x-2">
+    <div className={`${showTabs ? "w-72" : "w-12 hover:w-72"} border border-gray-300 bg-white h-[98%] m-2 mt-[6px] rounded-2xl flex flex-col overflow-hidden group transition-all duration-300 `}>
+      <div className="p-2 border-b border-gray-300 flex justify-between items-center group">
+        <h2 className={` ${showTabs ? "inline" :"hidden group-hover:inline "} text-lg font-medium pl-2`}>Design Tools</h2>
+        <div className="flex items-center space-x-1">
           <button 
-            className="text-gray-500 hover:text-gray-700 group-hover:inline hidden transition-all duration-300"
+            className={`text-gray-500 hover:text-gray-700 group-hover:inline transition-all duration-300 ${showTabs ? "" : "hidden group-hover:inline"}`}
             onClick={() => setShowTabs(!showTabs)}
           >
             {showTabs ? <BsArrowsCollapseVertical size={20} /> : <BsArrowsCollapse size={20} />}
@@ -85,14 +85,14 @@ export default function LeftSidebar({ showTabs, setShowTabs }) {
             {renderButtons('hr')}
           </div>
         ) : (
-          <div className='bg-indigo-100 h-full border-r border-gray-300 sticky top-0'>
-            <div className="p-0.5 grid grid-rows-5 gap-1 w-[8%]">
+          <div className={` ${showTabs ? "" : "w-full group-hover:max-w-12 group-hover:border-r"} border-gray-300 h-full sticky top-0`}>
+            <div className={`${showTabs ? "grid grid-rows-5" : "flex flex-col items-center w-full"} p-0.5 gap-1 w-full `}>
               {renderButtons('vr')}
             </div>
           </div>
         )}
 
-        <div className={`p-4 overflow-y-auto ${showTabs ? "w-full" : "w-[92%]"}`}>
+        <div className={`p-4 overflow-y-auto flex-1 ${showTabs ? "w-full block" : "w-0 hidden group-hover:block group-hover:w-auto transition-all duration-300 "}`}>
           {renderTabContent()}
         </div>
       </div>

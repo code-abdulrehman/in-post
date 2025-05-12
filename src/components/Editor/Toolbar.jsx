@@ -320,13 +320,13 @@ export default function Toolbar() {
         <div className="h-6 border-l border-gray-300 mx-2"></div>
         {/* Save and Export buttons */}
         <div className="flex items-center gap-2">
-          <button
+         {/* <button
             onClick={handleSave}
             className="text-gray-700 hover:text-indigo-600 p-2 rounded transition-colors duration-200 flex items-center mr-2"
             title="Save Project"
           >
             <FiSave className="mr-1" /> Save
-          </button>
+          </button> */}
 
           <button
             onClick={handleImport}
