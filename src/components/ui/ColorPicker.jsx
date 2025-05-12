@@ -126,12 +126,12 @@ export default function ColorPicker({ value, onChange, className = '' }) {
       />
       
       {showPicker && (
-        <div className="relative left-0 top-2 bg-white rounded-md p-3 z-10 w-52 border">
+        <div className="absolute left-0 top-10 bg-white rounded-md p-3 z-10 w-52 border overflow-y-auto h-16">
           <div className="grid grid-cols-6 gap-2 mb-2">
             {colors.map((color) => (
               <div
                 key={color}
-                className="w-6 h-6 rounded cursor-pointer relative border"
+                className="w-5 h-5 rounded cursor-pointer relative border"
                 style={{ backgroundColor: color }}
                 onClick={() => handleColorSelect(color)}
               >
@@ -177,7 +177,7 @@ export default function ColorPicker({ value, onChange, className = '' }) {
                   setCustomColor(newColor);
                   onChange(newColor);
                 }}
-                className="flex-1 ml-2 px-2 py-1 text-xs border rounded"
+                className="w-32 ml-2 px-2 py-1 text-xs border rounded"
                 placeholder={useRgba ? "rgba(0,0,0,0.5)" : "#FFFFFF"}
               />
             </div>

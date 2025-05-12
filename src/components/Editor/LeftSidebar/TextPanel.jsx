@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useStore } from '../../store';
+import { useStore } from '../../../store';
 import { MdTitle, MdSubtitles, MdFormatQuote, MdFormatListBulleted, MdTimeline } from 'react-icons/md';
+import { RiGeminiFill } from '@remixicon/react';
 
 export default function TextPanel() {
   const { addElement, addToHistory } = useStore();
@@ -119,14 +120,6 @@ export default function TextPanel() {
     }
   ];
 
-  // Predefined width options
-  const widthOptions = [
-    { label: 'Narrow', value: 200 },
-    { label: 'Medium', value: 300 },
-    { label: 'Wide', value: 500 },
-    { label: 'Full', value: 800 }
-  ];
-
   const handleAddText = (style) => {
     if (isTextPath) {
       // Add text path
@@ -220,9 +213,9 @@ export default function TextPanel() {
       <div className="mb-3">
         <div className="flex border border-gray-300 rounded-md overflow-hidden">
           <button
-            className={`flex-1 py-2 px-3 text-center text-sm ${
+            className={`flex-1 p-2 text-center text-sm ${
               !isTextPath 
-                ? 'bg-indigo-500 text-white font-medium' 
+                ? 'bg-indigo-500 text-white' 
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
             }`}
             onClick={() => setIsTextPath(false)}
@@ -230,9 +223,9 @@ export default function TextPanel() {
             Regular
           </button>
           <button
-            className={`flex-1 py-2 px-3 text-center text-sm ${
+            className={`flex-1 p-2 text-center text-sm ${
               isTextPath 
-                ? 'bg-indigo-500 text-white font-medium' 
+                ? 'bg-indigo-500 text-white' 
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
             }`}
             onClick={() => setIsTextPath(true)}
@@ -242,91 +235,6 @@ export default function TextPanel() {
         </div>
       </div>
       
-      {/* Custom text input */}
-      <div className="mb-4 overflow-hidden w-full">
-        <textarea
-          value={customText}
-          onChange={(e) => setCustomText(e.target.value)}
-          placeholder="Enter your text here"
-          className="w-full px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none min-h-8 max-h-40"
-          rows={3}
-        />
-        
-        {/* Width control for regular text */}
-        {!isTextPath && (
-          <div className="mt-2 mb-2">
-            <label className="block text-xs text-gray-500 mb-1">Text (box) width</label>
-            <div className="flex space-x-2">
-              <div className="flex-1">
-                <input
-                  type="number"
-                  value={textWidth}
-                  onChange={handleWidthChange}
-                  min={100}
-                  max={1000}
-                  className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
-                />
-              </div>
-              <div className="flex-1">
-                <select 
-                  onChange={(e) => setTextWidth(parseInt(e.target.value))}
-                  className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
-                >
-                  {widthOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label} ({option.value}px)
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {/* Path selection for curved text */}
-        {isTextPath && (
-          <div className="mt-2 mb-2">
-            <label className="block text-xs text-gray-500 mb-1">Text Path Style</label>
-            <div className="grid grid-cols-2 gap-2">
-              {pathOptions.map((path) => (
-                <button
-                  key={path.value}
-                  className={`p-2 border rounded-md text-xs text-center ${
-                    selectedPath === path.value
-                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                      : 'border-gray-300 hover:border-gray-400'
-                  }`}
-                  onClick={() => setSelectedPath(path.value)}
-                >
-                  <div className="h-6 flex items-center justify-center">
-                    <svg width="100" height="30" viewBox="0 0 300 100" className="w-full">
-                      <path d={path.data} fill="none" stroke="#9CA3AF" strokeWidth="1" />
-                      <text>
-                        <textPath href="#preview-path" fontSize="12" fill="currentColor">
-                          {path.name} Path Text
-                        </textPath>
-                      </text>
-                      <path id="preview-path" d={path.data} fill="none" stroke="none" />
-                    </svg>
-                  </div>
-                  {path.name}
-                </button>
-              ))}
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Select a path shape for your curved text
-            </p>
-          </div>
-        )}
-        
-        <button
-          onClick={handleAddCustomText}
-          disabled={!customText.trim()}
-          className="w-full mt-2 px-3 py-1 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700 disabled:bg-indigo-300 disabled:cursor-not-allowed"
-        >
-          Add {isTextPath ? 'Curved' : ''} Text
-        </button>
-      </div>
       
       {/* Text style presets */}
       <div className="space-y-2">

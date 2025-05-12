@@ -1,0 +1,10 @@
+export { default as Navbar } from './Navbar';
+export { default as HeroSection } from './HeroSection';
+export { default as RecentProjects } from './RecentProjects';
+export { default as FeaturesSection } from './FeaturesSection';
+export { default as TemplatesSection } from './TemplatesSection';
+export { default as ExportSection } from './ExportSection';
+export { default as CanvasSizesSection } from './CanvasSizesSection';
+export { default as StatsSection } from './StatsSection';
+export { default as CtaSection } from './CtaSection';
+export { default as Footer } from './Footer'; 

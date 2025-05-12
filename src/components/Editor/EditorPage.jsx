@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { useStore } from '../../store';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Toolbar from './Toolbar';
-import LeftSidebar from './LeftSidebar';
-import RightSidebar from './RightSidebar';
+import LeftSidebar from './LeftSidebar/index';
+import RightSidebar from './RightSidebar/index';
 import Canvas from './Canvas';
+import ChatBot from './ChatBot';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -20,7 +21,7 @@ export default function EditorPage() {
     canvasBackground
   } = useStore();
 
-  const [showTabs, setShowTabs] = useState(false);
+  const [showTabs, setShowTabs] = useState(true);
   
   // Initialize the design history when the editor is loaded
   useEffect(() => {
@@ -144,8 +145,13 @@ export default function EditorPage() {
       <Toolbar />
       <div className="flex-1 flex overflow-hidden">
         <LeftSidebar showTabs={showTabs} setShowTabs={setShowTabs} />
-        <div className="flex-1 canvas-container overflow-auto mt-16" onClick={handleOutsideClick}>
-          <Canvas />
+        <div className="flex flex-col items-center flex-1 w-[calc(100%-600px)] h-full relative top-16 overflow-hidden">
+          <div className='canvas-container overflow-auto flex-1 max-h-[85vh] w-full' onClick={handleOutsideClick}>
+            <Canvas />
+          </div>
+          {/* <div className='h-[10%]'>
+            <ChatBot />
+          </div> */}
         </div>
         <RightSidebar />
       </div>

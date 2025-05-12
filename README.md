@@ -1,6 +1,6 @@
-# InPost Designer
+# PPost Designer
 
-InPost Designer is a modern, browser-based graphic design application built with React, allowing users to create stunning social media posts, marketing materials, and digital designs without leaving their browser.
+PPost Designer is a modern, browser-based graphic design application built with React, allowing users to create stunning social media posts, marketing materials, and digital designs without leaving their browser.
 
 ## Features
 
@@ -77,3 +77,5 @@ InPost Designer is a modern, browser-based graphic design application built with
 ## License
 
 MIT
+
+
