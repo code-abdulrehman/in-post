@@ -41,7 +41,7 @@ export default function ProjectModal() {
     { id: 'instagram-post', icon: <FaInstagram style={{background: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'Instagram Post', width: 1080, height: 1080 },
     { id: 'facebook-post', icon: <FaFacebookF style={{background: 'linear-gradient(45deg, #3b5998, #4267B2)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'Facebook Post', width: 1200, height: 630 },
     { id: 'twitter-post', icon: <FaXTwitter style={{background: 'linear-gradient(45deg, #000000, #14171A)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'Twitter Post', width: 1200, height: 675 },
-    { id: 'linkedin-post', icon: <FaLinkedin style={{background: 'linear-gradient(45deg, #0077B5, #00a0dc)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'LinkedIn Post', width: 1200, height: 627 },
+    { id: 'linkedin-post', icon: <FaLinkedin style={{background: 'linear-gradient(45deg, #0077B5, #00a0dc)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'Linkedin Post', width: 1200, height: 627 },
     { id: 'youtube-thumbnail', icon: <FaYoutube style={{background: 'linear-gradient(45deg, #FF0000, #CC0000)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'YouTube Thumbnail', width: 1280, height: 720 },
     { id: 'instagram-story', icon: <FaInstagram style={{background: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)', color: 'white', borderRadius: '5px', padding: '2px'}}/>, name: 'Instagram Story', width: 1080, height: 1920 },
     { id: 'custom', icon: <BsTextareaResize className="border border-slate-400" style={{borderRadius: '5px', padding: '2px'}}/>, name: 'Custom Size', width: 800, height: 600 },
@@ -96,11 +96,11 @@ export default function ProjectModal() {
     fileInputRef.current.value = "";
     
     // Check if it's a JSON file
-    if (file.type !== 'application/json' && !file.name.endsWith('.json') && !file.name.endsWith('.inpost.json')) {
+    if (file.type !== 'application/json' && !file.name.endsWith('.json') && !file.name.endsWith('.ppost.json')) {
       setConfirmDialog({
         isOpen: true,
         title: 'Invalid File',
-        message: 'Please select a valid .inpost.json file.',
+        message: 'Please select a valid .ppost.json file.',
         confirmText: 'OK',
         onConfirm: () => {}
       });
@@ -117,7 +117,7 @@ export default function ProjectModal() {
           setConfirmDialog({
             isOpen: true,
             title: 'Invalid Project File',
-            message: 'The file does not contain a valid inPost project structure.',
+            message: 'The file does not contain a valid PPost project structure.',
             confirmText: 'OK',
             onConfirm: () => {}
           });
@@ -172,7 +172,7 @@ export default function ProjectModal() {
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full h-[76vh] flex flex-col">
         <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-xl font-semibold">InPost Designer</h2>
+          <h2 className="text-xl font-semibold">PPost Designer</h2>
           
           <div className="tabs flex flex-wrap">
             <button 
@@ -197,7 +197,7 @@ export default function ProjectModal() {
               type="file"
               ref={fileInputRef}
               className="hidden"
-              accept=".json,.inpost.json"
+              accept=".json,.ppost.json"
               onChange={handleFileImport}
             />
           </div>

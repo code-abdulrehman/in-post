@@ -13,7 +13,7 @@ export default function Navbar({ isScrolled, handleCreateDesign }) {
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-indigo-600">InPost Designer</h1>
+            <h1 className="text-2xl font-bold text-indigo-600">PPost Designer</h1>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">

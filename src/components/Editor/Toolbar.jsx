@@ -123,11 +123,11 @@ export default function Toolbar() {
     fileInputRef.current.value = "";
     
     // Check if it's a JSON file
-    if (file.type !== 'application/json' && !file.name.endsWith('.json') && !file.name.endsWith('.inpost.json')) {
+    if (file.type !== 'application/json' && !file.name.endsWith('.json') && !file.name.endsWith('.ppost.json')) {
       setConfirmDialog({
         isOpen: true,
         title: 'Invalid File',
-        message: 'Please select a valid .inpost.json file.',
+        message: 'Please select a valid .ppost.json file.',
         confirmText: 'OK',
         onConfirm: () => {}
       });
@@ -144,7 +144,7 @@ export default function Toolbar() {
           setConfirmDialog({
             isOpen: true,
             title: 'Invalid Project File',
-            message: 'The file does not contain a valid inPost project structure.',
+            message: 'The file does not contain a valid PPost project structure.',
             confirmText: 'OK',
             onConfirm: () => {}
           });
@@ -338,7 +338,7 @@ export default function Toolbar() {
             type="file"
             ref={fileInputRef}
             className="hidden"
-            accept=".json,.inpost.json"
+            accept=".json,.ppost.json"
             onChange={handleFileImport}
           />
           

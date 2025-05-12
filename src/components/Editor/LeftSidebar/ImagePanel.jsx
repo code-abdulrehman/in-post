@@ -4,7 +4,7 @@ import { MdCloudUpload, MdDelete, MdImage, MdError } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
 // IndexedDB configuration
-const DB_NAME = 'inPostUserDB';
+const DB_NAME = 'PPostUserDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'userImages';
 const MAX_IMAGES = 10;

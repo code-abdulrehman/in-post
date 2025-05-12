@@ -33,7 +33,7 @@ export default function HeroSection({ handleCreateDesign }) {
             <div className="bg-white p-4 shadow-xl rounded-xl transform rotate-2 hover:rotate-0 transition-transform duration-500 max-w-xl mx-auto">
               <img
                 src="/src/assets/bg-pattern-lines.webp"
-                alt="InPost Designer Preview"
+                alt="PPost Designer Preview"
                 className="rounded-lg w-full"
               />
             </div>

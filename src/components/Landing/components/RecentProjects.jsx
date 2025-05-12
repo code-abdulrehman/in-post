@@ -47,7 +47,7 @@ export default function RecentProjects({ recentProjects, handleOpenProject, hand
                       .toUpperCase()
                     : ''}
                 </h2>
-                    <span className={`text-gary-400 text-xs`}>InPost Designs</span>
+                    <span className={`text-gary-400 text-xs`}>PPost Designs</span>
                 </div>
 
                 {/* Thumbnail preview would go here */}

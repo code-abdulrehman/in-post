@@ -8,7 +8,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center mb-4">
               <FiLayers className="text-purple-400 text-2xl mr-2" />
-              <h3 className="text-xl font-bold text-purple-400">In Post</h3>
+              <h3 className="text-xl font-bold text-purple-400">PPost</h3>
             </div>
             <p className="text-gray-400">
               The ultimate design tool for creating stunning visuals right in your browser. No design experience needed.
@@ -47,7 +47,7 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-          <p>© {new Date().getFullYear()} In Post. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} PPost. All rights reserved.</p>
         </div>
       </div>
     </footer>

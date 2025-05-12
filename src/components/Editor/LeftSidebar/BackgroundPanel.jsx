@@ -11,6 +11,7 @@ import PaletteColorsTab from './BackgroundPanelComponents/PaletteColorsTab';
 import PalettesTab from './BackgroundPanelComponents/PalettesTab';
 import CreatePaletteForm from './BackgroundPanelComponents/CreatePaletteForm';
 import AIPaletteDialog from './BackgroundPanelComponents/AIPaletteDialog';
+import { baseUrl } from '../../../utils/constant';
 
 export default function BackgroundPanel() {
   const { 
@@ -236,7 +237,7 @@ export default function BackgroundPanel() {
         ? `${aiPrompt}. Please include the color ${currentBackground} in the palette.`
         : aiPrompt;
       
-      const response = await axios.post('http://localhost:4003/api/color/gen', {
+      const response = await axios.post(`${baseUrl}/api/color/gen`, {
         text: promptText
       });
       

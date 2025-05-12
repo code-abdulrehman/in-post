@@ -21,7 +21,7 @@ export default function EditorPage() {
     canvasBackground
   } = useStore();
 
-  const [showTabs, setShowTabs] = useState(false);
+  const [showTabs, setShowTabs] = useState(true);
   
   // Initialize the design history when the editor is loaded
   useEffect(() => {
@@ -146,12 +146,12 @@ export default function EditorPage() {
       <div className="flex-1 flex overflow-hidden">
         <LeftSidebar showTabs={showTabs} setShowTabs={setShowTabs} />
         <div className="flex flex-col items-center flex-1 w-[calc(100%-600px)] h-full relative top-16 overflow-hidden">
-          <div className='canvas-container overflow-auto flex-1 max-h-[78%] w-full' onClick={handleOutsideClick}>
+          <div className='canvas-container overflow-auto flex-1 max-h-[85vh] w-full' onClick={handleOutsideClick}>
             <Canvas />
           </div>
-          <div className='h-[20%]'>
+          {/* <div className='h-[10%]'>
             <ChatBot />
-          </div>
+          </div> */}
         </div>
         <RightSidebar />
       </div>

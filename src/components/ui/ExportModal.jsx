@@ -12,7 +12,7 @@ export default function ExportModal({ onClose }) {
   const [scale, setScale] = useState(2);
   const [loading, setLoading] = useState(false);
   const [includeWatermark, setIncludeWatermark] = useState(true);
-  const [watermarkText, setWatermarkText] = useState('Powered by inPost');
+  const [watermarkText, setWatermarkText] = useState('Powered by PPost');
   const [editingWatermarkText, setEditingWatermarkText] = useState(false);
   const { elements, canvasSize, canvasBackground, currentProjectId } = useStore();
   const stageRef = useRef(null);
@@ -22,7 +22,7 @@ export default function ExportModal({ onClose }) {
     { id: 'png', name: 'PNG', icon: <MdImage />, description: 'Best for images with transparency' },
     { id: 'jpg', name: 'JPG', icon: <MdPhotoLibrary />, description: 'Smaller file size, no transparency' },
     { id: 'webp', name: 'WebP', icon: <MdPhotoLibrary />, description: 'Modern format with good compression' },
-    { id: 'inpost.json', name: 'inPost Project', icon: <FaCode />, description: 'Save project to edit later' },
+    { id: 'ppost.json', name: 'PPost Project', icon: <FaCode />, description: 'Save project to edit later' },
   ];
 
   // Get position coordinates for watermark
@@ -40,9 +40,9 @@ export default function ExportModal({ onClose }) {
     try {
       setLoading(true);
       
-      // Handle inPost project file export
-      if (format === 'inpost.json') {
-        exportInPostProject();
+      // Handle PPost project file export
+      if (format === 'ppost.json') {
+        exportPPostProject();
         return;
       }
       
@@ -150,15 +150,15 @@ export default function ExportModal({ onClose }) {
     }
   };
   
-  // Export inPost project file
-  const exportInPostProject = () => {
+  // Export PPost project file
+  const exportPPostProject = () => {
     try {
       const { elements, canvasSize, canvasBackground } = useStore.getState();
       
       // Create project data
       const projectData = {
         version: '1.0.0',
-        name: 'inPost Design',
+        name: 'PPost Design',
         createdAt: new Date().toISOString(),
         canvasSize,
         canvasBackground,
@@ -174,7 +174,7 @@ export default function ExportModal({ onClose }) {
       
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'design.inpost.json';
+      link.download = 'design.ppost.json';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -182,7 +182,7 @@ export default function ExportModal({ onClose }) {
       // Clean up
       URL.revokeObjectURL(url);
       
-      toast.success('Exported as inPost project file');
+      toast.success('Exported as PPost project file');
       onClose();
     } catch (err) {
       console.error('Project export error:', err);
@@ -233,7 +233,7 @@ export default function ExportModal({ onClose }) {
           </div>
           
           {/* Options for raster formats */}
-          {format !== 'inpost.json' && (
+          {format !== 'ppost.json' && (
             <>
               <h3 className="font-medium mb-3">Options</h3>
               
@@ -318,7 +318,7 @@ export default function ExportModal({ onClose }) {
                       ) : (
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-700 truncate max-w-[80%]">
-                            {watermarkText || 'Powered by inPost'}
+                            {watermarkText || 'Powered by PPost'}
                           </span>
                           <button 
                             className="text-gray-500 hover:text-indigo-600"

@@ -32,6 +32,7 @@ import { RiFontSizeAi } from "react-icons/ri";
 import { toast } from 'react-toastify';
 import PropertiesTab from './Tabs/PropertiesTab';
 import LayersTab from './Tabs/LayersTab';
+import { baseUrl } from '../../../utils/constant';
 
 // Common Google Font options
 const GOOGLE_FONTS = [
@@ -549,7 +550,7 @@ export default function RightSidebar() {
     setIsAiProcessing(true);
     
     try {
-      const response = await axios.post('http://localhost:4003/api/text/gen', {
+      const response = await axios.post(`${baseUrl}/api/text/gen`, {
         text: `Enhance this text to be more engaging and professional: ${selectedElement.text}`
       });
       

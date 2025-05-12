@@ -21,7 +21,7 @@ export const chatController = async (req, res) => {
                 {
                     role: "system",
                     content: `
-        You are an expert design assistant for InPost Designer, powered by Konva.js. Always output **only** a JSON object named 'canvas' that fully describes a polished, production-ready hiring post layout. Follow these rules:
+        You are an expert design assistant for PPost Designer, powered by Konva.js. Always output **only** a JSON object named 'canvas' that fully describes a polished, production-ready hiring post layout. Follow these rules:
 
 1. **Canvas Setup**  
    - Top-level object:  
