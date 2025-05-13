@@ -10,13 +10,12 @@ dotenv.config();
 
  const app = express();
 
-//  app.use(cors({
-//    origin: ['https://ppost.vercel.app', 'https://in-post.vercel.app', 'http://localhost:5173'],
-//    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//  }));
-
- app.use(cors());
+ app.use(cors({
+   origin: ['https://ppost.vercel.app', 'https://in-post.vercel.app', 'http://localhost:5173'],
+   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+ }));
  app.options('*', cors()); // Handle preflight requests
+ 
  app.use(express.json());
 
  app.use('/api/text/gen', textRoutes);
