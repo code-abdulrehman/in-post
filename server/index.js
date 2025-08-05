@@ -12,7 +12,7 @@ dotenv.config();
  const app = express();
 
  app.use(cors({
-   origin: ['https://ppost.vercel.app', 'https://in-post.vercel.app', 'http://localhost:5173', 'http://localhost:4321', 'https://thoggo.vercel.app', 'https://thoggo.vercel.app/'],
+   origin: ['https://ppost.vercel.app', 'https://in-post.vercel.app', 'http://localhost:5173', 'http://localhost:4321', 'https://thoggo.vercel.app', 'https://thoggo.vercel.app/', "http://localhost:3000"],
    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
  }));
  app.options('*', cors()); // Handle preflight requests

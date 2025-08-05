@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Summarize a blog post
 export const summarizeBlog = async (req, res) => {
@@ -12,29 +12,23 @@ export const summarizeBlog = async (req, res) => {
             });
         }
 
-        const client = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY,
-        });
+        const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        const response = await client.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-                {
-                    role: "system",
-                    content: "You are a helpful assistant that creates concise, informative summaries of blog posts. Provide a clear summary that captures the main points and key insights. Keep it engaging and professional."
-                },
-                {
-                    role: "user",
-                    content: `Please summarize this blog post${title ? ` titled "${title}"` : ''}:\n\n${blogContent}`
-                }
-            ],
-            max_tokens: 200,
-        });
+        const prompt = `You are a helpful assistant that creates concise, informative summaries of blog posts. Provide a clear summary that captures the main points and key insights. Keep it engaging and professional.
+
+Please summarize this blog post${title ? ` titled "${title}"` : ''}:
+
+${blogContent}`;
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const summary = response.text();
 
         res.status(200).json({
             success: true,
             data: {
-                summary: response.choices[0].message.content,
+                summary: summary,
                 title: title || "Blog Summary"
             }
         });
@@ -66,33 +60,29 @@ export const searchBlogs = async (req, res) => {
             });
         }
 
-        const client = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY,
-        });
+        const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         // Create a prompt with all blog titles/summaries for relevance matching
         const blogList = blogs.map((blog, index) => 
             `${index + 1}. Title: ${blog.title || 'Untitled'}\nSummary: ${blog.summary || blog.content?.substring(0, 200) || 'No summary available'}`
         ).join('\n\n');
 
-        const response = await client.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-                {
-                    role: "system",
-                    content: "You are a helpful assistant that finds relevant blog posts based on search queries. Analyze the provided blogs and return the most relevant ones with explanations of why they match the query. Return your response as a JSON array with objects containing 'index', 'relevanceScore' (1-10), and 'reason' fields."
-                },
-                {
-                    role: "user",
-                    content: `Find blogs relevant to the query: "${query}"\n\nAvailable blogs:\n${blogList}\n\nReturn only the most relevant blogs (top 5 maximum) in JSON format.`
-                }
-            ],
-            max_tokens: 500,
-        });
+        const prompt = `You are a helpful assistant that finds relevant blog posts based on search queries. Analyze the provided blogs and return the most relevant ones with explanations of why they match the query. Return your response as a JSON array with objects containing 'index', 'relevanceScore' (1-10), and 'reason' fields.
+
+Find blogs relevant to the query: "${query}"
+
+Available blogs:
+${blogList}
+
+Return only the most relevant blogs (top 5 maximum) in JSON format.`;
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const aiResponse = response.text();
 
         let relevantBlogs;
         try {
-            const aiResponse = response.choices[0].message.content;
             // Extract JSON from the response
             const jsonMatch = aiResponse.match(/\[[\s\S]*\]/);
             if (jsonMatch) {
@@ -149,25 +139,20 @@ export const getBlogWithRelated = async (req, res) => {
             });
         }
 
-        const client = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY,
-        });
+        const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         // First, get a summary of the current blog
-        const summaryResponse = await client.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-                {
-                    role: "system",
-                    content: "Create a concise summary and extract key topics/tags from this blog post. Also suggest related topics that readers might be interested in."
-                },
-                {
-                    role: "user",
-                    content: `Summarize this blog and suggest related topics:\n\nTitle: ${title || 'Untitled'}\nContent: ${blogContent}`
-                }
-            ],
-            max_tokens: 300,
-        });
+        const summaryPrompt = `Create a concise summary and extract key topics/tags from this blog post. Also suggest related topics that readers might be interested in.
+
+Summarize this blog and suggest related topics:
+
+Title: ${title || 'Untitled'}
+Content: ${blogContent}`;
+
+        const summaryResult = await model.generateContent(summaryPrompt);
+        const summaryResponse = await summaryResult.response;
+        const summary = summaryResponse.text();
 
         let relatedBlogs = [];
         if (allBlogs && Array.isArray(allBlogs) && allBlogs.length > 0) {
@@ -176,23 +161,19 @@ export const getBlogWithRelated = async (req, res) => {
                 `${index + 1}. ${blog.title || 'Untitled'}: ${blog.summary || blog.content?.substring(0, 150) || ''}`
             ).join('\n');
 
-            const relatedResponse = await client.chat.completions.create({
-                model: "gpt-4o-mini",
-                messages: [
-                    {
-                        role: "system",
-                        content: "Find blogs that are related to the given blog content. Return indices of the most relevant blogs (maximum 3) as a JSON array of numbers."
-                    },
-                    {
-                        role: "user",
-                        content: `Based on this blog content: "${blogContent.substring(0, 500)}"\n\nFind related blogs from:\n${blogList}`
-                    }
-                ],
-                max_tokens: 100,
-            });
+            const relatedPrompt = `Find blogs that are related to the given blog content. Return indices of the most relevant blogs (maximum 3) as a JSON array of numbers.
+
+Based on this blog content: "${blogContent.substring(0, 500)}"
+
+Find related blogs from:
+${blogList}`;
+
+            const relatedResult = await model.generateContent(relatedPrompt);
+            const relatedResponse = await relatedResult.response;
+            const relatedText = relatedResponse.text();
 
             try {
-                const indices = JSON.parse(relatedResponse.choices[0].message.content);
+                const indices = JSON.parse(relatedText);
                 relatedBlogs = indices.map(index => allBlogs[index - 1]).filter(Boolean);
             } catch {
                 // Fallback to first 3 blogs if parsing fails
@@ -204,7 +185,7 @@ export const getBlogWithRelated = async (req, res) => {
             success: true,
             data: {
                 title: title || "Blog Post",
-                summary: summaryResponse.choices[0].message.content,
+                summary: summary,
                 relatedBlogs: relatedBlogs.map(blog => ({
                     title: blog.title,
                     summary: blog.summary || blog.content?.substring(0, 200),
