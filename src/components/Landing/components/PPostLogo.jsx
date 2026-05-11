@@ -20,12 +20,13 @@ const PPostLogo = ({ variant = 'full', ...props }) => {
         y="50"
         fill="currentColor"
         fontFamily="ui-serif, Georgia, Cambria, 'Times New Roman', serif"
-        fontSize="44"
+        fontSize="64"
         fontWeight="800"
         fontStyle="italic"
         letterSpacing="-0.03em"
+        className="whitespace-nowrap"
       >
-        {copy}
+        &nbsp;{copy}
       </text>
     </svg>
   );

@@ -90,7 +90,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-stone-200 pt-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-stone-200 p-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-stone-500 sm:text-sm">
             © {new Date().getFullYear()} PPost. Replace placeholder legal links before launch.
           </p>
@@ -100,13 +100,11 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="pointer-events-none border-t border-stone-100/80 bg-gradient-to-b from-stone-50 via-white to-white">
-        <div className="mx-auto flex max-w-7xl justify-center px-4 py-8 sm:py-10">
-          <PPostLogo
-            variant="full"
-            className="h-9 w-auto max-w-[min(100vw,2rem)] shrink-0 text-orange-500/25 select-none sm:h-10 md:h-11 md:max-w-[min(100vw,82rem)]"
-          />
-        </div>
+      <div className="absolute -bottom-12 xl:-bottom-32 left-0 right-0 flex justify-center items-center h-auto pointer-events-none ">
+        <PPostLogo
+          variant="full"
+          className=" w-auto shrink-0 text-orange-500/25 select-none"
+        />
       </div>
     </footer>
   );
