@@ -9,25 +9,31 @@ const AIPaletteDialog = ({
   getSelectedColor,
   generateRandomPrompt,
   handleGenerateAiPalette,
-  onClose
+  onClose,
+  aiDisabled = false,
 }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
         <h3 className="text-lg font-medium mb-4 flex items-center">
-          <FaMagic className="mr-2 text-purple-500" /> Generate AI Background Palette
+          <FaMagic className="mr-2 text-orange-500" /> Generate AI Background Palette
         </h3>
+        {aiDisabled && (
+          <p className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+            AI is offline. Close this dialog and try again when the API is reachable.
+          </p>
+        )}
         
         {useCurrentBackground && (
-          <div className="mb-4 p-3 border-l-4 border-indigo-500 bg-indigo-50 rounded">
+          <div className="mb-4 p-3 border-l-4 border-orange-500 bg-orange-50 rounded">
             <div className="flex items-center mb-2">
               <div 
                 className="w-6 h-6 mr-2 rounded border border-gray-300" 
                 style={{ backgroundColor: getSelectedColor() }}
               ></div>
-              <p className="text-sm font-medium text-indigo-700">New palette will be created with your current background color</p>
+              <p className="text-sm font-medium text-orange-700">New palette will be created with your current background color</p>
             </div>
-            <p className="text-xs text-indigo-600">
+            <p className="text-xs text-orange-600">
               The AI will create a harmonious palette that includes this color
             </p>
           </div>
@@ -49,7 +55,7 @@ const AIPaletteDialog = ({
               Try to be descriptive for best results
             </div>
             <button
-              className="text-xs text-purple-600 hover:text-purple-800 flex items-center"
+              className="text-xs text-orange-600 hover:text-orange-800 flex items-center"
               onClick={generateRandomPrompt}
               disabled={isGeneratingPalette}
             >
@@ -73,7 +79,7 @@ const AIPaletteDialog = ({
             ].map((prompt, idx) => (
               <button
                 key={idx}
-                className="text-xs text-left p-1.5 hover:bg-purple-100 rounded text-gray-700 transition-colors"
+                className="text-xs text-left p-1.5 hover:bg-orange-100 rounded text-gray-700 transition-colors"
                 onClick={() => setAiPrompt(prompt)}
                 disabled={isGeneratingPalette}
               >
@@ -92,9 +98,13 @@ const AIPaletteDialog = ({
             Cancel
           </button>
           <button
-            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded text-sm flex items-center"
+            className={`px-4 py-2 rounded text-sm flex items-center ${
+              aiDisabled || isGeneratingPalette || !aiPrompt.trim()
+                ? 'cursor-not-allowed bg-stone-200 text-stone-500'
+                : 'bg-gradient-to-r from-orange-600 to-amber-500 text-white hover:from-orange-700 hover:to-amber-600'
+            }`}
             onClick={handleGenerateAiPalette}
-            disabled={isGeneratingPalette || !aiPrompt.trim()}
+            disabled={aiDisabled || isGeneratingPalette || !aiPrompt.trim()}
           >
             {isGeneratingPalette ? (
               <>

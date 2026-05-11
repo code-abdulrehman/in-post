@@ -215,7 +215,7 @@ export default function TextPanel() {
           <button
             className={`flex-1 p-2 text-center text-sm ${
               !isTextPath 
-                ? 'bg-indigo-500 text-white' 
+                ? 'bg-orange-500 text-white' 
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
             }`}
             onClick={() => setIsTextPath(false)}
@@ -225,7 +225,7 @@ export default function TextPanel() {
           <button
             className={`flex-1 p-2 text-center text-sm ${
               isTextPath 
-                ? 'bg-indigo-500 text-white' 
+                ? 'bg-orange-500 text-white' 
                 : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
             }`}
             onClick={() => setIsTextPath(true)}
@@ -242,7 +242,7 @@ export default function TextPanel() {
         {textStyles.map((style, index) => (
           <div 
             key={index}
-            className="flex items-center p-2 border rounded-md cursor-pointer hover:bg-gray-50 hover:border-indigo-300"
+            className="flex items-center p-2 border rounded-md cursor-pointer hover:bg-gray-50 hover:border-orange-300"
             onClick={() => handleAddText(style)}
           >
             <div className="text-gray-700 mr-3">{style.icon}</div>

@@ -21,7 +21,27 @@ export default function EditorPage() {
     canvasBackground
   } = useStore();
 
+  const checkAiApiHealth = useStore((s) => s.checkAiApiHealth);
+
   const [showTabs, setShowTabs] = useState(true);
+
+  /** Ping AI backend once per tab session; failures are toast-only (no console). */
+  useEffect(() => {
+    (async () => {
+      const ok = await checkAiApiHealth();
+      if (ok) return;
+      try {
+        if (sessionStorage.getItem('ppost-ai-offline-toast')) return;
+        sessionStorage.setItem('ppost-ai-offline-toast', '1');
+      } catch {
+        /* ignore private mode */
+      }
+      // toast.warning(
+      //   'PPost AI is unreachable. Text enhance and AI palette tools are disabled until the API is available.',
+      //   { position: 'bottom-right', autoClose: 7000 }
+      // );
+    })();
+  }, [checkAiApiHealth]);
   
   // Initialize the design history when the editor is loaded
   useEffect(() => {

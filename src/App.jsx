@@ -52,27 +52,18 @@ export default function App() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
     
-    // Check connection quality
+    // Optional: only flag very slow links (avoid noisy "unstable" banner on normal Wi‑Fi)
     const checkConnectionQuality = () => {
-      if (navigator.connection) {
-        const connection = navigator.connection;
-        if (connection.downlink < 1) {
-          setIsOnline('slow');
-          setShowStatus(true);
-        } else if (connection.downlink < 2) {
-          setIsOnline('unstable');
-          setShowStatus(true);
-          setWasUnstable(true);
-        } else if (isOnline === true && wasUnstable) {
-          // Connection is stable now but was unstable before
-          // Keep showing the status bar
-          setShowStatus(true);
-        }
+      if (!navigator.connection) return;
+      const { downlink } = navigator.connection;
+      if (downlink > 0 && downlink < 0.25) {
+        setIsOnline('slow');
+        setShowStatus(true);
       }
     };
-    
-    const intervalId = setInterval(checkConnectionQuality, 5000);
-    
+
+    const intervalId = setInterval(checkConnectionQuality, 15000);
+
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);

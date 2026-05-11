@@ -390,7 +390,7 @@ export default function ImagePanel() {
       {/* Upload area */}
       <div 
         className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer mb-4 transition-colors duration-200 ${
-          isDragging ? 'border-indigo-500 bg-indigo-50' : 'border-gray-300 hover:border-indigo-400'
+          isDragging ? 'border-orange-500 bg-orange-50' : 'border-gray-300 hover:border-orange-400'
         }`}
         onClick={() => fileInputRef.current.click()}
         onDragOver={handleDragOver}
@@ -420,7 +420,7 @@ export default function ImagePanel() {
       {/* Image gallery */}
       {isLoading ? (
         <div className="text-center text-gray-500 py-6">
-          <div className="animate-spin mx-auto h-8 w-8 border-2 border-indigo-500 rounded-full border-t-transparent mb-2"></div>
+          <div className="animate-spin mx-auto h-8 w-8 border-2 border-orange-500 rounded-full border-t-transparent mb-2"></div>
           <p className="text-sm">Loading your images...</p>
         </div>
       ) : uploadedImages.length > 0 ? (
@@ -444,7 +444,7 @@ export default function ImagePanel() {
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
                   <button 
-                    className="bg-indigo-600 text-white p-1 rounded-full"
+                    className="bg-orange-600 text-white p-1 rounded-full"
                     onClick={() => handleAddImage(imgUrl)}
                     title="Add to Canvas"
                   >

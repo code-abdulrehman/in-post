@@ -81,7 +81,7 @@ export default function CanvasSettingsPanel() {
         </div>
         <button
           onClick={handleSizeChange}
-          className="mt-2 w-full py-1 px-3 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700"
+          className="mt-2 w-full py-1 px-3 bg-orange-600 text-white rounded-md text-sm hover:bg-orange-700"
         >
           Apply Size
         </button>
@@ -93,7 +93,7 @@ export default function CanvasSettingsPanel() {
           {presets.map((preset) => (
             <div
               key={`${preset.width}-${preset.height}`}
-              className="border rounded-md p-2 text-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 h-28 relative"
+              className="border rounded-md p-2 text-center cursor-pointer hover:border-orange-500 hover:bg-orange-50 h-28 relative"
               onClick={() => handlePresetClick(preset)}
             >
               <span className='absolute text-7xl z-10' style={{transform: "translate(-50%, 0%", opacity: "8%"}}>

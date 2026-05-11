@@ -8,14 +8,14 @@ export default function RecentProjects({ recentProjects, handleOpenProject, hand
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <div className="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-semibold mb-3">
+            <div className="inline-block px-3 py-1 bg-orange-100 text-orange-900 rounded-full text-sm font-semibold mb-3">
               Your Work
             </div>
             <h2 className="text-3xl font-bold">Recent Projects</h2>
           </div>
           <button
             onClick={handleCreateDesign}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300 flex items-center"
+            className="bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-lg transition duration-300 flex items-center"
           >
             <FiPlusCircle className="mr-1" /> New Project
           </button>
@@ -47,7 +47,7 @@ export default function RecentProjects({ recentProjects, handleOpenProject, hand
                       .toUpperCase()
                     : ''}
                 </h2>
-                    <span className={`text-gary-400 text-xs`}>PPost Designs</span>
+                    <span className="text-gray-400 text-xs">PPost Designs</span>
                 </div>
 
                 {/* Thumbnail preview would go here */}
@@ -73,7 +73,7 @@ export default function RecentProjects({ recentProjects, handleOpenProject, hand
           <div className="mt-8 text-center">
             <button
               onClick={handleCreateDesign}
-              className="text-indigo-600 font-medium inline-flex items-center hover:underline"
+              className="text-orange-600 font-medium inline-flex items-center hover:underline"
             >
               View All Projects
               <FiArrowRight className="ml-1" />

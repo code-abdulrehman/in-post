@@ -24,7 +24,8 @@ export default function BackgroundPanel() {
     addPalette,
     deletePalette,
     addColorToPalette,
-    removeColorFromPalette
+    removeColorFromPalette,
+    aiApiAvailable,
   } = useStore();
   
   const [activeTab, setActiveTab] = useState('colors');
@@ -208,6 +209,10 @@ export default function BackgroundPanel() {
   
   // Start AI palette generation dialog
   const handleStartAiPaletteGeneration = (useBackground = false) => {
+    if (!aiApiAvailable) {
+      toast.error('AI color tools are unavailable right now.');
+      return;
+    }
     setShowAiDialog(true);
     setUseCurrentBackground(useBackground);
     
@@ -227,7 +232,12 @@ export default function BackgroundPanel() {
       toast.error('Please enter a description for your palette');
       return;
     }
-    
+    if (!aiApiAvailable) {
+      toast.error('AI color tools are unavailable right now.');
+      setShowAiDialog(false);
+      return;
+    }
+
     setIsGeneratingPalette(true);
     
     try {
@@ -260,9 +270,8 @@ export default function BackgroundPanel() {
       } else {
         toast.error('Failed to generate palette. Please try again.');
       }
-    } catch (error) {
-      console.error('Error generating AI palette:', error);
-      toast.error('Error connecting to AI service. Please try again later.');
+    } catch {
+      toast.error('Could not reach the AI service. Try again later.');
     } finally {
       setIsGeneratingPalette(false);
     }
@@ -380,7 +389,7 @@ export default function BackgroundPanel() {
       {/* Tabs */}
       <div className="flex border-b mb-4">
         <button
-          className={`flex-1 py-2 text-sm font-medium ${activeTab === 'colors' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500'}`}
+          className={`flex-1 py-2 text-sm font-medium ${activeTab === 'colors' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-500'}`}
           onClick={() => setActiveTab('colors')}
         >
           <div className="flex items-center justify-center">
@@ -388,7 +397,7 @@ export default function BackgroundPanel() {
           </div>
         </button>
         <button
-          className={`flex-1 py-2 text-sm font-medium ${activeTab === 'palettes' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500'}`}
+          className={`flex-1 py-2 text-sm font-medium ${activeTab === 'palettes' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-500'}`}
           onClick={() => setActiveTab('palettes')}
         >
           <div className="flex items-center justify-center">
@@ -413,6 +422,7 @@ export default function BackgroundPanel() {
           setNewColor={setNewColor}
           bgOpacity={bgOpacity}
           handleBgOpacityChange={handleBgOpacityChange}
+          aiDisabled={!aiApiAvailable}
         />
       )}
       
@@ -427,6 +437,7 @@ export default function BackgroundPanel() {
           handleStartCreatePalette={handleStartCreatePalette}
           handleStartAiPaletteGeneration={handleStartAiPaletteGeneration}
           setActiveTab={setActiveTab}
+          aiDisabled={!aiApiAvailable}
         />
       )}
       
@@ -468,6 +479,7 @@ export default function BackgroundPanel() {
           generateRandomPrompt={generateRandomPrompt}
           handleGenerateAiPalette={handleGenerateAiPalette}
           onClose={() => setShowAiDialog(false)}
+          aiDisabled={!aiApiAvailable}
         />
       )}
     </div>

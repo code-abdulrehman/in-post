@@ -80,7 +80,7 @@ export default function LeftSidebar({ showTabs, setShowTabs }) {
 
       <div className={`flex items-start h-full overflow-auto ${showTabs ? "flex-col" : "flex-row"}`}>
         {showTabs ? (
-          <div className="bg-indigo-100 border-b border-gray-300 grid grid-cols-5 gap-1 w-full sticky top-0">
+          <div className="bg-orange-100 border-b border-gray-300 grid grid-cols-5 gap-1 w-full sticky top-0">
             {/* Tab buttons */}
             {renderButtons('hr')}
           </div>

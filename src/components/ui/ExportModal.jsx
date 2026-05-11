@@ -216,13 +216,13 @@ export default function ExportModal({ onClose }) {
                 key={item.id}
                 className={`border rounded-md p-3 cursor-pointer transition-all ${
                   format === item.id 
-                    ? 'border-indigo-500 bg-indigo-50 ring-1 ring-indigo-300' 
+                    ? 'border-orange-500 bg-orange-50 ring-1 ring-orange-300' 
                     : 'hover:border-gray-300'
                 }`}
                 onClick={() => setFormat(item.id)}
               >
                 <div className="flex items-center mb-1">
-                  <div className={`text-xl ${format === item.id ? 'text-indigo-600' : 'text-gray-500'}`}>
+                  <div className={`text-xl ${format === item.id ? 'text-orange-600' : 'text-gray-500'}`}>
                     {item.icon}
                   </div>
                   <div className="font-medium ml-2">{item.name}</div>
@@ -235,43 +235,78 @@ export default function ExportModal({ onClose }) {
           {/* Options for raster formats */}
           {format !== 'ppost.json' && (
             <>
-              <h3 className="font-medium mb-3">Options</h3>
-              
-              {/* Quality slider - only for JPG and WebP */}
-              {(format === 'jpg' || format === 'webp') && (
-                <div className="mb-4">
-                  <label className="block text-sm text-gray-700 mb-1">
-                    Quality: {Math.round(quality * 100)}%
-                  </label>
-                  <input
-                    type="range"
-                    min="0.1"
-                    max="1"
-                    step="0.1"
-                    value={quality}
-                    onChange={(e) => setQuality(parseFloat(e.target.value))}
-                    className="w-full"
-                  />
-                </div>
-              )}
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-stone-500">
+                Options
+              </h3>
 
-              {/* Scale slider */}
-              <div className="mb-4">
-                <label className="block text-sm text-gray-700 mb-1">
-                  Scale: {scale}x
-                </label>
-                <input
-                  type="range"
-                  min="1"
-                  max="4"
-                  step="0.5"
-                  value={scale}
-                  onChange={(e) => setScale(parseFloat(e.target.value))}
-                  className="w-full"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Higher scale = larger file but better quality
-                </p>
+              <div className="space-y-4">
+                {(format === 'jpg' || format === 'webp') && (
+                  <div className="rounded-xl border border-stone-200 bg-stone-50/90 px-4 py-3 shadow-sm">
+                    <div className="mb-2 flex items-baseline justify-between gap-3">
+                      <label className="text-sm font-medium text-stone-800" htmlFor="export-quality">
+                        Compression quality
+                      </label>
+                      <output
+                        className="rounded-md bg-white px-2 py-0.5 text-sm font-semibold tabular-nums text-orange-600 ring-1 ring-stone-200/80"
+                        htmlFor="export-quality"
+                      >
+                        {Math.round(quality * 100)}%
+                      </output>
+                    </div>
+                    <input
+                      id="export-quality"
+                      type="range"
+                      min="0.1"
+                      max="1"
+                      step="0.1"
+                      value={quality}
+                      onChange={(e) => setQuality(parseFloat(e.target.value))}
+                      className="w-full"
+                      aria-valuemin={0.1}
+                      aria-valuemax={1}
+                      aria-valuenow={quality}
+                    />
+                    <div className="mt-1.5 flex justify-between text-[11px] text-stone-500">
+                      <span>Smaller file</span>
+                      <span>Sharper export</span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="rounded-xl border border-stone-200 bg-stone-50/90 px-4 py-3 shadow-sm">
+                  <div className="mb-2 flex items-baseline justify-between gap-3">
+                    <label className="text-sm font-medium text-stone-800" htmlFor="export-scale">
+                      Pixel scale
+                    </label>
+                    <output
+                      className="rounded-md bg-white px-2 py-0.5 text-sm font-semibold tabular-nums text-orange-600 ring-1 ring-stone-200/80"
+                      htmlFor="export-scale"
+                    >
+                      {Number.isInteger(scale) ? scale : scale.toFixed(1)}×
+                    </output>
+                  </div>
+                  <input
+                    id="export-scale"
+                    type="range"
+                    min="1"
+                    max="4"
+                    step="0.5"
+                    value={scale}
+                    onChange={(e) => setScale(parseFloat(e.target.value))}
+                    className="w-full"
+                    aria-valuemin={1}
+                    aria-valuemax={4}
+                    aria-valuenow={scale}
+                  />
+                  <div className="mt-1.5 flex justify-between text-[11px] text-stone-500">
+                    <span>1× — canvas size</span>
+                    <span>4× — print / zoom</span>
+                  </div>
+                  <p className="mt-2 border-t border-stone-200/80 pt-2 text-xs leading-snug text-stone-500">
+                    Higher scale increases pixel dimensions and file size. Use 2×–3× for crisp
+                    social screens.
+                  </p>
+                </div>
               </div>
               
               {/* Watermark section */}
@@ -288,7 +323,7 @@ export default function ExportModal({ onClose }) {
                     />
                     <label htmlFor="watermark-toggle" className="flex items-center cursor-pointer">
                       <div className="relative w-8 h-4">
-                        <div className={`block w-8 h-4 rounded-full ${includeWatermark ? 'bg-indigo-400' : 'bg-gray-300'}`}></div>
+                        <div className={`block w-8 h-4 rounded-full ${includeWatermark ? 'bg-orange-400' : 'bg-gray-300'}`}></div>
                         <div className={`absolute left-0.5 top-0.5 bg-white w-3 h-3 rounded-full transition-transform ${includeWatermark ? 'transform translate-x-4' : ''}`}></div>
                       </div>
                     </label>
@@ -321,7 +356,7 @@ export default function ExportModal({ onClose }) {
                             {watermarkText || 'Powered by PPost'}
                           </span>
                           <button 
-                            className="text-gray-500 hover:text-indigo-600"
+                            className="text-gray-500 hover:text-orange-600"
                             onClick={() => setEditingWatermarkText(true)}
                           >
                             <FiEdit size={16} />
@@ -348,7 +383,7 @@ export default function ExportModal({ onClose }) {
             onClick={handleExport}
             disabled={loading}
             className={`px-4 py-2 rounded-md flex items-center ${
-              loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+              loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-orange-600 hover:bg-orange-700 text-white'
             }`}
           >
             {loading ? 'Exporting...' : (

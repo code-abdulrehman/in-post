@@ -3,22 +3,38 @@ import axios from 'axios';
 import { useStore } from '../../../store';
 import { RiGeminiFill } from '@remixicon/react';
 
-export default function TextEnhancerPanel({ value, onChange, placeholder="Enter text to enhance with AI", rows=3, className, enhanceTextWithAI, isAiProcessing }) {
+export default function TextEnhancerPanel({
+  value,
+  onChange,
+  placeholder = 'Enter text to enhance with AI',
+  rows = 3,
+  className,
+  enhanceTextWithAI,
+  isAiProcessing,
+  aiFeaturesEnabled = true,
+}) {
+  const aiDisabled = !aiFeaturesEnabled;
 
   return (
     <div className="text-enhancer-panel">
-      <h3 className="text-sm font-medium mb-3">AI Text Enhancer</h3>
+      <h3 className="text-sm font-medium mb-3">
+        AI Text Enhancer
+        {aiDisabled && <span className="ml-2 text-xs font-normal text-stone-400">(offline)</span>}
+      </h3>
       
       <div className="mb-4 overflow-hidden w-full relative">
         <button 
-          className="absolute right-1 top-1 text-indigo-600 hover:text-indigo-700 transition-all duration-200 group"
-          title="AI Text Suggestions"
+          type="button"
+          className={`absolute right-1 top-1 transition-all duration-200 group ${
+            aiDisabled ? 'cursor-not-allowed text-stone-300' : 'text-orange-600 hover:text-orange-700'
+          }`}
+          title={aiDisabled ? 'AI unavailable' : 'AI text suggestions'}
           onClick={enhanceTextWithAI}
-          disabled={isAiProcessing || !value?.trim()}
+          disabled={aiDisabled || isAiProcessing || !value?.trim()}
         >
           <RiGeminiFill 
             size={18} 
-            className={`${isAiProcessing ? 'animate-spin' : 'group-hover:rotate-90'} duration-300`}
+            className={`${isAiProcessing ? 'animate-spin' : aiDisabled ? '' : 'group-hover:rotate-90'} duration-300`}
           />
         </button>
 

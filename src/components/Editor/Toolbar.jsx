@@ -178,7 +178,7 @@ export default function Toolbar() {
           onClick={() => {
             navigate('/');
           }}
-          className="text-gray-700 hover:text-indigo-600 p-1 rounded transition-colors duration-200 flex items-center"
+          className="text-gray-700 hover:text-orange-600 p-1 rounded transition-colors duration-200 flex items-center"
         >
           <FiHome className="mr-1" /> <span>Home</span>
         </button>
@@ -202,7 +202,7 @@ export default function Toolbar() {
               />
               <button
                 onClick={saveProjectName}
-                className="text-indigo-600 hover:text-indigo-800"
+                className="text-orange-600 hover:text-orange-800"
                 title="Save Name"
               >
                 <FiCheck />
@@ -227,7 +227,7 @@ export default function Toolbar() {
             onClick={undo}
             disabled={historyIndex <= 0}
             className={`p-2 rounded transition-colors duration-200 ${historyIndex > 0
-              ? 'text-gray-700 hover:text-indigo-600'
+              ? 'text-gray-700 hover:text-orange-600'
               : 'text-gray-400 cursor-not-allowed'
               }`}
             title="Undo"
@@ -239,7 +239,7 @@ export default function Toolbar() {
             onClick={redo}
             disabled={historyIndex >= history.length - 1}
             className={`p-2 rounded transition-colors duration-200 ${historyIndex < history.length - 1
-              ? 'text-gray-700 hover:text-indigo-600'
+              ? 'text-gray-700 hover:text-orange-600'
               : 'text-gray-400 cursor-not-allowed'
               }`}
             title="Redo"
@@ -265,7 +265,7 @@ export default function Toolbar() {
             onClick={handleDuplicate}
             disabled={!selectedElementId}
             className={`p-2 rounded transition-colors duration-200 ${selectedElementId
-              ? 'text-gray-700 hover:text-indigo-600'
+              ? 'text-gray-700 hover:text-orange-600'
               : 'text-gray-400 cursor-not-allowed'
               }`}
             title="Duplicate Selected"
@@ -278,8 +278,8 @@ export default function Toolbar() {
           <button
             onClick={toggleGrid}
             className={`p-2 rounded transition-colors duration-200 ${showGrid
-              ? 'text-indigo-600 bg-indigo-50'
-              : 'text-gray-700 hover:text-indigo-600'
+              ? 'text-orange-600 bg-orange-50'
+              : 'text-gray-700 hover:text-orange-600'
               }`}
             title="Toggle Grid"
           >
@@ -290,7 +290,7 @@ export default function Toolbar() {
 
           <button
             onClick={handleZoomOut}
-            className="text-gray-700 hover:text-indigo-600 p-2 rounded transition-colors duration-200"
+            className="text-gray-700 hover:text-orange-600 p-2 rounded transition-colors duration-200"
             title="Zoom Out"
           >
             <FiZoomOut />
@@ -300,7 +300,7 @@ export default function Toolbar() {
 
           <button
             onClick={handleZoomIn}
-            className="text-gray-700 hover:text-indigo-600 p-2 rounded transition-colors duration-200"
+            className="text-gray-700 hover:text-orange-600 p-2 rounded transition-colors duration-200"
             title="Zoom In"
           >
             <FiZoomIn />
@@ -322,7 +322,7 @@ export default function Toolbar() {
         <div className="flex items-center gap-2">
          {/* <button
             onClick={handleSave}
-            className="text-gray-700 hover:text-indigo-600 p-2 rounded transition-colors duration-200 flex items-center mr-2"
+            className="text-gray-700 hover:text-orange-600 p-2 rounded transition-colors duration-200 flex items-center mr-2"
             title="Save Project"
           >
             <FiSave className="mr-1" /> Save
@@ -344,7 +344,7 @@ export default function Toolbar() {
           
           <button
             onClick={handleExport}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md flex items-center"
+            className="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1 rounded-md flex items-center"
             title="Export Design"
           >
             <FiDownload className="mr-1" /> Export

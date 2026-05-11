@@ -35,9 +35,9 @@ export default function ElementsPanel() {
     { type: 'rectangle', name: 'Rectangle', icon: <MdSquare size={24} />, fill: '#3B82F6', width: 100, height: 80 },
     { type: 'circle', name: 'Circle', icon: <MdCircle size={24} />, fill: '#10B981', radius: 50 },
     { type: 'triangle', name: 'Triangle', icon: <MdChangeHistory size={24} />, fill: '#F59E0B', sides: 3, radius: 50 },
-    { type: 'line', name: 'Line', icon: <MdTimeline size={24} />, stroke: '#6366F1', strokeWidth: 4, points: [0, 0, 100, 0] },
+    { type: 'line', name: 'Line', icon: <MdTimeline size={24} />, stroke: '#EA580C', strokeWidth: 4, points: [0, 0, 100, 0] },
     { type: 'star', name: 'Star', icon: <MdStarRate size={24} />, fill: '#F59E0B', numPoints: 5, innerRadius: 30, outerRadius: 50 },
-    { type: 'polygon', name: 'Hexagon', icon: <MdHexagon size={24} />, fill: '#8B5CF6', sides: 6, radius: 50 },
+    { type: 'polygon', name: 'Hexagon', icon: <MdHexagon size={24} />, fill: '#F97316', sides: 6, radius: 50 },
     { 
       type: 'rectangle', 
       name: 'Rounded Rectangle', 
@@ -135,7 +135,7 @@ export default function ElementsPanel() {
       name: 'Watercolor', 
       icon: <FaDrawPolygon size={24} />, 
       description: 'Flowing watercolor-like strokes',
-      stroke: '#8B5CF6',
+      stroke: '#F97316',
       strokeWidth: 8,
       tension: 0.8,
       lineCap: 'round',
@@ -291,7 +291,7 @@ export default function ElementsPanel() {
       setDrawingMode({
         enabled: true,
         tool: 'watercolor',
-        stroke: tool.stroke || '#8B5CF6',
+        stroke: tool.stroke || '#F97316',
         strokeWidth: tool.strokeWidth || 8,
         tension: tool.tension || 0.8,
         lineCap: tool.lineCap || 'round',
@@ -350,7 +350,7 @@ export default function ElementsPanel() {
       {/* Subtabs */}
       <div className="flex border-b mb-4">
         <button
-          className={`flex-1 py-2 text-sm font-medium ${activeTab === 'shapes' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500'}`}
+          className={`flex-1 py-2 text-sm font-medium ${activeTab === 'shapes' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-500'}`}
           onClick={() => setActiveTab('shapes')}
         >
           <div className="flex items-center justify-center">
@@ -358,7 +358,7 @@ export default function ElementsPanel() {
           </div>
         </button>
         <button
-          className={`flex-1 py-2 text-sm font-medium ${activeTab === 'icons' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500'}`}
+          className={`flex-1 py-2 text-sm font-medium ${activeTab === 'icons' ? 'text-orange-600 border-b-2 border-orange-600' : 'text-gray-500'}`}
           onClick={() => setActiveTab('icons')}
         >
           <div className="flex items-center justify-center">

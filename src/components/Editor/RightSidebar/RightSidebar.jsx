@@ -86,7 +86,8 @@ export default function RightSidebar() {
     selectElement,
     drawingMode,
     setDrawingMode,
-    disableDrawingMode
+    disableDrawingMode,
+    aiApiAvailable,
   } = useStore();
   
   const selectedElement = elements.find(el => el.id === selectedElementId);
@@ -546,24 +547,26 @@ export default function RightSidebar() {
   // New function to handle AI text enhancement
   const enhanceTextWithAI = async () => {
     if (!selectedElement?.text?.trim()) return;
-    
+    if (!aiApiAvailable) {
+      toast.error('AI text enhance is unavailable right now.');
+      return;
+    }
+
     setIsAiProcessing(true);
-    
+
     try {
       const response = await axios.post(`${baseUrl}/api/text/gen`, {
-        text: `Enhance this text to be more engaging and professional: ${selectedElement.text}`
+        text: `Enhance this text to be more engaging and professional: ${selectedElement.text}`,
       });
-      
+
       if (response.data.success) {
-        // Replace current text with enhanced text
         handlePropertyChange('text', response.data.data);
+        toast.success('Text updated');
       } else {
-        console.error('Error enhancing text:', response.data.error);
-        alert('Failed to enhance text. Please try again.');
+        toast.error(response.data?.error || 'Could not enhance text. Try again later.');
       }
-    } catch (error) {
-      console.error('Error calling AI API:', error);
-      alert('Failed to connect to AI service. Please try again later.');
+    } catch {
+      toast.error('Could not reach the AI service. Check your connection or try again later.');
     } finally {
       setIsAiProcessing(false);
     }
@@ -603,14 +606,14 @@ export default function RightSidebar() {
         <h2 className="text-sm font-medium">Canvas Editor</h2>
         <div className="flex rounded-md overflow-hidden border border-gray-200">
           <button 
-            className={`p-2 ${activeTab === 'properties' ? 'bg-indigo-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+            className={`p-2 ${activeTab === 'properties' ? 'bg-orange-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
             onClick={() => setActiveTab('properties')}
             title="Properties"
           >
             <FiSliders size={16} />
           </button>
           <button 
-            className={`p-2 ${activeTab === 'layers' ? 'bg-indigo-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+            className={`p-2 ${activeTab === 'layers' ? 'bg-orange-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
             onClick={() => setActiveTab('layers')}
             title="Layers"
           >
@@ -634,6 +637,7 @@ export default function RightSidebar() {
             shapeFillType={shapeFillType}
             isAiProcessing={isAiProcessing}
             enhanceTextWithAI={enhanceTextWithAI}
+            aiFeaturesEnabled={aiApiAvailable}
             duplicateElement={duplicateElement}
             deleteElement={deleteElement}
             addToHistory={addToHistory}

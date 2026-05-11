@@ -35,7 +35,7 @@ const ConfirmDialog = ({
             className={`px-3 py-1.5 text-sm rounded-md text-white transition-colors ${
               isDanger 
                 ? 'bg-red-600 hover:bg-red-700' 
-                : 'bg-indigo-600 hover:bg-indigo-700'
+                : 'bg-orange-600 hover:bg-orange-700'
             }`}
             onClick={() => {
               onConfirm();

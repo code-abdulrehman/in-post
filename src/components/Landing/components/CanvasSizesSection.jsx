@@ -6,40 +6,40 @@ export default function CanvasSizesSection({ handleCreateDesign }) {
     {
       name: 'Instagram Post',
       dimensions: '1080 × 1080px',
-      icon: <FiMonitor className="text-2xl mb-2 text-indigo-600" />,
+      icon: <FiMonitor className="text-2xl mb-2 text-orange-600" />,
     },
     {
       name: 'Facebook Cover',
       dimensions: '851 × 315px',
-      icon: <FiMonitor className="text-2xl mb-2 text-indigo-600" />,
+      icon: <FiMonitor className="text-2xl mb-2 text-orange-600" />,
     },
     {
       name: 'Twitter Post',
       dimensions: '1200 × 675px',
-      icon: <FiMonitor className="text-2xl mb-2 text-indigo-600" />,
+      icon: <FiMonitor className="text-2xl mb-2 text-orange-600" />,
     },
     {
       name: 'YouTube Thumbnail',
       dimensions: '1280 × 720px',
-      icon: <FiMonitor className="text-2xl mb-2 text-indigo-600" />,
+      icon: <FiMonitor className="text-2xl mb-2 text-orange-600" />,
     },
     {
       name: 'LinkedIn Banner',
       dimensions: '1584 × 396px',
-      icon: <FiMonitor className="text-2xl mb-2 text-indigo-600" />,
+      icon: <FiMonitor className="text-2xl mb-2 text-orange-600" />,
     },
     {
       name: 'Custom Size',
       dimensions: 'Any dimensions',
-      icon: <FiSettings className="text-2xl mb-2 text-indigo-600" />,
+      icon: <FiSettings className="text-2xl mb-2 text-orange-600" />,
     }
   ];
 
   return (
-    <section className="py-24 bg-gray-50">
+    <section id="canvas-sizes" className="py-24 bg-gray-50">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center mb-16">
-          <div className="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-semibold mb-3">
+          <div className="inline-block px-3 py-1 bg-orange-100 text-orange-900 rounded-full text-sm font-semibold mb-3">
             Perfect Dimensions
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Pre-set Canvas Sizes for Any Project</h2>
@@ -58,7 +58,7 @@ export default function CanvasSizesSection({ handleCreateDesign }) {
               {size.icon}
               <h3 className="font-semibold text-lg mb-1">{size.name}</h3>
               <p className="text-gray-600 text-sm mb-4">{size.dimensions}</p>
-              <button className="text-indigo-600 hover:text-indigo-800 text-sm font-medium inline-flex items-center transition duration-300">
+              <button className="text-orange-600 hover:text-orange-800 text-sm font-medium inline-flex items-center transition duration-300">
                 Create design
                 <FiArrowRight className="ml-1" />
               </button>

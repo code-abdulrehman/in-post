@@ -33,6 +33,7 @@ export default function PropertiesTab({
   shapeFillType,
   isAiProcessing,
   enhanceTextWithAI,
+  aiFeaturesEnabled = true,
   duplicateElement,
   deleteElement,
   addToHistory,
@@ -96,8 +97,8 @@ export default function PropertiesTab({
             </div>
             
             {/* Current Tool Indicator */}
-            <div className="mb-4 bg-indigo-50 p-3 rounded-md border border-indigo-100">
-              <h5 className="text-sm font-medium text-indigo-700 mb-1 flex items-center">
+            <div className="mb-4 bg-orange-50 p-3 rounded-md border border-orange-100">
+              <h5 className="text-sm font-medium text-orange-700 mb-1 flex items-center">
                 {drawingMode.tool === 'pen' && <FaPen className="mr-2" />}
                 {drawingMode.tool === 'brush' && <FaPaintBrush className="mr-2" />}
                 {drawingMode.tool === 'marker' && <FiEdit className="mr-2" />}
@@ -107,7 +108,7 @@ export default function PropertiesTab({
                 {drawingMode.tool === 'dashed' && <FiSliders className="mr-2" />}
                 Active Tool: {drawingMode.tool ? drawingMode.tool.charAt(0).toUpperCase() + drawingMode.tool.slice(1) : 'None'}
               </h5>
-              <p className="text-xs text-indigo-600">
+              <p className="text-xs text-orange-600">
                 Current tool: {JSON.stringify(drawingMode.tool)}
               </p>
             </div>
@@ -119,7 +120,7 @@ export default function PropertiesTab({
               </label>
               <div className="grid grid-cols-3 gap-2">
                 <button 
-                  className={`p-2 rounded-md border ${drawingMode.tool === 'pen' ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
+                  className={`p-2 rounded-md border ${drawingMode.tool === 'pen' ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
                   onClick={() => {
                     handleDrawingPropertyChange('tool', 'pen');
                     handleDrawingPropertyChange('strokeWidth', 1.5);
@@ -131,11 +132,11 @@ export default function PropertiesTab({
                     togglePropertyGroup('drawing', true);
                   }}
                 >
-                  <FaPen className={`mb-1 ${drawingMode.tool === 'pen' ? 'text-indigo-600' : 'text-gray-600'}`} />
-                  <span className={`text-xs text-center ${drawingMode.tool === 'pen' ? 'font-medium text-indigo-700' : ''}`}>Fine Pen</span>
+                  <FaPen className={`mb-1 ${drawingMode.tool === 'pen' ? 'text-orange-600' : 'text-gray-600'}`} />
+                  <span className={`text-xs text-center ${drawingMode.tool === 'pen' ? 'font-medium text-orange-700' : ''}`}>Fine Pen</span>
                 </button>
                 <button 
-                  className={`p-2 rounded-md border ${drawingMode.tool === 'brush' ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
+                  className={`p-2 rounded-md border ${drawingMode.tool === 'brush' ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
                   onClick={() => {
                     handleDrawingPropertyChange('tool', 'brush');
                     handleDrawingPropertyChange('strokeWidth', 8);
@@ -147,11 +148,11 @@ export default function PropertiesTab({
                     togglePropertyGroup('drawing', true);
                   }}
                 >
-                  <FaPaintBrush className={`mb-1 ${drawingMode.tool === 'brush' ? 'text-indigo-600' : 'text-gray-600'}`} />
-                  <span className={`text-xs text-center ${drawingMode.tool === 'brush' ? 'font-medium text-indigo-700' : ''}`}>Brush</span>
+                  <FaPaintBrush className={`mb-1 ${drawingMode.tool === 'brush' ? 'text-orange-600' : 'text-gray-600'}`} />
+                  <span className={`text-xs text-center ${drawingMode.tool === 'brush' ? 'font-medium text-orange-700' : ''}`}>Brush</span>
                 </button>
                 <button 
-                  className={`p-2 rounded-md border ${drawingMode.tool === 'marker' ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
+                  className={`p-2 rounded-md border ${drawingMode.tool === 'marker' ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
                   onClick={() => {
                     handleDrawingPropertyChange('tool', 'marker');
                     handleDrawingPropertyChange('strokeWidth', 4);
@@ -163,11 +164,11 @@ export default function PropertiesTab({
                     togglePropertyGroup('drawing', true);
                   }}
                 >
-                  <FiEdit className={`mb-1 ${drawingMode.tool === 'marker' ? 'text-indigo-600' : 'text-gray-600'}`} />
-                  <span className={`text-xs text-center ${drawingMode.tool === 'marker' ? 'font-medium text-indigo-700' : ''}`}>Marker</span>
+                  <FiEdit className={`mb-1 ${drawingMode.tool === 'marker' ? 'text-orange-600' : 'text-gray-600'}`} />
+                  <span className={`text-xs text-center ${drawingMode.tool === 'marker' ? 'font-medium text-orange-700' : ''}`}>Marker</span>
                 </button>
                 <button 
-                  className={`p-2 rounded-md border ${drawingMode.tool === 'pencil' ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
+                  className={`p-2 rounded-md border ${drawingMode.tool === 'pencil' ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
                   onClick={() => {
                     handleDrawingPropertyChange('tool', 'pencil');
                     handleDrawingPropertyChange('strokeWidth', 1);
@@ -179,11 +180,11 @@ export default function PropertiesTab({
                     togglePropertyGroup('drawing', true);
                   }}
                 >
-                  <FiEdit className={`mb-1 ${drawingMode.tool === 'pencil' ? 'text-indigo-600' : 'text-gray-600'}`} />
-                  <span className={`text-xs text-center ${drawingMode.tool === 'pencil' ? 'font-medium text-indigo-700' : ''}`}>Pencil</span>
+                  <FiEdit className={`mb-1 ${drawingMode.tool === 'pencil' ? 'text-orange-600' : 'text-gray-600'}`} />
+                  <span className={`text-xs text-center ${drawingMode.tool === 'pencil' ? 'font-medium text-orange-700' : ''}`}>Pencil</span>
                 </button>
                 <button 
-                  className={`p-2 rounded-md border ${drawingMode.tool === 'watercolor' ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
+                  className={`p-2 rounded-md border ${drawingMode.tool === 'watercolor' ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
                   onClick={() => {
                     handleDrawingPropertyChange('tool', 'watercolor');
                     handleDrawingPropertyChange('strokeWidth', 8);
@@ -195,11 +196,11 @@ export default function PropertiesTab({
                     togglePropertyGroup('drawing', true);
                   }}
                 >
-                  <FaPaintBrush className={`mb-1 ${drawingMode.tool === 'watercolor' ? 'text-indigo-600' : 'text-gray-600'}`} />
-                  <span className={`text-xs text-center ${drawingMode.tool === 'watercolor' ? 'font-medium text-indigo-700' : ''}`}>Watercolor</span>
+                  <FaPaintBrush className={`mb-1 ${drawingMode.tool === 'watercolor' ? 'text-orange-600' : 'text-gray-600'}`} />
+                  <span className={`text-xs text-center ${drawingMode.tool === 'watercolor' ? 'font-medium text-orange-700' : ''}`}>Watercolor</span>
                 </button>
                 <button 
-                  className={`p-2 rounded-md border ${drawingMode.tool === 'dotted' ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
+                  className={`p-2 rounded-md border ${drawingMode.tool === 'dotted' ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
                   onClick={() => {
                     handleDrawingPropertyChange('tool', 'dotted');
                     handleDrawingPropertyChange('strokeWidth', 2);
@@ -211,11 +212,11 @@ export default function PropertiesTab({
                     togglePropertyGroup('drawing', true);
                   }}
                 >
-                  <FiSliders className={`mb-1 ${drawingMode.tool === 'dotted' ? 'text-indigo-600' : 'text-gray-600'}`} />
-                  <span className={`text-xs text-center ${drawingMode.tool === 'dotted' ? 'font-medium text-indigo-700' : ''}`}>Dotted</span>
+                  <FiSliders className={`mb-1 ${drawingMode.tool === 'dotted' ? 'text-orange-600' : 'text-gray-600'}`} />
+                  <span className={`text-xs text-center ${drawingMode.tool === 'dotted' ? 'font-medium text-orange-700' : ''}`}>Dotted</span>
                 </button>
                 <button 
-                  className={`p-2 rounded-md border ${drawingMode.tool === 'dashed' ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
+                  className={`p-2 rounded-md border ${drawingMode.tool === 'dashed' ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-200' : 'border-gray-200 hover:bg-gray-50'} flex flex-col items-center`}
                   onClick={() => {
                     handleDrawingPropertyChange('tool', 'dashed');
                     handleDrawingPropertyChange('strokeWidth', 2);
@@ -227,8 +228,8 @@ export default function PropertiesTab({
                     togglePropertyGroup('drawing', true);
                   }}
                 >
-                  <FiSliders className={`mb-1 ${drawingMode.tool === 'dashed' ? 'text-indigo-600' : 'text-gray-600'}`} />
-                  <span className={`text-xs text-center ${drawingMode.tool === 'dashed' ? 'font-medium text-indigo-700' : ''}`}>Dashed</span>
+                  <FiSliders className={`mb-1 ${drawingMode.tool === 'dashed' ? 'text-orange-600' : 'text-gray-600'}`} />
+                  <span className={`text-xs text-center ${drawingMode.tool === 'dashed' ? 'font-medium text-orange-700' : ''}`}>Dashed</span>
                 </button>
               </div>
             </div>
@@ -242,7 +243,7 @@ export default function PropertiesTab({
                 <button
                   className={`py-2 px-3 text-center text-sm ${
                     drawingMode.lineCap === 'round' 
-                      ? 'bg-indigo-500 text-white ring-2 ring-indigo-200' 
+                      ? 'bg-orange-500 text-white ring-2 ring-orange-200' 
                       : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                   } rounded-md`}
                   onClick={() => handleDrawingPropertyChange('lineCap', 'round')}
@@ -252,7 +253,7 @@ export default function PropertiesTab({
                 <button
                   className={`py-2 px-3 text-center text-sm ${
                     drawingMode.lineCap === 'butt' 
-                      ? 'bg-indigo-500 text-white ring-2 ring-indigo-200' 
+                      ? 'bg-orange-500 text-white ring-2 ring-orange-200' 
                       : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                   } rounded-md`}
                   onClick={() => handleDrawingPropertyChange('lineCap', 'butt')}
@@ -262,7 +263,7 @@ export default function PropertiesTab({
                 <button
                   className={`py-2 px-3 text-center text-sm ${
                     drawingMode.lineCap === 'square' 
-                      ? 'bg-indigo-500 text-white ring-2 ring-indigo-200' 
+                      ? 'bg-orange-500 text-white ring-2 ring-orange-200' 
                       : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                   } rounded-md`}
                   onClick={() => handleDrawingPropertyChange('lineCap', 'square')}
@@ -282,7 +283,7 @@ export default function PropertiesTab({
                   <button
                     className={`py-2 px-3 text-center text-sm ${
                       !drawingMode.dash 
-                        ? 'bg-indigo-500 text-white ring-2 ring-indigo-200' 
+                        ? 'bg-orange-500 text-white ring-2 ring-orange-200' 
                         : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                     } rounded-md`}
                     onClick={() => handleDrawingPropertyChange('dash', null)}
@@ -292,7 +293,7 @@ export default function PropertiesTab({
                   <button
                     className={`py-2 px-3 text-center text-sm ${
                       JSON.stringify(drawingMode.dash) === JSON.stringify([1, 5]) 
-                        ? 'bg-indigo-500 text-white ring-2 ring-indigo-200' 
+                        ? 'bg-orange-500 text-white ring-2 ring-orange-200' 
                         : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                     } rounded-md`}
                     onClick={() => handleDrawingPropertyChange('dash', [1, 5])}
@@ -302,7 +303,7 @@ export default function PropertiesTab({
                   <button
                     className={`py-2 px-3 text-center text-sm ${
                       JSON.stringify(drawingMode.dash) === JSON.stringify([6, 4]) 
-                        ? 'bg-indigo-500 text-white ring-2 ring-indigo-200' 
+                        ? 'bg-orange-500 text-white ring-2 ring-orange-200' 
                         : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                     } rounded-md`}
                     onClick={() => handleDrawingPropertyChange('dash', [6, 4])}
@@ -433,7 +434,7 @@ export default function PropertiesTab({
                       handleDrawingPropertyChange('strokeWidth', preset.width);
                     }}
                     style={{
-                      borderColor: preset.width === drawingMode.strokeWidth ? '#6366F1' : 'rgb(229,231,235)',
+                      borderColor: preset.width === drawingMode.strokeWidth ? '#EA580C' : 'rgb(229,231,235)',
                       borderWidth: preset.width === drawingMode.strokeWidth ? '2px' : '1px',
                       backgroundColor: preset.width === drawingMode.strokeWidth ? '#EEF2FF' : 'white'
                     }}
@@ -508,7 +509,7 @@ export default function PropertiesTab({
                       <button
                         className={`flex-1 py-2 px-3 text-center text-sm ${
                           shapeFillType === 'filled' 
-                            ? 'bg-indigo-500 text-white' 
+                            ? 'bg-orange-500 text-white' 
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
                         }`}
                         onClick={() => handleShapeFillTypeChange('filled')}
@@ -518,7 +519,7 @@ export default function PropertiesTab({
                       <button
                         className={`flex-1 py-2 px-3 text-center text-sm ${
                           shapeFillType === 'outlined' 
-                            ? 'bg-indigo-500 text-white' 
+                            ? 'bg-orange-500 text-white' 
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
                         }`}
                         onClick={() => handleShapeFillTypeChange('outlined')}
@@ -622,8 +623,8 @@ export default function PropertiesTab({
               {activePropertyGroup === 'drawing' && (
                 <div className="p-3 border-t border-gray-200">
                   {/* Tool Type Indicator */}
-                  <div className="mb-4 bg-indigo-50 p-3 rounded-md border border-indigo-100">
-                    <h5 className="text-sm font-medium text-indigo-700 mb-1 flex items-center">
+                  <div className="mb-4 bg-orange-50 p-3 rounded-md border border-orange-100">
+                    <h5 className="text-sm font-medium text-orange-700 mb-1 flex items-center">
                       <FiEdit className="mr-2" />
                       Drawing Style: {selectedElement.tool ? selectedElement.tool.charAt(0).toUpperCase() + selectedElement.tool.slice(1) : 'Free Drawing'}
                     </h5>
@@ -698,7 +699,7 @@ export default function PropertiesTab({
                       <button
                         className={`py-2 px-3 text-center text-sm ${
                           selectedElement.lineCap === 'round' 
-                            ? 'bg-indigo-500 text-white ring-2 ring-indigo-200' 
+                            ? 'bg-orange-500 text-white ring-2 ring-orange-200' 
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                         } rounded-md`}
                         onClick={() => handlePropertyChange('lineCap', 'round')}
@@ -708,7 +709,7 @@ export default function PropertiesTab({
                       <button
                         className={`py-2 px-3 text-center text-sm ${
                           selectedElement.lineCap === 'butt' 
-                            ? 'bg-indigo-500 text-white ring-2 ring-indigo-200' 
+                            ? 'bg-orange-500 text-white ring-2 ring-orange-200' 
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                         } rounded-md`}
                         onClick={() => handlePropertyChange('lineCap', 'butt')}
@@ -718,7 +719,7 @@ export default function PropertiesTab({
                       <button
                         className={`py-2 px-3 text-center text-sm ${
                           selectedElement.lineCap === 'square' 
-                            ? 'bg-indigo-500 text-white ring-2 ring-indigo-200' 
+                            ? 'bg-orange-500 text-white ring-2 ring-orange-200' 
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                         } rounded-md`}
                         onClick={() => handlePropertyChange('lineCap', 'square')}
@@ -737,7 +738,7 @@ export default function PropertiesTab({
                       <button
                         className={`py-2 px-3 text-center text-sm ${
                           !selectedElement.dash 
-                            ? 'bg-indigo-500 text-white ring-2 ring-indigo-200' 
+                            ? 'bg-orange-500 text-white ring-2 ring-orange-200' 
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                         } rounded-md`}
                         onClick={() => handlePropertyChange('dash', null)}
@@ -747,7 +748,7 @@ export default function PropertiesTab({
                       <button
                         className={`py-2 px-3 text-center text-sm ${
                           JSON.stringify(selectedElement.dash) === JSON.stringify([1, 5]) 
-                            ? 'bg-indigo-500 text-white ring-2 ring-indigo-200' 
+                            ? 'bg-orange-500 text-white ring-2 ring-orange-200' 
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                         } rounded-md`}
                         onClick={() => handlePropertyChange('dash', [1, 5])}
@@ -757,7 +758,7 @@ export default function PropertiesTab({
                       <button
                         className={`py-2 px-3 text-center text-sm ${
                           JSON.stringify(selectedElement.dash) === JSON.stringify([6, 4]) 
-                            ? 'bg-indigo-500 text-white ring-2 ring-indigo-200' 
+                            ? 'bg-orange-500 text-white ring-2 ring-orange-200' 
                             : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
                         } rounded-md`}
                         onClick={() => handlePropertyChange('dash', [6, 4])}
@@ -873,6 +874,7 @@ export default function PropertiesTab({
                         rows={3}
                         enhanceTextWithAI={enhanceTextWithAI}
                         isAiProcessing={isAiProcessing}
+                        aiFeaturesEnabled={aiFeaturesEnabled}
                       />
                     </div>
                     
@@ -900,7 +902,7 @@ export default function PropertiesTab({
                             key={preset.value}
                             className={`text-xs py-1 px-1.5 border rounded-md ${
                               Math.abs(selectedElement.width - preset.value) < 10
-                                ? 'bg-indigo-50 border-indigo-300 text-indigo-600'
+                                ? 'bg-orange-50 border-orange-300 text-orange-600'
                                 : 'border-gray-300 hover:bg-gray-50'
                             }`}
                             onClick={() => handlePropertyChange('width', preset.value)}
@@ -1122,7 +1124,7 @@ export default function PropertiesTab({
           <p className="text-xs text-gray-400 mb-1">Element Actions</p>
           <div className="flex gap-2">
             <button
-              className="px-3 py-1 text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded flex items-center"
+              className="px-3 py-1 text-xs bg-orange-50 hover:bg-orange-100 text-orange-700 rounded flex items-center"
               onClick={() => {
                 duplicateElement(selectedElementId);
                 addToHistory(`Duplicate ${selectedElement.type}`);

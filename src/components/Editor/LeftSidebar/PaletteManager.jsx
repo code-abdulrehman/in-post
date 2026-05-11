@@ -168,7 +168,7 @@ export default function PaletteManager() {
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-sm font-medium">Color Palettes</h3>
         <button
-          className="flex items-center text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-2 py-1 rounded"
+          className="flex items-center text-xs bg-orange-50 hover:bg-orange-100 text-orange-600 px-2 py-1 rounded"
           onClick={handleStartCreatePalette}
         >
           <FaPlus size={10} className="mr-1" /> New Palette
@@ -180,13 +180,13 @@ export default function PaletteManager() {
           {Object.keys(colorPalettes).map(paletteId => (
             <div 
               key={paletteId} 
-              className={`p-3 border rounded-md mb-3 ${currentPaletteId === paletteId ? 'border-indigo-300 bg-indigo-50' : 'border-gray-200'}`}
+              className={`p-3 border rounded-md mb-3 ${currentPaletteId === paletteId ? 'border-orange-300 bg-orange-50' : 'border-gray-200'}`}
             >
               <div className="flex justify-between items-center mb-2">
                 <div className="flex items-center">
                   <h4 className="text-sm font-medium text-gray-700">{colorPalettes[paletteId].name}</h4>
                   {currentPaletteId === paletteId && (
-                    <span className="ml-2 text-xs bg-indigo-100 text-indigo-600 px-1.5 py-0.5 rounded">
+                    <span className="ml-2 text-xs bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded">
                       Active
                     </span>
                   )}
@@ -194,7 +194,7 @@ export default function PaletteManager() {
                 
                 <div className="flex items-center space-x-1">
                   <button
-                    className="p-1 text-gray-400 hover:text-indigo-500 rounded-full"
+                    className="p-1 text-gray-400 hover:text-orange-500 rounded-full"
                     onClick={() => setCurrentPalette(paletteId)}
                     title="Use this palette"
                   >
@@ -204,7 +204,7 @@ export default function PaletteManager() {
                   {colorPalettes[paletteId].isCustom && (
                     <>
                       <button
-                        className="p-1 text-gray-400 hover:text-indigo-500 rounded-full"
+                        className="p-1 text-gray-400 hover:text-orange-500 rounded-full"
                         onClick={() => handleStartEditPalette(paletteId)}
                         title="Edit palette"
                       >
@@ -341,7 +341,7 @@ export default function PaletteManager() {
               Cancel
             </button>
             <button
-              className="px-3 py-1 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded"
+              className="px-3 py-1 text-sm bg-orange-600 hover:bg-orange-700 text-white rounded"
               onClick={handleSavePalette}
               disabled={!newPaletteName.trim()}
             >

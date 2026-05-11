@@ -9,9 +9,9 @@ export default function TabButton({ icon: Icon, label, tab, layoutType, activeTa
       className={`flex flex-col items-center justify-center text-xs 
         ${isActive 
           ? isHorizontal 
-            ? "bg-white text-indigo-700 border-b-2 border-indigo-600" 
-            : "text-white bg-indigo-600 border-0 rounded"
-          : "hover:bg-indigo-50"
+            ? "bg-white text-orange-700 border-b-2 border-orange-600" 
+            : "text-white bg-orange-600 border-0 rounded"
+          : "hover:bg-orange-50"
         } ${isHorizontal ? "p-1 gap-[1px]" : "p-2"}`}
       onClick={() => setActiveTab(tab)}
     >

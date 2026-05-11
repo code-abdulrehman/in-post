@@ -15,6 +15,7 @@ const PaletteColorsTab = ({
   setNewColor,
   bgOpacity,
   handleBgOpacityChange,
+  aiDisabled = false,
 }) => {
   return (
     <div>
@@ -22,24 +23,38 @@ const PaletteColorsTab = ({
         <h4 className="text-sm font-medium text-gray-700 w-full overflow-hidden text-ellipsis whitespace-nowrap">
           {colorPalettes[currentPaletteId]?.name || 'Colors'}
         </h4>
-        <span className="text-xs bg-indigo-100 text-indigo-600 px-1.5 py-0.5 rounded">
+        <span className="text-xs bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded">
           Active
         </span>
       </div>
       
       {/* AI Palette Generation Button */}
-      <div className="mb-3 p-2 border border-dashed border-purple-300 rounded-md bg-gradient-to-r from-purple-50 to-indigo-50">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <FaMagic className="mr-2 text-purple-500" size={14} />
-            <span className="text-xs font-medium text-purple-700">AI Color Magic</span>
+      <div
+        className={`mb-3 rounded-md border border-dashed p-2 ${
+          aiDisabled
+            ? 'border-stone-200 bg-stone-50'
+            : 'border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50'
+        }`}
+      >
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center">
+            <FaMagic className={`mr-2 shrink-0 ${aiDisabled ? 'text-stone-400' : 'text-orange-500'}`} size={14} />
+            <span className={`text-xs font-medium ${aiDisabled ? 'text-stone-500' : 'text-orange-700'}`}>
+              {aiDisabled ? 'AI color tools offline' : 'AI Color Magic'}
+            </span>
           </div>
-          <div className="flex space-x-1">
+          <div className="flex shrink-0 space-x-1">
             <button
-              className="flex items-center text-xs bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white px-2 py-1 rounded shadow-sm"
+              type="button"
+              className={`flex items-center rounded px-2 py-1 text-xs shadow-sm ${
+                aiDisabled
+                  ? 'cursor-not-allowed bg-stone-200 text-stone-500'
+                  : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:from-orange-600 hover:to-amber-600'
+              }`}
               onClick={() => handleStartAiPaletteGeneration(false)}
+              disabled={aiDisabled}
             >
-              <FaMagic size={8} className="mr-1 animate-pulse" /> Generate
+              <FaMagic size={8} className={`mr-1 ${aiDisabled ? '' : 'animate-pulse'}`} /> Generate
             </button>
           </div>
         </div>
@@ -102,7 +117,7 @@ const PaletteColorsTab = ({
               {newColor}
             </span>
             <button
-              className="px-1 py-1 text-xs bg-indigo-500 hover:bg-indigo-600 text-white rounded flex items-center"
+              className="px-1 py-1 text-xs bg-orange-500 hover:bg-orange-600 text-white rounded flex items-center"
               onClick={() => handleAddToPalette(newColor)}
             >
               <MdAdd size={14} className="mr-1" /> Add to Palette

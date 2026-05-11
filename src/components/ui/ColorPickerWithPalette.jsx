@@ -180,7 +180,7 @@ const ColorPickerWithPalette = ({
                 <h4 className="text-xs font-medium text-gray-600">{currentPaletteName}</h4>
                 {isCustomPalette && (
                   <button
-                    className="text-xs text-indigo-600 hover:text-indigo-800"
+                    className="text-xs text-orange-600 hover:text-orange-800"
                     onClick={handleAddCurrentColorToPalette}
                   >
                     <FaPlus size={10} className="inline mr-1" /> Add
@@ -196,7 +196,7 @@ const ColorPickerWithPalette = ({
                       className="relative cursor-pointer"
                     >
                       <div
-                        className="w-full aspect-square rounded-md cursor-pointer border border-gray-200 hover:border-indigo-400"
+                        className="w-full aspect-square rounded-md cursor-pointer border border-gray-200 hover:border-orange-400"
                         style={{ backgroundColor: colorObj.value }}
                         onClick={() => handlePaletteColorSelect(colorObj)}
                         title={colorObj.name}

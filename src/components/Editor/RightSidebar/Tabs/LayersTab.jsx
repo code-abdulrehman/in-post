@@ -105,7 +105,7 @@ export default function LayersTab({
               <div 
                 key={element.id}
                 className={`flex items-center p-2 cursor-pointer group ${
-                  selectedElementId === element.id ? 'bg-indigo-50' : 'hover:bg-gray-50'
+                  selectedElementId === element.id ? 'bg-orange-50' : 'hover:bg-gray-50'
                 }`}
                 onClick={() => selectElement(element.id)}
               >
@@ -156,7 +156,7 @@ export default function LayersTab({
                       />
                       <button
                         onClick={(e) => handleSaveRename(element.id, e)}
-                        className="ml-1 text-indigo-600"
+                        className="ml-1 text-orange-600"
                       >
                         <FiCheck size={14} />
                       </button>

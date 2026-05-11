@@ -23,7 +23,7 @@ const CreatePaletteForm = ({
       <div className="mb-3">
         <div className="p-2 bg-gray-50 rounded text-xs text-gray-600 border">
           <div className="flex items-center">
-            <FaPlus size={10} className="mr-1 text-indigo-600" /> 
+            <FaPlus size={10} className="mr-1 text-orange-600" /> 
             <span>New palette will be created with your current selected color</span>
           </div>
           <div className="flex items-center mt-2">
@@ -44,7 +44,7 @@ const CreatePaletteForm = ({
           Cancel
         </button>
         <button
-          className="px-3 py-1 text-sm bg-indigo-600 hover:bg-indigo-700 text-white rounded"
+          className="px-3 py-1 text-sm bg-orange-600 hover:bg-orange-700 text-white rounded"
           onClick={handleSavePalette}
           disabled={!newPaletteName.trim()}
         >

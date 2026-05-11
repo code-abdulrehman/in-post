@@ -51,8 +51,8 @@ export default function GradientPicker({ value, onChange, className = '' }) {
   // Common gradients
   const gradients = [
     {
-      name: 'Blue to Purple',
-      value: 'linear-gradient(to right, #3B82F6, #8B5CF6)'
+      name: 'Blue to Cyan',
+      value: 'linear-gradient(to right, #3B82F6, #06B6D4)'
     },
     {
       name: 'Green to Blue',
@@ -63,8 +63,8 @@ export default function GradientPicker({ value, onChange, className = '' }) {
       value: 'linear-gradient(to right, #F59E0B, #EF4444)'
     },
     {
-      name: 'Pink to Purple',
-      value: 'linear-gradient(to right, #EC4899, #8B5CF6)'
+      name: 'Pink to Orange',
+      value: 'linear-gradient(to right, #EC4899, #EA580C)'
     },
   ];
 
@@ -82,8 +82,8 @@ export default function GradientPicker({ value, onChange, className = '' }) {
       value: 'radial-gradient(circle, #10B981, #064E3B)'
     },
     {
-      name: 'Purple Center',
-      value: 'radial-gradient(circle, #8B5CF6, #4C1D95)'
+      name: 'Orange Center',
+      value: 'radial-gradient(circle, #F97316, #9A3412)'
     },
   ];
 
@@ -120,7 +120,7 @@ export default function GradientPicker({ value, onChange, className = '' }) {
     <div className={`relative ${className}`} ref={pickerRef}>
       <div 
         className="w-8 h-8 rounded border border-gray-300 cursor-pointer overflow-hidden"
-        style={{ background: value || 'linear-gradient(to right, #3B82F6, #8B5CF6)' }}
+        style={{ background: value || 'linear-gradient(to right, #3B82F6, #F97316)' }}
         onClick={() => setShowPicker(!showPicker)}
       >
         {!value && (
@@ -138,7 +138,7 @@ export default function GradientPicker({ value, onChange, className = '' }) {
             <div className="flex space-x-2">
               <button
                 className={`flex-1 py-1 px-3 text-xs rounded border ${
-                  gradientType === 'linear' ? 'bg-indigo-50 border-indigo-300 text-indigo-700' : 'border-gray-300'
+                  gradientType === 'linear' ? 'bg-orange-50 border-orange-300 text-orange-700' : 'border-gray-300'
                 }`}
                 onClick={() => {
                   setGradientType('linear');
@@ -149,7 +149,7 @@ export default function GradientPicker({ value, onChange, className = '' }) {
               </button>
               <button
                 className={`flex-1 py-1 px-3 text-xs rounded border ${
-                  gradientType === 'radial' ? 'bg-indigo-50 border-indigo-300 text-indigo-700' : 'border-gray-300'
+                  gradientType === 'radial' ? 'bg-orange-50 border-orange-300 text-orange-700' : 'border-gray-300'
                 }`}
                 onClick={() => {
                   setGradientType('radial');
@@ -236,7 +236,7 @@ export default function GradientPicker({ value, onChange, className = '' }) {
                 <div
                   key={`linear-${index}`}
                   className={`h-8 rounded-md border cursor-pointer transition-all ${
-                    value === gradient.value ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-gray-200 hover:border-gray-300'
+                    value === gradient.value ? 'border-orange-500 ring-1 ring-orange-500' : 'border-gray-200 hover:border-gray-300'
                   }`}
                   style={{ background: gradient.value }}
                   onClick={() => handleGradientSelect(gradient.value)}
@@ -252,7 +252,7 @@ export default function GradientPicker({ value, onChange, className = '' }) {
                 <div
                   key={`radial-${index}`}
                   className={`h-8 rounded-md border cursor-pointer transition-all ${
-                    value === gradient.value ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-gray-200 hover:border-gray-300'
+                    value === gradient.value ? 'border-orange-500 ring-1 ring-orange-500' : 'border-gray-200 hover:border-gray-300'
                   }`}
                   style={{ background: gradient.value }}
                   onClick={() => handleGradientSelect(gradient.value)}

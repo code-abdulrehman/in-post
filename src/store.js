@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { baseUrl } from './utils/constant';
 
 // Define preset color palettes
 const presetPalettes = {
@@ -103,6 +104,30 @@ export const useStore = create(
       // Projects management
       projects: [],
       currentProjectId: null,
+
+      /** When false, AI text + color endpoints are disabled in the editor (no console noise). */
+      aiApiAvailable: true,
+
+      setAiApiAvailable: (available) => set({ aiApiAvailable: !!available }),
+
+      checkAiApiHealth: async () => {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 8000);
+          const res = await fetch(`${baseUrl}/api/health`, {
+            method: 'GET',
+            signal: controller.signal,
+            headers: { Accept: 'application/json' },
+          });
+          clearTimeout(timeoutId);
+          const ok = res.ok;
+          set({ aiApiAvailable: ok });
+          return ok;
+        } catch {
+          set({ aiApiAvailable: false });
+          return false;
+        }
+      },
       
       // Color Palettes
       colorPalettes: presetPalettes,
@@ -600,7 +625,7 @@ export const useStore = create(
       name: 'canvas-store',
       // Don't persist certain large or temporary state
       partialize: (state) => {
-        const { history, ...rest } = state;
+        const { history, aiApiAvailable, ...rest } = state;
         return rest;
       }
     }

@@ -49,7 +49,7 @@ export default function ChatBot() {
           />
           <button
             onClick={handleSendMessage}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg w-[36px] h-[36px] flex items-center justify-center transition-colors"
+            className="bg-orange-600 hover:bg-orange-700 text-white rounded-lg w-[36px] h-[36px] flex items-center justify-center transition-colors"
             aria-label="Send message"
             disabled={!message.trim()}
           >

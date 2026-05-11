@@ -10,7 +10,8 @@ const PalettesTab = ({
   handleColorSelect,
   handleStartCreatePalette,
   handleStartAiPaletteGeneration,
-  setActiveTab
+  setActiveTab,
+  aiDisabled = false,
 }) => {
   return (
     <div>
@@ -18,13 +19,20 @@ const PalettesTab = ({
         <h4 className="text-sm font-medium text-gray-700">Available Palettes</h4>
         <div className="flex space-x-1">
           <button
-            className="flex items-center text-xs bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white px-2 py-1 rounded"
+            type="button"
+            className={`flex items-center text-xs px-2 py-1 rounded ${
+              aiDisabled
+                ? 'cursor-not-allowed bg-stone-200 text-stone-500'
+                : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:from-orange-600 hover:to-amber-600'
+            }`}
             onClick={() => handleStartAiPaletteGeneration(false)}
+            disabled={aiDisabled}
+            title={aiDisabled ? 'AI unavailable' : 'Generate palette with AI'}
           >
             <FaMagic size={10} className="mr-1" /> AI
           </button>
           <button
-            className="flex items-center text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-2 py-1 rounded"
+            className="flex items-center text-xs bg-orange-50 hover:bg-orange-100 text-orange-600 px-2 py-1 rounded"
             onClick={handleStartCreatePalette}
           >
             <FaPlus size={10} className="mr-1" /> New
@@ -37,7 +45,7 @@ const PalettesTab = ({
           <div 
             key={paletteId} 
             onClick={() => setCurrentPalette(paletteId)}
-            className={`p-3 border rounded-md ${currentPaletteId === paletteId ? 'border-indigo-300 bg-indigo-50' : 'border-gray-200'}`}
+            className={`p-3 border rounded-md ${currentPaletteId === paletteId ? 'border-orange-300 bg-orange-50' : 'border-gray-200'}`}
           >
             <div className="flex justify-between items-center mb-2">
               <div className="flex items-center justify-between w-full">
@@ -56,7 +64,7 @@ const PalettesTab = ({
                 )}
                 {/* Add AI badge for AI-generated palettes */}
                 {paletteId.startsWith('ai-') && (
-                  <span className="ml-1 text-xs text-purple-400">
+                  <span className="ml-1 text-xs text-orange-400">
                     <FaMagic size={12} />
                   </span>
                 )}
@@ -65,7 +73,7 @@ const PalettesTab = ({
                 <div className="flex items-center justify-end gap-1" >
                
                   {currentPaletteId === paletteId && (
-                   <span className="ml-2 text-xs bg-indigo-200 text-indigo-600 px-1.5 py-0.5 rounded">
+                   <span className="ml-2 text-xs bg-orange-200 text-orange-600 px-1.5 py-0.5 rounded">
                      <MdCheck size={12} />
                    </span>
                  )}

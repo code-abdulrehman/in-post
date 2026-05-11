@@ -5,6 +5,7 @@ import textRoutes from './routes/text.js';
 import chatRoutes from './routes/chat.js';
 import colorRoutes from './routes/color.js';
 import thoggoRoutes from './routes/thoggo.js';
+import healthRoutes from './routes/health.js';
 
 dotenv.config();
  const PORT = process.env.PORT || 4003;
@@ -19,6 +20,7 @@ dotenv.config();
  
  app.use(express.json());
 
+ app.use('/api/health', healthRoutes);
  app.use('/api/text/gen', textRoutes);
  app.use('/api/chat/gen', chatRoutes);
  app.use('/api/color/gen', colorRoutes);

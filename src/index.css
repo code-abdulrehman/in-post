@@ -8,8 +8,8 @@
   --text-color: #212529;
   --muted-text: #495057;
   --border-color: #e9ecef;
-  --primary-color: #6366f1;
-  --primary-hover: #4f46e5;
+  --primary-color: #ea580c;
+  --primary-hover: #c2410c;
   --danger-color: #dc2626;
   --success-color: #16a34a;
   --warning-color: #f59e0b;
@@ -20,9 +20,25 @@
   --pattern-opacity: 1;
 }
 
+/* Hero / display — Instrument Serif from index.html */
+.font-hero-display {
+  font-family: 'Instrument Serif', ui-serif, Georgia, 'Times New Roman', serif;
+}
+
 /* Default styles */
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
   color: var(--text-color);
   background-color: var(--main-bg);
   line-height: 1.5;
@@ -41,7 +57,7 @@ body {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  background-image: linear-gradient(to right, #6366f1, #8b5cf6);
+  background-image: linear-gradient(to right, #ea580c, #fb923c);
 }
 
 /* Custom smooth transitions */
@@ -75,32 +91,15 @@ body {
   touch-action: none;
 }
 
-/* Custom range input */
-input[type="range"] {
-  -webkit-appearance: none;
-  height: 6px;
-  background: #e2e8f0;
-  border-radius: 3px;
-  outline: none;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  background: var(--primary-color);
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-input[type="range"]::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  background: var(--primary-color);
-  border-radius: 50%;
-  cursor: pointer;
-  border: none;
+/* Diagonal line mesh — CTA + hero (pair with opacity-* on the element) */
+.bg-pattern-lines {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.06) 0,
+    rgba(15, 23, 42, 0.06) 1px,
+    transparent 1px,
+    transparent 14px
+  );
 }
 
 /* Background pattern styles with opacity support */
@@ -153,74 +152,133 @@ input[type="range"]::-moz-range-thumb {
     scrollbar-width: thin;
     scrollbar-color: theme('colors.gray.300') theme('colors.gray.100');
   }
+  /* Range sliders — single consistent style (export, properties, color picker, etc.) */
   input[type="range"] {
     width: 100%;
-    height: 4px;
+    max-width: 100%;
+    height: 2rem;
+    margin: 0;
+    padding: 0;
     background: transparent;
     cursor: pointer;
+    -webkit-appearance: none;
     appearance: none;
+    accent-color: #ea580c;
   }
-  
-  /* WebKit (Chrome, Safari) */
+
+  input[type="range"]:focus {
+    outline: none;
+  }
+
+  input[type="range"]:focus-visible {
+    outline: 2px solid #fb923c;
+    outline-offset: 4px;
+    border-radius: 9999px;
+  }
+
   input[type="range"]::-webkit-slider-runnable-track {
-    height: 4px;
-    background: #d1d5db; /* gray-300 */
-    border-radius: 2px;
+    width: 100%;
+    height: 0.5rem;
+    background: #e7e5e4;
+    border-radius: 9999px;
+    border: 1px solid #d6d3d1;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
   }
+
   input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
     appearance: none;
-    width: 16px;
-    height: 16px;
-    background: #4f46e5; /* indigo-600 */
-    border-radius: 50%;
-    margin-top: -6px; /* Align thumb center with track */
+    width: 1.375rem;
+    height: 1.375rem;
+    margin-top: -0.4375rem;
+    border-radius: 9999px;
+    background: #fff;
+    border: 3px solid #ea580c;
+    cursor: pointer;
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.9) inset,
+      0 2px 6px rgba(234, 88, 12, 0.35),
+      0 1px 2px rgba(0, 0, 0, 0.08);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      border-color 0.15s ease;
   }
-  
-  /* Firefox */
+
+  input[type="range"]:hover::-webkit-slider-thumb {
+    transform: scale(1.07);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.9) inset,
+      0 3px 10px rgba(234, 88, 12, 0.45),
+      0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  input[type="range"]:active::-webkit-slider-thumb {
+    transform: scale(1.02);
+    border-color: #c2410c;
+  }
+
   input[type="range"]::-moz-range-track {
-    height: 4px;
-    background: #d1d5db;
-    border-radius: 2px;
+    width: 100%;
+    height: 0.5rem;
+    background: #e7e5e4;
+    border-radius: 9999px;
+    border: 1px solid #d6d3d1;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
   }
+
   input[type="range"]::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    background: #4f46e5;
-    border-radius: 50%;
-    border: none;
+    width: 1.375rem;
+    height: 1.375rem;
+    border-radius: 9999px;
+    background: #fff;
+    border: 3px solid #ea580c;
+    cursor: pointer;
+    box-shadow:
+      0 2px 6px rgba(234, 88, 12, 0.35),
+      0 1px 2px rgba(0, 0, 0, 0.08);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
   }
-  
-  /* IE & Edge */
+
+  input[type="range"]:hover::-moz-range-thumb {
+    transform: scale(1.07);
+  }
+
   input[type="range"]::-ms-track {
-    height: 4px;
+    width: 100%;
+    height: 0.5rem;
     background: transparent;
     border-color: transparent;
     color: transparent;
+    border-radius: 9999px;
   }
-  input[type="range"]::-ms-fill-lower {
-    background: #d1d5db;
-    border-radius: 2px;
-  }
+
+  input[type="range"]::-ms-fill-lower,
   input[type="range"]::-ms-fill-upper {
-    background: #d1d5db;
-    border-radius: 2px;
+    background: #e7e5e4;
+    border-radius: 9999px;
+    border: 1px solid #d6d3d1;
   }
+
   input[type="range"]::-ms-thumb {
-    width: 16px;
-    height: 16px;
-    background: #4f46e5;
-    border-radius: 50%;
-    border: none;
+    width: 1.375rem;
+    height: 1.375rem;
+    border-radius: 9999px;
+    background: #fff;
+    border: 3px solid #ea580c;
+    box-shadow: 0 2px 6px rgba(234, 88, 12, 0.35);
   }
 
   input[type="checkbox"]:checked {
-    accent-color: #4f46e5;
+    accent-color: #ea580c;
   }
   ::selection {
-    @apply bg-indigo-500 text-white;
+    @apply bg-orange-500 text-white;
   }
 }
 
-input:focus {
+input:focus:not([type='range']) {
   outline: none;
 }

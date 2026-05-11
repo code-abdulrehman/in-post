@@ -32,9 +32,9 @@ export default function ColorPicker({ value, onChange, className = '' }) {
     '#10B981', // Green
     '#F59E0B', // Yellow
     '#EF4444', // Red
-    '#8B5CF6', // Purple
+    '#F97316', // Orange
     '#EC4899', // Pink
-    '#6366F1', // Indigo
+    '#EA580C', // Deep orange
     '#000000', // Black
     'rgba(59, 130, 246, 0.5)', // Semi-transparent Blue
     'rgba(239, 68, 68, 0.5)', // Semi-transparent Red
